@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MultiLink QR Manager - Digital QR Codes</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="dashboard">
+    <header>
+      <h1>🔗 Multi QR Manager</h1>
+      <p id="headerDescription">Manage digital business cards with QR codes</p>
+      <p id="userInfo" class="user-info-line"></p>
+    </header>
+
+    <div class="controls">
+      <button id="addUserBtn" class="btn-primary">
+        <span>➕</span> Add New User
+      </button>
+      <button id="addLoginBtn" class="btn-secondary" style="display: none;">
+        <span>🔐</span> Add Login Account
+      </button>
+      <button id="logoutBtn" class="btn-secondary">
+        <span>🚪</span> Logout
+      </button>
+    </div>
+
+    <!-- Search Container (for regular users) -->
+    <div id="searchContainer" class="search-container">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search users by name or username..." />
+        <button id="searchBtn" class="search-btn">Search</button>
+      </div>
+    </div>
+
+    <!-- User Statistics (for regular users) -->
+    <div id="userStatsContainer" class="total-users-text-display">
+      <p class="total-users-label">📊 Total Users: <span id="totalUsers">0</span></p>
+    </div>
+
+    <!-- Admin Search Container (for admin users) -->
+    <div id="adminSearchContainer" class="search-container" style="display: none;">
+      <div class="search-box">
+        <input type="text" id="adminSearchInput" placeholder="🔍 Search login accounts by username, description, or data file..." />
+        <button id="adminSearchBtn" class="search-btn">Search</button>
+      </div>
+    </div>
+
+    <!-- Admin Statistics (for admin users) -->
+    <div id="adminStatsContainer" class="admin-stats-container" style="display: none;">
+      <h2>📊 Login Accounts Statistics</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>👤 Total Login Accounts</h3>
+          <span id="totalLoginAccounts">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>📁 Data Files</h3>
+          <span id="totalDataFiles">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>👥 Total Client Users</h3>
+          <span id="totalClientUsers">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users List (Card Format for regular users) -->
+    <div id="userList" class="users-grid"></div>
+
+    <!-- Users Table (for admin users) -->
+    <div id="usersTableContainer" class="table-container" style="display: none;">
+      <table id="usersTable" class="users-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>User Code</th>
+            <th>Links Count</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <!-- Users will be populated here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Login Accounts Table (for admin users) -->
+    <div id="adminTableContainer" class="admin-table-container" style="display: none;">
+      <h2>👤 Login Accounts Overview</h2>
+      <table id="adminAccountsTable" class="admin-users-table">
+        <thead>
+          <tr>
+            <th>
+              <div class="header-with-toggle">
+                <span>Username</span>
+                <button id="passwordToggleBtn" class="password-toggle-btn" title="Toggle password visibility">
+                  <span class="toggle-icon">👁️</span>
+                </button>
+              </div>
+            </th>
+            <th>Description</th>
+            <th>Data File</th>
+            <th>Client Users Count</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminAccountsTableBody">
+          <!-- Login accounts will be populated here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal for QR -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content qr-modal-content">
+      <div class="modal-header">
+        <h3 id="qrTitle">QR Code</h3>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+      
+      <div class="qr-user-info">
+        <h4 id="qrUserName">Loading...</h4>
+        <p id="qrUserHandle">@username</p>
+      </div>
+      
+      <div class="qr-display">
+        <div class="qr-wrapper">
+          <div id="qrContainer"></div>
+          <button class="edit-qr-btn" id="editQRBtn" title="Customize QR Code">✏️</button>
+        </div>
+        
+        <!-- QR Customization Panel (Inline) -->
+        <div id="qrCustomizationPanel" class="customization-panel-inline">
+          <div class="customization-controls">
+            
+            <!-- QR Code Style -->
+            <div class="control-group">
+              <label>QR Code Style:</label>
+              <select id="qrStyleSelect" title="Select QR code style" aria-label="QR code style">
+                <option value="squares">🔲 Squares (Default)</option>
+                <option value="dots">⚫ Dots</option>
+                <option value="rounded">🔳 Rounded Squares</option>
+                <option value="circles">⭕ Circles</option>
+                <option value="diamonds">💎 Diamonds</option>
+                <option value="hexagons">⬡ Hexagons</option>
+                <option value="stars">⭐ Stars</option>
+                <option value="hearts">❤️ Hearts</option>
+                <option value="triangles">🔺 Triangles</option>
+                <option value="octagons">⭕ Octagons</option>
+                <option value="rounded-dots">🔘 Rounded Dots</option>
+                <option value="pixels">🟦 Pixels</option>
+              </select>
+            </div>
+            
+            <!-- Background Color -->
+            <div class="control-group">
+              <label>Background Color:</label>
+              <div class="color-controls">
+                <input type="color" id="bgColorPicker" value="#ffffff" title="Select background color" aria-label="Background color picker">
+                <button class="btn-small" id="transparentBgBtn">Transparent</button>
+              </div>
+            </div>
+            
+            <!-- Background Transparency -->
+            <div class="control-group">
+              <label>Background Opacity:</label>
+              <div class="slider-control">
+                <input type="range" id="bgOpacitySlider" min="0" max="100" value="100" title="Adjust background opacity" aria-label="Background opacity slider">
+                <span id="bgOpacityValue">100%</span>
+              </div>
+            </div>
+            
+            <!-- QR Code Spacing -->
+            <div class="control-group">
+              <label>QR Code Spacing:</label>
+              <div class="slider-control">
+                <input type="range" id="qrSpacingSlider" min="0" max="20" value="16" title="Adjust spacing around QR code" aria-label="QR code spacing slider">
+                <span id="qrSpacingValue">16px</span>
+              </div>
+            </div>
+            
+            <!-- QR Code Color -->
+            <div class="control-group">
+              <label>QR Code Color:</label>
+              <div class="color-controls">
+                <input type="color" id="qrColorPicker" value="#000000" title="Select QR code color" aria-label="QR code color picker">
+                <button class="btn-small" id="gradientToggleBtn">Gradient</button>
+              </div>
+            </div>
+            
+            <!-- Gradient Controls (hidden by default) -->
+            <div class="control-group gradient-controls" id="gradientControls">
+              <label>Gradient Colors:</label>
+              <div class="gradient-controls-inner">
+                <div class="gradient-colors-row">
+                  <input type="color" id="gradientColor1" value="#000000" title="First gradient color" aria-label="First gradient color">
+                  <input type="color" id="gradientColor2" value="#6366f1" title="Second gradient color" aria-label="Second gradient color">
+                </div>
+                <select id="gradientDirection" title="Gradient direction" aria-label="Gradient direction">
+                  <option value="horizontal">Horizontal</option>
+                  <option value="vertical">Vertical</option>
+                  <option value="diagonal">Diagonal</option>
+                  <option value="radial">Radial</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Preview & Apply -->
+            <div class="control-group action-buttons">
+              <button class="btn-primary" id="applyCustomization">Apply Changes</button>
+              <button class="btn-secondary" id="resetCustomization">Reset to Default</button>
+            </div>
+          </div>
+        </div>
+        
+        <p class="qr-url" id="qrUrl"></p>
+      </div>
+
+      <div class="qr-actions">
+        <div class="download-options">
+          <button class="btn-primary" id="downloadQR">📥 Download QR</button>
+          <div class="download-dropdown" id="downloadDropdown">
+            <div class="format-section">
+              <div class="format-label">📄 PNG</div>
+              <div class="size-options" id="pngSizeOptions">
+                <button class="size-option" data-format="png" data-size="256">256×256</button>
+                <button class="size-option" data-format="png" data-size="512">512×512</button>
+                <button class="size-option" data-format="png" data-size="1024">1024×1024</button>
+                <button class="size-option" data-format="png" data-size="2048">2048×2048</button>
+              </div>
+            </div>
+            <div class="format-section">
+              <button class="download-option" data-format="svg">🎨 SVG</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn-secondary" id="copyUrl">📋 Copy URL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Login Account Modal -->
+  <div id="addLoginModal" class="modal-overlay hidden">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>🔐 Add New Login Account</h2>
+        <button class="modal-close" onclick="closeAddLoginModal()">&times;</button>
+      </div>
+      
+      <form id="addLoginForm" class="modal-form">
+        <div class="form-group">
+          <label for="newUsername">Username *</label>
+          <input type="text" id="newUsername" placeholder="Enter username" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="newPassword">Password *</label>
+          <input type="password" id="newPassword" placeholder="Enter password" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="newDataFile">Data File *</label>
+          <input type="text" id="newDataFile" placeholder="Enter data file name (e.g., new_users)" required>
+          <small class="form-help">Enter the name of the JSON file (without .json extension - it will be added automatically)</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="newDescription">Description</label>
+          <input type="text" id="newDescription" placeholder="Enter description (optional)">
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeAddLoginModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Generate Credentials</button>
+        </div>
+      </form>
+      
+      <!-- Credentials Display Section -->
+      <div id="credentialsDisplay" class="credentials-display hidden">
+        <div class="credentials-header">
+          <h3>✅ Credentials Generated Successfully!</h3>
+          <p>Copy the JSON below and manually add it to <code>credentials/login_credentials.json</code> to create the account:</p>
+        </div>
+        
+        <div class="credentials-content">
+          <div class="json-display">
+            <pre id="jsonCredentials" class="json-text"></pre>
+            <button class="copy-all-btn" onclick="copyJsonCredentials()">
+              📋 Copy JSON
+            </button>
+          </div>
+        </div>
+        
+        <div class="credentials-actions">
+          <button type="button" class="btn-primary" onclick="closeAddLoginModal()">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

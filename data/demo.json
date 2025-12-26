@@ -1,0 +1,818 @@
+[
+    {
+        "username": "restaurant",
+        "fullname": "Restaurant",
+        "userCode": "REST2024",
+        "_comment_business": "=== FOOD & DINING ===",
+        "zomato": "https://google.com",
+        "swiggy": "https://google.com",
+        "dineout": "https://google.com",
+        "phone": "+919876543210",
+        "location": "https://google.com",
+        "menucard": "https://google.com",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "googleReview": "https://google.com"
+    },
+    {
+        "username": "corporate",
+        "fullname": "Corporate",
+        "userCode": "CORP2024",
+        "_comment_business": "=== PROFESSIONAL ===",
+        "website": "https://google.com",
+        "linkedin": "https://google.com",
+        "twitter": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "email": "contact@google.com",
+        "crunchbase": "https://google.com"
+    },
+    {
+        "username": "retail",
+        "fullname": "Retail",
+        "userCode": "RET2024",
+        "_comment_ecommerce": "=== SHOPPING ===",
+        "website": "https://google.com",
+        "amazon": "https://google.com",
+        "flipkart": "https://google.com",
+        "instagram": "https://google.com",
+        "facebook": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "freelancer",
+        "fullname": "Freelancer",
+        "userCode": "FREE2024",
+        "_comment_design": "=== PORTFOLIO ===",
+        "portfolio": "https://google.com",
+        "behance": "https://google.com",
+        "dribbble": "https://google.com",
+        "linkedin": "https://google.com",
+        "fiverr": "https://google.com",
+        "upwork": "https://google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "medical",
+        "fullname": "Medical",
+        "userCode": "MED2024",
+        "_comment_health": "=== HEALTH ===",
+        "website": "https://google.com",
+        "practo": "https://google.com",
+        "phone": "+1234567890",
+        "whatsapp": "https://google.com",
+        "location": "https://google.com",
+        "email": "doctor@google.com",
+        "googleReview": "https://google.com",
+        "calendly": "https://google.com",
+        "certificates": [
+            {
+                "title": "MBBS Degree",
+                "link": "https://google.com"
+            },
+            {
+                "title": "Board Certified",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "education",
+        "fullname": "Education",
+        "userCode": "EDU2024",
+        "_comment_education": "=== EDUCATION ===",
+        "website": "https://google.com",
+        "youtube": "https://google.com",
+        "udemy": "https://google.com",
+        "coursera": "https://google.com",
+        "linkedin": "https://google.com",
+        "instagram": "https://google.com",
+        "facebook": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "email": "info@google.com"
+    },
+    {
+        "username": "realestate",
+        "fullname": "Real Estate",
+        "userCode": "REAL2024",
+        "_comment_business": "=== REAL ESTATE ===",
+        "website": "https://google.com",
+        "location": "https://google.com",
+        "facebook": "https://google.com",
+        "whatsapp": "https://google.com",
+        "youtube": "https://google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "gym",
+        "fullname": "Gym",
+        "userCode": "GYM2024",
+        "_comment_health": "=== FITNESS ===",
+        "website": "https://google.com",
+        "cultfit": "https://google.com",
+        "instagram": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "googleReview": "https://google.com"
+    },
+    {
+        "username": "salon",
+        "fullname": "Salon",
+        "userCode": "SAL2024",
+        "_comment_lifestyle": "=== LIFESTYLE ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "facebook": "https://google.com",
+        "location": "https://google.com",
+        "whatsapp": "https://google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "event",
+        "fullname": "Event",
+        "userCode": "EVT2024",
+        "_comment_social": "=== EVENTS ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "youtube": "https://google.com",
+        "location": "https://google.com",
+        "bookmyshow": "https://google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "student",
+        "fullname": "Student",
+        "userCode": "STU2024",
+        "_comment_education": "=== STUDENT ===",
+        "linkedin": "https://google.com",
+        "github": "https://google.com",
+        "coursera": "https://google.com",
+        "instagram": "https://google.com",
+        "twitter": "https://google.com",
+        "portfolio": "https://google.com",
+        "email": "student@google.com",
+        "phone": "+919876543210",
+        "certificates": [
+            {
+                "title": "Python Programming Certificate",
+                "link": "https://google.com"
+            },
+            {
+                "title": "Data Science Specialization",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "developer",
+        "fullname": "Developer",
+        "userCode": "DEV2024",
+        "_comment_tech": "=== TECH ===",
+        "github": "https://google.com",
+        "stackoverflow": "https://google.com",
+        "linkedin": "https://google.com",
+        "website": "https://google.com",
+        "devto": "https://google.com",
+        "twitter": "https://google.com",
+        "medium": "https://google.com",
+        "email": "dev@google.com",
+        "certificates": [
+            {
+                "title": "AWS Certified Developer",
+                "link": "https://google.com"
+            },
+            {
+                "title": "Google Cloud Professional",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "designer",
+        "fullname": "Designer",
+        "userCode": "DES2024",
+        "_comment_creative": "=== CREATIVE ===",
+        "behance": "https://google.com",
+        "dribbble": "https://google.com",
+        "instagram": "https://google.com",
+        "portfolio": "https://google.com",
+        "linkedin": "https://google.com",
+        "pinterest": "https://google.com"
+    },
+    {
+        "username": "musician",
+        "fullname": "Musician",
+        "userCode": "MUS2024",
+        "_comment_music": "=== MUSIC ===",
+        "spotify": "https://google.com",
+        "soundcloud": "https://google.com",
+        "youtube": "https://google.com",
+        "instagram": "https://google.com",
+        "bandcamp": "https://google.com",
+        "website": "https://google.com"
+    },
+    {
+        "username": "photographer",
+        "fullname": "Photographer",
+        "userCode": "PHOTO2024",
+        "_comment_creative": "=== VISUAL ARTS ===",
+        "instagram": "https://google.com",
+        "flickr": "https://google.com",
+        "unsplash": "https://google.com",
+        "website": "https://google.com",
+        "500px": "https://google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "influencer",
+        "fullname": "Influencer",
+        "userCode": "INF2024",
+        "_comment_social": "=== SOCIAL MEDIA ===",
+        "instagram": "https://google.com",
+        "tiktok": "https://google.com",
+        "youtube": "https://google.com",
+        "snapchat": "https://google.com",
+        "email": "collab@google.com",
+        "linktree": "https://google.com"
+    },
+    {
+        "username": "gamer",
+        "fullname": "Gamer",
+        "userCode": "GAME2024",
+        "_comment_gaming": "=== GAMING ===",
+        "twitch": "https://google.com",
+        "youtube": "https://google.com",
+        "discord": "https://google.com",
+        "steam": "https://google.com",
+        "instagram": "https://google.com",
+        "twitter": "https://google.com"
+    },
+    {
+        "username": "writer",
+        "fullname": "Writer",
+        "userCode": "WRITE2024",
+        "_comment_content": "=== CONTENT ===",
+        "medium": "https://google.com",
+        "substack": "https://google.com",
+        "twitter": "https://google.com",
+        "linkedin": "https://google.com",
+        "website": "https://google.com",
+        "goodreads": "https://google.com"
+    },
+    {
+        "username": "lawyer",
+        "fullname": "Lawyer",
+        "userCode": "LAW2024",
+        "_comment_professional": "=== LEGAL ===",
+        "linkedin": "https://google.com",
+        "website": "https://google.com",
+        "email": "lawyer@google.com",
+        "phone": "+919876543210",
+        "location": "https://google.com",
+        "twitter": "https://google.com"
+    },
+    {
+        "username": "consultant",
+        "fullname": "Consultant",
+        "userCode": "CONS2024",
+        "_comment_business": "=== CONSULTING ===",
+        "linkedin": "https://google.com",
+        "website": "https://google.com",
+        "calendly": "https://google.com",
+        "email": "consult@google.com",
+        "phone": "+919876543210",
+        "zoom": "https://google.com"
+    },
+    {
+        "username": "accountant",
+        "fullname": "Accountant",
+        "userCode": "ACCT2024",
+        "_comment_finance": "=== FINANCE ===",
+        "linkedin": "https://google.com",
+        "website": "https://google.com",
+        "email": "cpa@google.com",
+        "phone": "+919876543210",
+        "location": "https://google.com",
+        "whatsapp": "https://google.com"
+    },
+    {
+        "username": "chef",
+        "fullname": "Chef",
+        "userCode": "CHEF2024",
+        "_comment_food": "=== CULINARY ===",
+        "instagram": "https://google.com",
+        "website": "https://google.com",
+        "youtube": "https://google.com",
+        "email": "chef@google.com",
+        "tiktok": "https://google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "plumber",
+        "fullname": "Plumber",
+        "userCode": "PLUM2024",
+        "_comment_trades": "=== TRADES ===",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "googleReview": "https://google.com",
+        "location": "https://google.com",
+        "website": "https://google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "electrician",
+        "fullname": "Electrician",
+        "userCode": "ELEC2024",
+        "_comment_trades": "=== TRADES ===",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "googleReview": "https://google.com",
+        "location": "https://google.com",
+        "website": "https://google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "mechanic",
+        "fullname": "Mechanic",
+        "userCode": "MECH2024",
+        "_comment_trades": "=== TRADES ===",
+        "phone": "+919876543210",
+        "googleReview": "https://google.com",
+        "location": "https://google.com",
+        "website": "https://google.com",
+        "facebook": "https://google.com",
+        "whatsapp": "https://google.com"
+    },
+    {
+        "username": "petcare",
+        "fullname": "Pet Services",
+        "userCode": "PET2024",
+        "_comment_services": "=== SERVICES ===",
+        "instagram": "https://google.com",
+        "website": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "location": "https://google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "travelagent",
+        "fullname": "Travel Agent",
+        "userCode": "TRAV2024",
+        "_comment_travel": "=== TRAVEL ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "facebook": "https://google.com",
+        "email": "travel@google.com"
+    },
+    {
+        "username": "charity",
+        "fullname": "Charity",
+        "userCode": "NGO2024",
+        "_comment_nonprofit": "=== NON-PROFIT ===",
+        "website": "https://google.com",
+        "donate": "https://google.com",
+        "facebook": "https://google.com",
+        "instagram": "https://google.com",
+        "email": "help@google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "blogger",
+        "fullname": "Blogger",
+        "userCode": "BLOG2024",
+        "_comment_content": "=== CONTENT ===",
+        "wordpress": "https://google.com",
+        "instagram": "https://google.com",
+        "pinterest": "https://google.com",
+        "twitter": "https://google.com",
+        "email": "blog@google.com",
+        "website": "https://google.com"
+    },
+    {
+        "username": "podcaster",
+        "fullname": "Podcaster",
+        "userCode": "POD2024",
+        "_comment_media": "=== MEDIA ===",
+        "spotify": "https://google.com",
+        "applepodcasts": "https://google.com",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "twitter": "https://google.com",
+        "patreon": "https://google.com",
+        "email": "podcast@google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "coach",
+        "fullname": "Coach",
+        "userCode": "COACH2024",
+        "_comment_professional": "=== COACHING ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "calendly": "https://google.com",
+        "linkedin": "https://google.com",
+        "email": "coach@google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "handyman",
+        "fullname": "Handyman",
+        "userCode": "HAND2024",
+        "_comment_trades": "=== TRADES ===",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "googleReview": "https://google.com",
+        "location": "https://google.com",
+        "facebook": "https://google.com",
+        "website": "https://google.com"
+    },
+    {
+        "username": "tutor",
+        "fullname": "Tutor",
+        "userCode": "TUT2024",
+        "_comment_education": "=== TUTOR ===",
+        "website": "https://google.com",
+        "calendly": "https://google.com",
+        "whatsapp": "https://google.com",
+        "email": "tutor@google.com",
+        "phone": "+919876543210",
+        "linkedin": "https://google.com"
+    },
+    {
+        "username": "barber",
+        "fullname": "Barber",
+        "userCode": "BARB2024",
+        "_comment_lifestyle": "=== LIFESTYLE ===",
+        "instagram": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "googleReview": "https://google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "tattooartist",
+        "fullname": "Tattoo Artist",
+        "userCode": "TAT2024",
+        "_comment_creative": "=== ART ===",
+        "instagram": "https://google.com",
+        "portfolio": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "email": "tattoo@google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "florist",
+        "fullname": "Florist",
+        "userCode": "FLO2024",
+        "_comment_business": "=== RETAIL ===",
+        "instagram": "https://google.com",
+        "website": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "location": "https://google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "caterer",
+        "fullname": "Caterer",
+        "userCode": "CAT2024",
+        "_comment_food": "=== CATERING ===",
+        "instagram": "https://google.com",
+        "website": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "email": "catering@google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "bakery",
+        "fullname": "Bakery",
+        "userCode": "BAK2024",
+        "_comment_food": "=== BAKERY ===",
+        "instagram": "https://google.com",
+        "swiggy": "https://google.com",
+        "zomato": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "website": "https://google.com"
+    },
+    {
+        "username": "dentist",
+        "fullname": "Dentist",
+        "userCode": "DENT2024",
+        "_comment_health": "=== DENTAL ===",
+        "practo": "https://google.com",
+        "website": "https://google.com",
+        "phone": "+919876543210",
+        "location": "https://google.com",
+        "googleReview": "https://google.com",
+        "email": "dental@google.com"
+    },
+    {
+        "username": "veterinarian",
+        "fullname": "Veterinarian",
+        "userCode": "VET2024",
+        "_comment_services": "=== PET CARE ===",
+        "website": "https://google.com",
+        "practo": "https://google.com",
+        "phone": "+919876543210",
+        "location": "https://google.com",
+        "instagram": "https://google.com",
+        "googleReview": "https://google.com"
+    },
+    {
+        "username": "yogainstructor",
+        "fullname": "Yoga Instructor",
+        "userCode": "YOGA2024",
+        "_comment_health": "=== WELLNESS ===",
+        "instagram": "https://google.com",
+        "website": "https://google.com",
+        "youtube": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "calendly": "https://google.com"
+    },
+    {
+        "username": "dj",
+        "fullname": "DJ",
+        "userCode": "DJ2024",
+        "_comment_entertainment": "=== ENTERTAINMENT ===",
+        "instagram": "https://google.com",
+        "soundcloud": "https://google.com",
+        "spotify": "https://google.com",
+        "youtube": "https://google.com",
+        "email": "dj@google.com",
+        "phone": "+919876543210"
+    },
+    {
+        "username": "realtor",
+        "fullname": "Realtor",
+        "userCode": "RLTR2024",
+        "_comment_business": "=== REAL ESTATE PROFESSIONAL ===",
+        "website": "https://google.com",
+        "linkedin": "https://google.com",
+        "instagram": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "email": "realtor@google.com",
+        "facebook": "https://google.com"
+    },
+    {
+        "username": "school",
+        "fullname": "School",
+        "userCode": "SCHOOL2024",
+        "_comment_education": "=== EDUCATIONAL INSTITUTION ===",
+        "website": "https://google.com",
+        "facebook": "https://google.com",
+        "instagram": "https://google.com",
+        "youtube": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "email": "admissions@google.com",
+        "googleReview": "https://google.com",
+        "certificates": [
+            {
+                "title": "ISO 9001:2015 Certified",
+                "link": "https://google.com"
+            },
+            {
+                "title": "CBSE Affiliation",
+                "link": "https://google.com"
+            },
+            {
+                "title": "Green School Award 2024",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "university",
+        "fullname": "University",
+        "userCode": "UNI2024",
+        "_comment_education": "=== HIGHER EDUCATION ===",
+        "website": "https://google.com",
+        "linkedin": "https://google.com",
+        "twitter": "https://google.com",
+        "facebook": "https://google.com",
+        "instagram": "https://google.com",
+        "youtube": "https://google.com",
+        "location": "https://google.com",
+        "email": "info@google.com",
+        "phone": "+919876543210",
+        "certificates": [
+            {
+                "title": "NAAC A++ Accreditation",
+                "link": "https://google.com"
+            },
+            {
+                "title": "UGC Approved",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "library",
+        "fullname": "Library",
+        "userCode": "LIB2024",
+        "_comment_education": "=== PUBLIC LIBRARY ===",
+        "website": "https://google.com",
+        "facebook": "https://google.com",
+        "instagram": "https://google.com",
+        "twitter": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "email": "library@google.com",
+        "goodreads": "https://google.com"
+    },
+    {
+        "username": "architect",
+        "fullname": "Architect",
+        "userCode": "ARCH2024",
+        "_comment_professional": "=== ARCHITECTURE ===",
+        "website": "https://google.com",
+        "behance": "https://google.com",
+        "instagram": "https://google.com",
+        "linkedin": "https://google.com",
+        "pinterest": "https://google.com",
+        "email": "architect@google.com",
+        "phone": "+919876543210",
+        "location": "https://google.com",
+        "certificates": [
+            {
+                "title": "Registered Architect",
+                "link": "https://google.com"
+            },
+            {
+                "title": "LEED Certified Professional",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "interiordesigner",
+        "fullname": "Interior Designer",
+        "userCode": "INTD2024",
+        "_comment_creative": "=== INTERIOR DESIGN ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "pinterest": "https://google.com",
+        "behance": "https://google.com",
+        "houzz": "https://google.com",
+        "facebook": "https://google.com",
+        "phone": "+919876543210",
+        "email": "design@google.com",
+        "whatsapp": "https://google.com"
+    },
+    {
+        "username": "nutritionist",
+        "fullname": "Nutritionist",
+        "userCode": "NUT2024",
+        "_comment_health": "=== NUTRITION ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "practo": "https://google.com",
+        "calendly": "https://google.com",
+        "phone": "+919876543210",
+        "email": "nutrition@google.com",
+        "whatsapp": "https://google.com",
+        "youtube": "https://google.com",
+        "certificates": [
+            {
+                "title": "Certified Nutritionist",
+                "link": "https://google.com"
+            },
+            {
+                "title": "Sports Nutrition Specialist",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "psychologist",
+        "fullname": "Psychologist",
+        "userCode": "PSY2024",
+        "_comment_health": "=== MENTAL HEALTH ===",
+        "website": "https://google.com",
+        "practo": "https://google.com",
+        "calendly": "https://google.com",
+        "linkedin": "https://google.com",
+        "phone": "+919876543210",
+        "email": "therapy@google.com",
+        "location": "https://google.com",
+        "certificates": [
+            {
+                "title": "Licensed Clinical Psychologist",
+                "link": "https://google.com"
+            },
+            {
+                "title": "CBT Certified",
+                "link": "https://google.com"
+            }
+        ]
+    },
+    {
+        "username": "hotel",
+        "fullname": "Hotel",
+        "userCode": "HOTEL2024",
+        "_comment_hospitality": "=== HOSPITALITY ===",
+        "website": "https://google.com",
+        "booking": "https://google.com",
+        "tripadvisor": "https://google.com",
+        "instagram": "https://google.com",
+        "facebook": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "email": "reservations@google.com",
+        "googleReview": "https://google.com"
+    },
+    {
+        "username": "coffeeshop",
+        "fullname": "Coffee Shop",
+        "userCode": "CAFE2024",
+        "_comment_food": "=== CAFE ===",
+        "instagram": "https://google.com",
+        "zomato": "https://google.com",
+        "swiggy": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "googleReview": "https://google.com",
+        "facebook": "https://google.com",
+        "website": "https://google.com"
+    },
+    {
+        "username": "cardealer",
+        "fullname": "Auto Dealer",
+        "userCode": "AUTO2024",
+        "_comment_automotive": "=== AUTOMOTIVE ===",
+        "website": "https://google.com",
+        "facebook": "https://google.com",
+        "instagram": "https://google.com",
+        "youtube": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "email": "sales@google.com",
+        "googleReview": "https://google.com"
+    },
+    {
+        "username": "jeweler",
+        "fullname": "Jeweler",
+        "userCode": "JEW2024",
+        "_comment_retail": "=== JEWELRY ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "facebook": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "whatsapp": "https://google.com",
+        "googleReview": "https://google.com",
+        "pinterest": "https://google.com"
+    },
+    {
+        "username": "bookstore",
+        "fullname": "Book Store",
+        "userCode": "BOOK2024",
+        "_comment_retail": "=== BOOKS ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "facebook": "https://google.com",
+        "goodreads": "https://google.com",
+        "location": "https://google.com",
+        "phone": "+919876543210",
+        "email": "books@google.com",
+        "amazon": "https://google.com"
+    },
+    {
+        "username": "sportsteam",
+        "fullname": "Sports Team",
+        "userCode": "SPORT2024",
+        "_comment_sports": "=== SPORTS ===",
+        "website": "https://google.com",
+        "instagram": "https://google.com",
+        "twitter": "https://google.com",
+        "facebook": "https://google.com",
+        "youtube": "https://google.com",
+        "tiktok": "https://google.com",
+        "email": "team@google.com"
+    },
+    {
+        "username": "newsagency",
+        "fullname": "News Agency",
+        "userCode": "NEWS2024",
+        "_comment_media": "=== NEWS & MEDIA ===",
+        "website": "https://google.com",
+        "twitter": "https://google.com",
+        "facebook": "https://google.com",
+        "instagram": "https://google.com",
+        "youtube": "https://google.com",
+        "linkedin": "https://google.com",
+        "email": "news@google.com"
+    }
+]

@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit User - MultiLink QR Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1 id="formTitle">✏️ Add New User</h1>
+      <p class="subtitle">Fill in the platforms you use - leave others blank</p>
+      <div id="adminLinks" class="admin-links hidden">
+        <a href="index.html" class="btn-secondary">
+          <span>🏠</span> Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <form id="userForm">
+      <!-- Basic Info -->
+      <div class="form-section basic-info">
+        <h3>📝 Basic Information <span class="platform-count">Required</span></h3>
+        <input type="text" id="username" placeholder="Username (e.g., john-doe)" required>
+        <small class="form-hint">💡 Multiple users can have the same username - User Code makes each one unique</small>
+        <input type="text" id="fullname" placeholder="Full Name" required>
+        <input type="text" id="userCode" placeholder="User Code (auto-generated)" readonly class="readonly-input">
+        <small class="form-note">🔒 User Code is auto-generated and ensures uniqueness - This is what makes each user
+          unique!</small>
+
+        <label for="description" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📝
+          Internal Description (Admin Only)</label>
+        <textarea id="description"
+          placeholder="Add notes about this client (e.g., Business type, contact details source, special requirements). This will NOT be shown on their public profile."
+          rows="3"
+          style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; resize: vertical;"></textarea>
+      </div>
+
+      <!-- Professional & Business Networks -->
+      <div class="form-section" class="form-section professional">
+        <h3>💼 Professional & Business Networks <span class="platform-count">5</span></h3>
+        <small>Professional networking and career platforms</small>
+        <input type="url" id="linkedin" placeholder="LinkedIn - https://linkedin.com/in/username">
+        <input type="url" id="xing" placeholder="Xing - https://xing.com/profile/username">
+        <input type="url" id="angellist" placeholder="AngelList - https://angel.co/username">
+        <input type="url" id="meetup" placeholder="Meetup - https://meetup.com/members/username">
+        <input type="url" id="opportunity" placeholder="Opportunity - https://opportunity.com/username">
+
+        <div id="professional-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('professional', '💼 Professional')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Creative & Design Portfolios -->
+      <div class="form-section" class="form-section design">
+        <h3>🎨 Creative & Design Portfolios <span class="platform-count">6</span></h3>
+        <small>Showcase your creative work</small>
+        <input type="url" id="behance" placeholder="Behance - https://behance.net/username">
+        <input type="url" id="dribbble" placeholder="Dribbble - https://dribbble.com/username">
+        <input type="url" id="figma" placeholder="Figma - https://figma.com/@username">
+        <input type="url" id="portfolio" placeholder="Portfolio - Your personal portfolio URL">
+        <input type="url" id="artstation" placeholder="ArtStation - https://artstation.com/username">
+        <input type="url" id="zerply" placeholder="Zerply - https://zerply.com/username">
+
+        <div id="design-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('design', '🎨 Design')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Social Media -->
+      <div class="form-section" class="form-section social">
+        <h3>📱 Social Media Platforms <span class="platform-count">6</span></h3>
+        <small>Popular social networking sites</small>
+        <input type="url" id="instagram" placeholder="Instagram - https://instagram.com/username">
+        <input type="url" id="twitter" placeholder="Twitter/X - https://twitter.com/username">
+        <input type="url" id="facebook" placeholder="Facebook - https://facebook.com/username">
+        <input type="url" id="threads" placeholder="Threads - https://threads.net/@username">
+        <input type="url" id="mastodon" placeholder="Mastodon - https://mastodon.social/@username">
+        <input type="url" id="bluesky" placeholder="BlueSky - https://bsky.app/profile/username">
+
+        <div id="social-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('social', '📱 Social')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Video Platforms -->
+      <div class="form-section" class="form-section video">
+        <h3>🎥 Video Platforms <span class="platform-count">6</span></h3>
+        <small>Video sharing and live streaming</small>
+        <input type="url" id="youtube" placeholder="YouTube - https://youtube.com/@username">
+        <input type="url" id="tiktok" placeholder="TikTok - https://tiktok.com/@username">
+        <input type="url" id="vimeo" placeholder="Vimeo - https://vimeo.com/username">
+        <input type="url" id="twitch" placeholder="Twitch - https://twitch.tv/username">
+        <input type="url" id="rumble" placeholder="Rumble - https://rumble.com/c/username">
+        <input type="url" id="dailymotion" placeholder="Dailymotion - https://dailymotion.com/username">
+
+        <div id="video-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('video', '🎥 Video')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Music & Audio -->
+      <div class="form-section" class="form-section music">
+        <h3>🎵 Music & Audio Platforms <span class="platform-count">4</span></h3>
+        <small>Music streaming and audio content</small>
+        <input type="url" id="spotify" placeholder="Spotify - Artist or Playlist URL">
+        <input type="url" id="soundcloud" placeholder="SoundCloud - https://soundcloud.com/username">
+        <input type="url" id="applemusic" placeholder="Apple Music - Artist URL">
+        <input type="url" id="bandcamp" placeholder="Bandcamp - https://username.bandcamp.com">
+
+        <div id="music-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('music', '🎵 Music')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Developer Platforms -->
+      <div class="form-section" class="form-section developer">
+        <h3>💻 Developer & Tech Communities <span class="platform-count">6</span></h3>
+        <small>Code repositories and developer communities</small>
+        <input type="url" id="github" placeholder="GitHub - https://github.com/username">
+        <input type="url" id="gitlab" placeholder="GitLab - https://gitlab.com/username">
+        <input type="url" id="bitbucket" placeholder="Bitbucket - https://bitbucket.org/username">
+        <input type="url" id="stackoverflow" placeholder="Stack Overflow - Profile URL">
+        <input type="url" id="devto" placeholder="Dev.to - https://dev.to/username">
+        <input type="url" id="codepen" placeholder="CodePen - https://codepen.io/username">
+
+        <div id="developer-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('developer', '💻 Developer')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Messaging & Communication -->
+      <div class="form-section" class="form-section messaging">
+        <h3>💬 Messaging & Communication <span class="platform-count">10</span></h3>
+        <small>Instant messaging and communication apps</small>
+        <input type="url" id="whatsapp" placeholder="WhatsApp - https://wa.me/phonenumber">
+        <input type="url" id="telegram" placeholder="Telegram - https://t.me/username">
+        <input type="url" id="discord" placeholder="Discord - https://discord.gg/serverinvite or username#0000">
+        <input type="url" id="signal" placeholder="Signal - Signal username or phone">
+        <input type="url" id="skype" placeholder="Skype - Skype username or link">
+        <input type="url" id="slack" placeholder="Slack - Workspace or Profile URL">
+        <input type="url" id="wechat" placeholder="WeChat - WeChat ID">
+        <input type="url" id="line" placeholder="LINE - LINE ID or https://line.me/ti/p/username">
+        <input type="url" id="viber" placeholder="Viber - Viber username or link">
+        <input type="url" id="messenger" placeholder="Messenger - https://m.me/username">
+
+        <div id="messaging-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('messaging', '💬 Messaging')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Gaming Platforms -->
+      <div class="form-section" class="form-section gaming">
+        <h3>🎮 Gaming Platforms <span class="platform-count">7</span></h3>
+        <small>Gaming networks and profiles</small>
+        <input type="url" id="steam" placeholder="Steam - https://steamcommunity.com/id/username">
+        <input type="url" id="xbox" placeholder="Xbox - Gamertag or Profile URL">
+        <input type="url" id="playstation" placeholder="PlayStation - PSN ID or Profile URL">
+        <input type="url" id="nintendo" placeholder="Nintendo - Friend Code or Profile">
+        <input type="url" id="dream11" placeholder="Dream11 - https://dream11.com/profile/username">
+        <input type="url" id="mpl" placeholder="MPL - https://mpl.live/profile/username">
+        <input type="url" id="winzo" placeholder="WinZO - https://winzo.com/profile/username">
+
+        <div id="gaming-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('gaming', '🎮 Gaming')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Creator & Monetization -->
+      <div class="form-section" class="form-section creator">
+        <h3>💰 Creator & Monetization <span class="platform-count">4</span></h3>
+        <small>Support and subscription platforms</small>
+        <input type="url" id="patreon" placeholder="Patreon - https://patreon.com/username">
+        <input type="url" id="kofi" placeholder="Ko-fi - https://ko-fi.com/username">
+        <input type="url" id="buymeacoffee" placeholder="Buy Me a Coffee - https://buymeacoffee.com/username">
+        <input type="url" id="substack" placeholder="Substack - https://username.substack.com">
+
+        <div id="creator-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('creator', '💰 Creator')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- E-commerce & Shopping -->
+      <div class="form-section" class="form-section ecommerce">
+        <h3>🛒 E-Commerce & Shopping <span class="platform-count">10</span></h3>
+        <small>Online stores and marketplaces</small>
+        <input type="url" id="etsy" placeholder="Etsy - https://etsy.com/shop/shopname">
+        <input type="url" id="amazon" placeholder="Amazon - Store or Author Page URL">
+        <input type="url" id="shopify" placeholder="Shopify - https://yourstore.myshopify.com">
+        <input type="url" id="flipkart" placeholder="Flipkart - https://flipkart.com/shop/shopname">
+        <input type="url" id="myntra" placeholder="Myntra - https://myntra.com/shop/shopname">
+        <input type="url" id="meesho" placeholder="Meesho - https://meesho.com/shop/shopname">
+        <input type="url" id="nykaa" placeholder="Nykaa - https://nykaa.com/shop/shopname">
+        <input type="url" id="bigbasket" placeholder="BigBasket - https://bigbasket.com/shop/shopname">
+        <input type="url" id="blinkit" placeholder="Blinkit - https://blinkit.com/shop/shopname">
+        <input type="url" id="zepto" placeholder="Zepto - https://zepto.com/shop/shopname">
+
+        <div id="ecommerce-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('ecommerce', '🛍 E-commerce')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Photography & Visual Arts -->
+      <div class="form-section" class="form-section photography">
+        <h3>📷 Photography & Visual Arts <span class="platform-count">3</span></h3>
+        <small>Photo sharing and portfolio sites</small>
+        <input type="url" id="flickr" placeholder="Flickr - https://flickr.com/photos/username">
+        <input type="url" id="500px" placeholder="500px - https://500px.com/p/username">
+        <input type="url" id="unsplash" placeholder="Unsplash - https://unsplash.com/@username">
+
+        <div id="photography-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('photography', '📷 Photography')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Blogging & Writing -->
+      <div class="form-section" class="form-section blogging">
+        <h3>✍️ Blogging & Writing <span class="platform-count">3</span></h3>
+        <small>Blog and writing platforms</small>
+        <input type="url" id="medium" placeholder="Medium - https://medium.com/@username">
+        <input type="url" id="wordpress" placeholder="WordPress - https://username.wordpress.com">
+        <input type="url" id="blogger" placeholder="Blogger - https://username.blogspot.com">
+
+        <div id="blogging-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('blogging', '✍️ Blogging')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Other Social Platforms -->
+      <div class="form-section" class="form-section misc-social">
+        <h3>🌐 Other Social Platforms <span class="platform-count">17</span></h3>
+        <small>Additional social networks and trending platforms</small>
+        <input type="url" id="pinterest" placeholder="Pinterest - https://pinterest.com/username">
+        <input type="url" id="reddit" placeholder="Reddit - https://reddit.com/user/username">
+        <input type="url" id="snapchat" placeholder="Snapchat - https://snapchat.com/add/username">
+        <input type="url" id="tumblr" placeholder="Tumblr - https://username.tumblr.com">
+        <input type="url" id="bereal" placeholder="BeReal - https://bere.al/username">
+        <input type="url" id="clubhouse" placeholder="Clubhouse - https://clubhouse.com/@username">
+        <input type="url" id="nextdoor" placeholder="Nextdoor - https://nextdoor.com/p/username">
+        <input type="url" id="strava" placeholder="Strava - https://strava.com/athletes/username">
+        <input type="url" id="sharechat" placeholder="ShareChat - https://sharechat.com/profile/username">
+        <input type="url" id="moj" placeholder="Moj - https://moj.com/@username">
+        <input type="url" id="josh" placeholder="Josh - https://josh.com/@username">
+        <input type="url" id="koo" placeholder="Koo - https://kooapp.com/profile/username">
+        <input type="url" id="mxtakatak" placeholder="MX TakaTak - https://mxtakatak.com/@username">
+        <input type="url" id="vk" placeholder="VK - https://vk.com/username">
+        <input type="url" id="ok" placeholder="OK.ru - https://ok.ru/username">
+        <input type="url" id="kakaotalk" placeholder="Kakao Talk - Kakao ID">
+        <input type="url" id="quora" placeholder="Quora - https://quora.com/profile/username">
+
+        <div id="miscSocial-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('miscSocial', '🌐 Other Social')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Productivity & Tools -->
+      <div class="form-section" class="form-section productivity">
+        <h3>🔧 Productivity & Tools <span class="platform-count">3</span></h3>
+        <small>Useful tools and link aggregators</small>
+        <input type="url" id="linktree" placeholder="Linktree - https://linktr.ee/username">
+        <input type="url" id="notion" placeholder="Notion - Public Page URL">
+        <input type="url" id="calendly" placeholder="Calendly - https://calendly.com/username">
+
+        <div id="productivity-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('productivity', '🔧 Productivity')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Payment & Donation Platforms -->
+      <div class="form-section payment">
+        <h3>💳 Payment & Donation Platforms <span class="platform-count">15</span></h3>
+        <small>Payment links and UPI IDs. For multiple UPI IDs, separate with commas (e.g., id1@bank, id2@bank)</small>
+        <input type="url" id="paypal" placeholder="PayPal - https://paypal.me/username">
+
+        <div class="upi-input-group">
+          <input type="text" id="gpay" placeholder="Google Pay UPI ID(s) - username@okaxis, username@paytm">
+          <button type="button" class="add-upi-btn" data-target="gpay" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="phonepe" placeholder="PhonePe UPI ID(s) - username@ybl, username@upi">
+          <button type="button" class="add-upi-btn" data-target="phonepe" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="paytm" placeholder="PayTM UPI ID(s) - username@paytm">
+          <button type="button" class="add-upi-btn" data-target="paytm" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="upi" placeholder="UPI ID(s) - username@bankname, username@paytm">
+          <button type="button" class="add-upi-btn" data-target="upi" title="Add another UPI ID">+</button>
+        </div>
+
+        <input type="url" id="cashapp" placeholder="Cash App - https://cash.app/$username">
+        <input type="url" id="razorpay" placeholder="Razorpay - https://razorpay.me/@username">
+        <input type="url" id="cred" placeholder="CRED - https://cred.club/username">
+        <input type="url" id="mobikwik" placeholder="MobiKwik - https://mobikwik.com/username">
+        <input type="url" id="freecharge" placeholder="Freecharge - https://freecharge.in/username">
+        <input type="url" id="bhim" placeholder="BHIM - UPI ID or link">
+        <input type="url" id="amazonpay" placeholder="Amazon Pay - https://amazon.in/pay/username">
+        <input type="url" id="navi" placeholder="Navi - https://navi.com/username">
+        <input type="url" id="jupiter" placeholder="Jupiter - https://jupiter.money/username">
+        <input type="url" id="jiofinance" placeholder="JioFinance - https://jiofinance.in/username">
+
+        <div id="payment-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('payment', '💳 Payment')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Business & Professional Tools -->
+      <div class="form-section business">
+        <h3>🏢 Business & Professional Tools <span class="platform-count">4</span></h3>
+        <small>Business analytics and professional resources</small>
+        <input type="url" id="crunchbase" placeholder="Crunchbase - https://crunchbase.com/person/username">
+        <input type="url" id="glassdoor" placeholder="Glassdoor - https://glassdoor.com/profile/username">
+        <input type="url" id="indeed" placeholder="Indeed - https://indeed.com/profile/username">
+        <input type="url" id="naukri" placeholder="Naukri - https://naukri.com/profile/username">
+
+        <div id="business-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('business', '🏢 Business')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Education & Learning -->
+      <div class="form-section education">
+        <h3>🎓 Education & Learning <span class="platform-count">9</span></h3>
+        <small>Educational and learning platforms</small>
+        <input type="url" id="coursera" placeholder="Coursera - https://coursera.org/user/username">
+        <input type="url" id="udemy" placeholder="Udemy - https://udemy.com/user/username">
+        <input type="url" id="skillshare" placeholder="Skillshare - https://skillshare.com/user/username">
+        <input type="url" id="khanacademy" placeholder="Khan Academy - https://khanacademy.org/profile/username">
+        <input type="url" id="byjus" placeholder="BYJU'S - https://byjus.com/profile/username">
+        <input type="url" id="unacademy" placeholder="Unacademy - https://unacademy.com/@username">
+        <input type="url" id="vedantu" placeholder="Vedantu - https://vedantu.com/profile/username">
+        <input type="url" id="upgrad" placeholder="upGrad - https://upgrad.com/profile/username">
+        <input type="url" id="physicswallah" placeholder="PhysicsWallah - https://pw.live/@username">
+
+        <div id="education-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('education', '🎓 Education')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Certificates & Credentials -->
+      <div class="form-section certificates">
+        <h3>🎓 Certificates & Credentials <span class="platform-count" id="cert-count">0</span></h3>
+        <small>Add your certificates, credentials, and achievements with custom titles</small>
+
+        <div id="certificates-container">
+          <!-- Certificate entries will be added here dynamically -->
+        </div>
+
+        <button type="button" class="add-certificate-btn" onclick="addCertificateEntry()">
+          ➕ Add Certificate
+        </button>
+      </div>
+
+      <!-- Business Services & Pricing -->
+      <div class="form-section pricing">
+        <h3>💼 Business Services & Pricing <span class="platform-count">1</span></h3>
+        <small>Share your price lists, service menus, rate cards, and pricing charts (for any business type)</small>
+        <input type="url" id="pricelist" placeholder="Price List / Service Menu - https://yourpricing.com">
+
+        <div id="pricing-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('pricing', '💼 Pricing')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Food & Dining -->
+      <div class="form-section food">
+        <h3>🍔 Food & Dining <span class="platform-count">9</span></h3>
+        <small>Food delivery, restaurant platforms, and grocery delivery</small>
+        <input type="url" id="swiggy" placeholder="Swiggy - https://swiggy.com/restaurants/username">
+        <input type="url" id="zomato" placeholder="Zomato - https://zomato.com/username">
+        <input type="url" id="dineout" placeholder="Dineout - https://dineout.co.in/restaurant/username">
+        <input type="url" id="eatsure" placeholder="EatSure - https://eatsure.com/restaurant/username">
+        <input type="url" id="magicpin" placeholder="Magicpin - https://magicpin.in/username">
+        <input type="url" id="jiomart" placeholder="JioMart - https://jiomart.com/shop/username">
+        <input type="url" id="swiggyinstamart" placeholder="Swiggy Instamart - https://swiggy.com/instamart/username">
+        <input type="url" id="dunzo" placeholder="Dunzo - https://dunzo.com/shop/username">
+        <input type="url" id="menucard" placeholder="Menu Card - https://yourdigitalmenu.com">
+
+        <div id="food-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('food', '🍔 Food')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Ride & Transportation -->
+      <div class="form-section transportation">
+        <h3>🚗 Ride & Transportation <span class="platform-count">4</span></h3>
+        <small>Ride-hailing and transportation services</small>
+        <input type="url" id="ola" placeholder="Ola - https://ola.com/profile/username">
+        <input type="url" id="uber" placeholder="Uber - https://uber.com/profile/username">
+        <input type="url" id="rapido" placeholder="Rapido - https://rapido.bike/profile/username">
+        <input type="url" id="porter" placeholder="Porter - https://porter.in/profile/username">
+
+        <div id="transportation-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn"
+          onclick="addCustomLink('transportation', '🚗 Transportation')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Travel & Hospitality -->
+      <div class="form-section travel">
+        <h3>✈️ Travel & Hospitality <span class="platform-count">5</span></h3>
+        <small>Travel booking and hotel platforms</small>
+        <input type="url" id="makemytrip" placeholder="MakeMyTrip - https://makemytrip.com/profile/username">
+        <input type="url" id="goibibo" placeholder="Goibibo - https://goibibo.com/profile/username">
+        <input type="url" id="oyo" placeholder="OYO - https://oyorooms.com/profile/username">
+        <input type="url" id="cleartrip" placeholder="Cleartrip - https://cleartrip.com/profile/username">
+        <input type="url" id="ixigo" placeholder="Ixigo - https://ixigo.com/profile/username">
+
+        <div id="travel-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('travel', '✈️ Travel')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Health & Wellness -->
+      <div class="form-section health">
+        <h3>🏥 Health & Wellness <span class="platform-count">4</span></h3>
+        <small>Healthcare and wellness platforms</small>
+        <input type="url" id="practo" placeholder="Practo - https://practo.com/doctor/username">
+        <input type="url" id="onemg" placeholder="1mg - https://1mg.com/doctor/username">
+        <input type="url" id="pharmeasy" placeholder="PharmEasy - https://pharmeasy.in/doctor/username">
+        <input type="url" id="cultfit" placeholder="Cult.fit - https://cult.fit/profile/username">
+
+        <div id="health-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('health', '🏥 Health')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Entertainment & OTT -->
+      <div class="form-section ott">
+        <h3>🎬 Entertainment & OTT <span class="platform-count">8</span></h3>
+        <small>Streaming platforms and entertainment services</small>
+        <input type="url" id="jiocinema" placeholder="JioCinema - https://jiocinema.com/profile/username">
+        <input type="url" id="hotstar" placeholder="Hotstar - https://hotstar.com/profile/username">
+        <input type="url" id="netflix" placeholder="Netflix - https://netflix.com/profile/username">
+        <input type="url" id="primevideo" placeholder="Prime Video - https://primevideo.com/profile/username">
+        <input type="url" id="sonyliv" placeholder="Sony LIV - https://sonyliv.com/profile/username">
+        <input type="url" id="zee5" placeholder="ZEE5 - https://zee5.com/profile/username">
+        <input type="url" id="mxplayer" placeholder="MX Player - https://mxplayer.in/profile/username">
+        <input type="url" id="imdb" placeholder="IMDb - https://imdb.com/name/username">
+
+        <div id="ott-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('ott', '🎬 OTT')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Books & Reading -->
+      <div class="form-section books">
+        <h3>📚 Books & Reading <span class="platform-count">1</span></h3>
+        <small>Book lovers and reading communities</small>
+        <input type="url" id="goodreads" placeholder="Goodreads - https://goodreads.com/user/show/username">
+
+        <div id="books-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('books', '📚 Books')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="form-section contact">
+        <h3>📞 Contact Information <span class="platform-count">6</span></h3>
+        <small>Essential contact details. For multiple emails/phone numbers, separate with commas (e.g.,
+          email1@domain.com, email2@domain.com)</small>
+
+        <div class="upi-input-group">
+          <input type="text" id="email" placeholder="Email Address(es) - user@example.com, user@gmail.com"
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}([,\|\s]+[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})*"
+            title="Enter email addresses separated by commas">
+          <button type="button" class="add-upi-btn" data-target="email" title="Add another email address">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="phone" placeholder="Phone Number(s) - +1234567890, +1987654321"
+            pattern="[\+]?[0-9]+([,\|\s]+[\+]?[0-9]+)*" title="Enter phone numbers separated by commas">
+          <button type="button" class="add-upi-btn" data-target="phone" title="Add another phone number">+</button>
+        </div>
+
+        <input type="url" id="website" placeholder="Website - https://yourwebsite.com">
+        <input type="url" id="businesscard" placeholder="Business Card - https://yourbusinesscard.com">
+        <input type="text" id="location" placeholder="Location - City, Country or Google Maps link">
+        <input type="url" id="googleReview" placeholder="Google Review Link - https://maps.app.goo.gl/.../review">
+
+        <div id="contact-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('contact', '📞 Contact')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
+      <div class="form-section"
+        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <label
+            style="display: flex; align-items: center; gap: 12px; cursor: pointer; color: white; font-weight: 500; flex: 1;">
+            <input type="checkbox" id="includeAllFields" checked
+              style="width: 20px; height: 20px; cursor: pointer; accent-color: #4CAF50;">
+            <div>
+              <div style="font-size: 15px; margin-bottom: 4px;">📋 Include all fields in JSON output</div>
+              <div style="font-size: 12px; opacity: 0.9;">Uncheck to show only fields with values (cleaner output)</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">💾 Save User</button>
+        <button type="button" class="btn-secondary" id="backBtn">← Back to Dashboard</button>
+      </div>
+    </form>
+
+    <div id="output" class="output-box hidden">
+      <h3>✅ Copy this JSON and add to <span id="targetDataFile">data/clients.json</span>:</h3>
+      <textarea id="jsonOutput" readonly placeholder="User JSON data will appear here..."></textarea>
+      <button class="btn-primary" id="copyBtn">📋 Copy to Clipboard</button>
+    </div>
+  </div>
+
+  <script>
+    // All supported platforms grouped by category
+    const platformGroups = {
+      professional: ['linkedin', 'xing', 'angellist', 'meetup', 'opportunity'],
+      design: ['behance', 'dribbble', 'figma', 'portfolio', 'artstation', 'zerply'],
+      social: ['instagram', 'twitter', 'facebook', 'threads', 'mastodon', 'bluesky'],
+      video: ['youtube', 'tiktok', 'vimeo', 'twitch', 'rumble', 'dailymotion'],
+      music: ['spotify', 'soundcloud', 'applemusic', 'bandcamp'],
+      developer: ['github', 'gitlab', 'bitbucket', 'stackoverflow', 'devto', 'codepen'],
+      messaging: ['whatsapp', 'telegram', 'discord', 'signal', 'skype', 'slack', 'wechat', 'line', 'viber', 'messenger'],
+      gaming: ['steam', 'xbox', 'playstation', 'nintendo', 'dream11', 'mpl', 'winzo'],
+      creator: ['patreon', 'kofi', 'buymeacoffee', 'substack'],
+      ecommerce: ['etsy', 'amazon', 'shopify', 'flipkart', 'myntra', 'meesho', 'nykaa', 'bigbasket', 'blinkit', 'zepto'],
+      photography: ['flickr', '500px', 'unsplash'],
+      blogging: ['medium', 'wordpress', 'blogger'],
+      miscSocial: ['pinterest', 'reddit', 'snapchat', 'tumblr', 'bereal', 'clubhouse', 'nextdoor', 'strava', 'sharechat', 'moj', 'josh', 'koo', 'mxtakatak', 'vk', 'ok', 'kakaotalk', 'quora'],
+      productivity: ['linktree', 'notion', 'calendly'],
+      payment: ['paypal', 'gpay', 'phonepe', 'paytm', 'upi', 'cashapp', 'razorpay', 'cred', 'mobikwik', 'freecharge', 'bhim', 'amazonpay', 'navi', 'jupiter', 'jiofinance'],
+      business: ['crunchbase', 'glassdoor', 'indeed', 'naukri'],
+      education: ['coursera', 'udemy', 'skillshare', 'khanacademy', 'byjus', 'unacademy', 'vedantu', 'upgrad', 'physicswallah'],
+      pricing: ['pricelist'],
+      food: ['swiggy', 'zomato', 'dineout', 'eatsure', 'magicpin', 'jiomart', 'swiggyinstamart', 'dunzo', 'menucard'],
+      transportation: ['ola', 'uber', 'rapido', 'porter'],
+      travel: ['makemytrip', 'goibibo', 'oyo', 'cleartrip', 'ixigo'],
+      health: ['practo', 'onemg', 'pharmeasy', 'cultfit'],
+      ott: ['jiocinema', 'hotstar', 'netflix', 'primevideo', 'sonyliv', 'zee5', 'mxplayer', 'imdb'],
+      books: ['goodreads'],
+      contact: ['email', 'phone', 'website', 'businesscard', 'location', 'googleReview']
+    };
+
+    // Flatten all platforms into one array
+    const allPlatforms = Object.values(platformGroups).flat();
+
+    // Generate random code (internal helper)
+    function generateRandomCode() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const year = new Date().getFullYear();
+      let code = '';
+      for (let i = 0; i < 8; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `${year}${code}`;
+    }
+
+    // Generate unique user code (checks against existing codes)
+    async function generateUniqueUserCode() {
+      try {
+        // List of data files to check for existing codes
+        const dataFiles = [
+          './data/personal.json',
+          './data/clients.json',
+          './data/demo.json',
+          // Add more files here as needed: './data/users_location2.json', etc.
+        ];
+
+        const allUsers = [];
+
+        // Load users from all files to check for duplicates
+        for (const file of dataFiles) {
+          try {
+            const res = await fetch(file);
+            if (res.ok) {
+              const users = await res.json();
+              allUsers.push(...users);
+            }
+          } catch (fileErr) {
+            console.log(`⚠️ Error loading ${file} for code check:`, fileErr.message);
+            // Continue loading other files
+          }
+        }
+
+        const existingCodes = allUsers.map(u => u.userCode).filter(c => c);
+
+        // Keep generating until we get a unique code
+        let code = generateRandomCode();
+        let attempts = 0;
+        const maxAttempts = 100; // Prevent infinite loop
+
+        while (existingCodes.includes(code) && attempts < maxAttempts) {
+          console.log(`Code ${code} already exists, generating new one...`);
+          code = generateRandomCode();
+          attempts++;
+        }
+
+        if (attempts >= maxAttempts) {
+          console.warn('Max attempts reached, using timestamp suffix');
+          code = generateRandomCode() + Date.now().toString().slice(-3);
+        }
+
+        console.log(`✅ Generated unique code: ${code}`);
+        return code;
+      } catch (err) {
+        console.error('Error checking existing codes:', err);
+        // Fallback: generate with timestamp to ensure uniqueness
+        return generateRandomCode() + Date.now().toString().slice(-3);
+      }
+    }
+
+    // Auto-generate user code on page load (for new users)
+    window.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('user');
+
+      // Only generate if it's a new user (no username in URL)
+      if (!username) {
+        const uniqueCode = await generateUniqueUserCode();
+        document.getElementById('userCode').value = uniqueCode;
+      }
+    });
+
+    // Load existing user for editing
+    async function loadUser() {
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('user');
+      const userCode = params.get('code');
+      if (!username) return;
+
+      try {
+        // List of data files to search
+        const dataFiles = [
+          './data/personal.json',
+          './data/clients.json',
+          './data/demo.json',
+          // Add more files here as needed: './data/users_location2.json', etc.
+        ];
+
+        let user = null;
+
+        // Search for user across all data files
+        for (const file of dataFiles) {
+          try {
+            const res = await fetch(file);
+            if (res.ok) {
+              const users = await res.json();
+
+              // Find user by both username AND userCode (handles duplicate usernames)
+              if (userCode) {
+                // If userCode provided, match both username and code
+                user = users.find(u => u.username === username && u.userCode === userCode);
+              } else {
+                // Fallback: match by username only (for backward compatibility)
+                user = users.find(u => u.username === username);
+              }
+
+              if (user) {
+                console.log(`✅ Found user in ${file}`);
+                // Store found file for display
+                window.currentDataFile = file.replace('./', '');
+                break; // Stop searching once user is found
+              }
+            }
+          } catch (fileErr) {
+            console.log(`⚠️ Error searching ${file}:`, fileErr.message);
+            // Continue searching other files
+          }
+        }
+
+        if (!user) return;
+
+        document.getElementById('formTitle').innerText = "✏️ Edit User";
+        document.getElementById('username').value = user.username;
+        document.getElementById('username').disabled = true;
+        document.getElementById('fullname').value = user.fullname;
+
+        // Use existing code or generate new unique one if missing
+        if (user.userCode) {
+          document.getElementById('userCode').value = user.userCode;
+        } else {
+          const uniqueCode = await generateUniqueUserCode();
+          document.getElementById('userCode').value = uniqueCode;
+        }
+
+        // Load description if it exists
+        if (user.description) {
+          document.getElementById('description').value = user.description;
+        }
+
+        // Load all platform values
+        allPlatforms.forEach(platform => {
+          const input = document.getElementById(platform);
+          if (input && user[platform]) {
+            input.value = user[platform];
+          }
+        });
+
+        // Load certificates if they exist
+        if (user.certificates) {
+          loadCertificates(user.certificates);
+        }
+
+        // Load custom links for all categories
+        const categories = [
+          'professional', 'design', 'social', 'video', 'music', 'developer',
+          'messaging', 'gaming', 'creator', 'ecommerce', 'photography', 'blogging',
+          'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing',
+          'food', 'transportation', 'travel', 'health', 'ott', 'books', 'contact'
+        ];
+
+        categories.forEach(category => {
+          const customKey = `${category}Custom`;
+          if (user[customKey]) {
+            loadCustomLinks(category, user[customKey]);
+          }
+        });
+      } catch (err) {
+        console.error("Error loading user:", err);
+      }
+    }
+
+    document.getElementById('backBtn').onclick = () => {
+      window.location.href = "index.html";
+    };
+
+    document.getElementById('userForm').onsubmit = async (e) => {
+      e.preventDefault();
+
+      const usernameInput = document.getElementById('username').value;
+      const normalizedUsername = usernameInput.trim().replace(/\s+/g, '-');
+
+      const data = {
+        username: normalizedUsername,
+        fullname: document.getElementById('fullname').value.trim(),
+        userCode: document.getElementById('userCode').value.trim(),
+        description: document.getElementById('description').value.trim()
+      };
+
+      // Add comment headers for organization
+      data._comment_professional = "=== PROFESSIONAL & BUSINESS NETWORKS ===";
+      platformGroups.professional.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_design = "=== CREATIVE & DESIGN PORTFOLIOS ===";
+      platformGroups.design.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_social = "=== SOCIAL MEDIA PLATFORMS ===";
+      platformGroups.social.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_video = "=== VIDEO PLATFORMS ===";
+      platformGroups.video.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_music = "=== MUSIC & AUDIO PLATFORMS ===";
+      platformGroups.music.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_developer = "=== DEVELOPER & TECH COMMUNITIES ===";
+      platformGroups.developer.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_messaging = "=== MESSAGING & COMMUNICATION ===";
+      platformGroups.messaging.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_gaming = "=== GAMING PLATFORMS ===";
+      platformGroups.gaming.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_creator = "=== CREATOR & MONETIZATION ===";
+      platformGroups.creator.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_ecommerce = "=== E-COMMERCE & SHOPPING ===";
+      platformGroups.ecommerce.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_photography = "=== PHOTOGRAPHY & VISUAL ARTS ===";
+      platformGroups.photography.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_blogging = "=== BLOGGING & WRITING ===";
+      platformGroups.blogging.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_misc_social = "=== OTHER SOCIAL PLATFORMS ===";
+      platformGroups.miscSocial.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_productivity = "=== PRODUCTIVITY & TOOLS ===";
+      platformGroups.productivity.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_payment = "=== PAYMENT & DONATION PLATFORMS ===";
+      platformGroups.payment.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_business = "=== BUSINESS & PROFESSIONAL TOOLS ===";
+      platformGroups.business.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_education = "=== EDUCATION & LEARNING ===";
+      platformGroups.education.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_pricing = "=== BUSINESS SERVICES & PRICING ===";
+      platformGroups.pricing.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_food = "=== FOOD & DINING ===";
+      platformGroups.food.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_transportation = "=== RIDE & TRANSPORTATION ===";
+      platformGroups.transportation.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_travel = "=== TRAVEL & HOSPITALITY ===";
+      platformGroups.travel.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_health = "=== HEALTH & WELLNESS ===";
+      platformGroups.health.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_ott = "=== ENTERTAINMENT & OTT ===";
+      platformGroups.ott.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      data._comment_books = "=== BOOKS & READING ===";
+      platformGroups.books.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      // Collect certificates (only from certificates container, not custom links)
+      const certificates = [];
+      const certificatesContainer = document.getElementById('certificates-container');
+      if (certificatesContainer) {
+        certificatesContainer.querySelectorAll('.certificate-entry').forEach(entry => {
+          const titleInput = entry.querySelector('.cert-title');
+          const urlInput = entry.querySelector('.cert-url');
+
+          if (titleInput && urlInput && titleInput.value.trim() && urlInput.value.trim()) {
+            certificates.push({
+              title: titleInput.value.trim(),
+              url: urlInput.value.trim()
+            });
+          }
+        });
+      }
+
+      // Collect custom links for each category
+      const categories = [
+        'professional', 'design', 'social', 'video', 'music', 'developer',
+        'messaging', 'gaming', 'creator', 'ecommerce', 'photography', 'blogging',
+        'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing',
+        'food', 'transportation', 'travel', 'health', 'ott', 'books', 'contact'
+      ];
+
+      categories.forEach(category => {
+        const customLinks = [];
+        const titleInputs = document.querySelectorAll(`.custom-link-title[data-category="${category}"]`);
+        const urlInputs = document.querySelectorAll(`.custom-link-url[data-category="${category}"]`);
+
+        titleInputs.forEach((titleInput, index) => {
+          const urlInput = urlInputs[index];
+
+          if (titleInput && urlInput && titleInput.value.trim() && urlInput.value.trim()) {
+            customLinks.push({
+              title: titleInput.value.trim(),
+              url: urlInput.value.trim()
+            });
+          }
+        });
+
+        if (customLinks.length > 0) {
+          data[`${category}Custom`] = customLinks;
+        }
+      });
+
+      // Always include certificate comment section for consistency
+      data._comment_certificates = "=== CERTIFICATES & CREDENTIALS ===";
+      if (certificates.length > 0) {
+        data.certificates = certificates;
+      }
+
+      data._comment_contact = "=== CONTACT INFORMATION ===";
+      platformGroups.contact.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      // Check if user wants to include all fields or only filled ones
+      const includeAllFields = document.getElementById('includeAllFields').checked;
+
+      let finalData = data;
+      if (!includeAllFields) {
+        // Filter out empty fields and comment sections
+        finalData = {};
+
+        // Always keep username, fullname, and userCode
+        finalData.username = data.username;
+        finalData.fullname = data.fullname;
+        finalData.userCode = data.userCode;
+
+        // Separate regular fields and custom fields
+        const regularFields = {};
+        const customFields = {};
+
+        // Add only non-empty platform fields
+        Object.keys(data).forEach(key => {
+          if (key.startsWith('_comment_')) {
+            // Skip comment sections when not including all fields
+            return;
+          }
+
+          const value = data[key];
+
+          // Skip already added core fields
+          if (['username', 'fullname', 'userCode'].includes(key)) {
+            return;
+          }
+
+          // Separate custom fields from regular fields
+          if (key.endsWith('Custom')) {
+            // Include custom arrays with items
+            if (Array.isArray(value) && value.length > 0) {
+              customFields[key] = value;
+            }
+          } else {
+            // Include if it's an array with items (certificates)
+            if (Array.isArray(value) && value.length > 0) {
+              regularFields[key] = value;
+            }
+            // Include if it's a non-empty string
+            else if (typeof value === 'string' && value.trim() !== '') {
+              regularFields[key] = value;
+            }
+          }
+        });
+
+        // Add regular fields first, then custom fields
+        Object.assign(finalData, regularFields, customFields);
+      }
+
+      // Format JSON with proper line breaks and spacing for better readability
+      const jsonOutput = JSON.stringify(finalData, null, 2)
+        .replace(/,\n  "_comment_/g, ',\n\n  "_comment_')  // Add extra line break before comment sections
+        .replace(/,\n  "username"/g, ',\n\n  "username"')  // Add extra line break before username
+        .replace(/,\n  "fullname"/g, ',\n  "fullname"')   // Keep normal spacing for fullname
+        .replace(/,\n  "userCode"/g, ',\n  "userCode"')   // Keep normal spacing for userCode
+        .replace(/,\n  "(\w+Custom)":/g, ',\n\n  "$1":');   // Add line break before custom sections
+
+      document.getElementById('jsonOutput').value = jsonOutput;
+
+      // Update target file name
+      let targetFile = 'data/clients.json'; // Default
+
+      if (window.currentDataFile) {
+        // User is being edited - use the file they came from
+        targetFile = window.currentDataFile;
+      } else {
+        // New user - check if logged in user has a specific dataFile
+        const dataFile = sessionStorage.getItem('adminDataFile');
+        if (dataFile) {
+          targetFile = dataFile.startsWith('data/') ? dataFile : `data/${dataFile}`;
+        }
+      }
+
+      document.getElementById('targetDataFile').innerText = targetFile;
+
+      document.getElementById('output').style.display = 'block';
+
+      document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    document.getElementById('copyBtn').onclick = () => {
+      const textarea = document.getElementById('jsonOutput');
+      textarea.select();
+      document.execCommand('copy');
+
+      const btn = document.getElementById('copyBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+      }, 2000);
+    };
+
+    // Input sanitization function
+    function sanitizeInput(input) {
+      if (typeof input !== 'string') return '';
+      return input.replace(/[<>\"'&]/g, function (match) {
+        const escapeMap = {
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#x27;',
+          '&': '&amp;'
+        };
+        return escapeMap[match];
+      });
+    }
+
+    // Check if user is authenticated and show admin links
+    function checkAdminStatus() {
+      const isAuthenticated = sessionStorage.getItem('adminAuthenticated');
+      const loginTime = sessionStorage.getItem('adminLoginTime');
+      const dataFile = sessionStorage.getItem('adminDataFile');
+
+      if (isAuthenticated && loginTime) {
+        const sessionAge = Date.now() - parseInt(loginTime);
+        const maxSessionAge = 24 * 60 * 60 * 1000; // 24 hours
+
+        if (sessionAge <= maxSessionAge) {
+          // Show admin links
+          document.getElementById('adminLinks').style.display = 'block';
+
+          // Update target data file display if user has a specific dataFile
+          if (dataFile) {
+            const fullPath = dataFile.startsWith('data/') ? dataFile : `data/${dataFile}`;
+            document.getElementById('targetDataFile').innerText = fullPath;
+          }
+        }
+      }
+    }
+
+    // Load user data (no authentication required for this page)
+    loadUser();
+
+    // Check admin status
+    checkAdminStatus();
+
+    // Handle multiple UPI IDs functionality
+    function setupUPIInputGroups() {
+      document.querySelectorAll('.add-upi-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const targetId = this.dataset.target;
+          const input = document.getElementById(targetId);
+          const currentValue = input.value.trim();
+
+          if (currentValue) {
+            // If there's already content, add a comma and focus
+            if (!currentValue.endsWith(',')) {
+              input.value = currentValue + ', ';
+            }
+          } else {
+            // If empty, add placeholder text
+            input.placeholder = input.placeholder.replace('UPI ID(s)', 'UPI ID');
+          }
+
+          input.focus();
+          input.setSelectionRange(input.value.length, input.value.length);
+        });
+      });
+    }
+
+    // Initialize UPI input groups when DOM is loaded
+    document.addEventListener('DOMContentLoaded', setupUPIInputGroups);
+
+    // Certificate Management Functions
+    let certificateCounter = 0;
+
+    function addCertificateEntry() {
+      certificateCounter++;
+      const container = document.getElementById('certificates-container');
+
+      const certEntry = document.createElement('div');
+      certEntry.className = 'certificate-entry';
+      certEntry.id = `cert-entry-${certificateCounter}`;
+      certEntry.innerHTML = `
+        <div class="cert-inputs">
+          <input type="text" 
+                 class="cert-title" 
+                 id="cert-title-${certificateCounter}" 
+                 placeholder="Certificate Title (e.g., AWS Certified Solutions Architect)"
+                 required>
+          <input type="url" 
+                 class="cert-url" 
+                 id="cert-url-${certificateCounter}" 
+                 placeholder="Certificate URL (e.g., https://example.com/certificate.pdf)"
+                 required>
+          <button type="button" 
+                  class="remove-cert-btn" 
+                  onclick="removeCertificateEntry(${certificateCounter})"
+                  title="Remove this certificate">
+            ✖
+          </button>
+        </div>
+      `;
+
+      container.appendChild(certEntry);
+      updateCertificateCount();
+
+      // Focus on the title input
+      document.getElementById(`cert-title-${certificateCounter}`).focus();
+    }
+
+    function removeCertificateEntry(id) {
+      const entry = document.getElementById(`cert-entry-${id}`);
+      if (entry) {
+        entry.remove();
+        updateCertificateCount();
+      }
+    }
+
+    function updateCertificateCount() {
+      const count = document.querySelectorAll('.certificate-entry').length;
+      document.getElementById('cert-count').textContent = count;
+    }
+
+    // Load existing certificates when editing
+    function loadCertificates(certificates) {
+      if (!certificates || !Array.isArray(certificates)) return;
+
+      certificates.forEach(cert => {
+        addCertificateEntry();
+        const lastId = certificateCounter;
+        document.getElementById(`cert-title-${lastId}`).value = cert.title || '';
+        document.getElementById(`cert-url-${lastId}`).value = cert.url || '';
+      });
+    }
+
+    // Custom Links Management Functions
+    let customLinkCounters = {};
+
+    function addCustomLink(category, categoryLabel) {
+      if (!customLinkCounters[category]) {
+        customLinkCounters[category] = 0;
+      }
+      customLinkCounters[category]++;
+
+      const container = document.getElementById(`${category}-custom-container`);
+      const id = `${category}-${customLinkCounters[category]}`;
+
+      const entry = document.createElement('div');
+      entry.className = 'certificate-entry';
+      entry.id = `custom-entry-${id}`;
+      entry.innerHTML = `
+        <div class="cert-inputs">
+          <input type="text" 
+                 class="cert-title custom-link-title" 
+                 data-category="${category}"
+                 placeholder="Platform Name (e.g., MyCustomPlatform)"
+                 required>
+          <input type="url" 
+                 class="cert-url custom-link-url" 
+                 data-category="${category}"
+                 placeholder="URL (e.g., https://example.com/profile)"
+                 required>
+          <button type="button" 
+                  class="remove-cert-btn" 
+                  onclick="removeCustomLink('${id}')"
+                  title="Remove this link">
+            ✖
+          </button>
+        </div>
+      `;
+
+      container.appendChild(entry);
+
+      // Focus on the title input
+      entry.querySelector('.custom-link-title').focus();
+    }
+
+    function removeCustomLink(id) {
+      const entry = document.getElementById(`custom-entry-${id}`);
+      if (entry) {
+        entry.remove();
+      }
+    }
+
+    // Load existing custom links when editing
+    function loadCustomLinks(category, customLinks) {
+      if (!customLinks || !Array.isArray(customLinks) || customLinks.length === 0) return;
+
+      customLinks.forEach(link => {
+        addCustomLink(category, '');
+        const container = document.getElementById(`${category}-custom-container`);
+        const entries = container.querySelectorAll('.certificate-entry');
+        const lastEntry = entries[entries.length - 1];
+
+        if (lastEntry) {
+          lastEntry.querySelector('.custom-link-title').value = link.title || '';
+          lastEntry.querySelector('.custom-link-url').value = link.url || '';
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
