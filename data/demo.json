@@ -2,6 +2,7 @@
     {
         "username": "restaurant",
         "fullname": "Restaurant",
+        "publicDescription": "Authentic Italian Cuisine in the Heart of the City - Where Every Meal is a Celebration!",
         "userCode": "REST2024",
         "_comment_business": "=== FOOD & DINING ===",
         "zomato": "https://google.com",
@@ -19,6 +20,7 @@
     {
         "username": "corporate",
         "fullname": "Corporate",
+        "publicDescription": "Leading the Future of Technology - Innovation, Excellence, and Growth",
         "userCode": "CORP2024",
         "_comment_business": "=== PROFESSIONAL ===",
         "website": "https://google.com",
@@ -32,6 +34,7 @@
     {
         "username": "retail",
         "fullname": "Retail",
+        "publicDescription": "Your One-Stop Shop for Fashion and Lifestyle",
         "userCode": "RET2024",
         "_comment_ecommerce": "=== SHOPPING ===",
         "website": "https://google.com",
@@ -45,6 +48,7 @@
     {
         "username": "freelancer",
         "fullname": "Freelancer",
+        "publicDescription": "Professional Graphic Designer & UI/UX Specialist - Bringing Your Vision to Life",
         "userCode": "FREE2024",
         "_comment_design": "=== PORTFOLIO ===",
         "portfolio": "https://google.com",
@@ -58,6 +62,7 @@
     {
         "username": "medical",
         "fullname": "Medical",
+        "publicDescription": "Board Certified Family Physician - Compassionate Care for Your Whole Family",
         "userCode": "MED2024",
         "_comment_health": "=== HEALTH ===",
         "website": "https://google.com",
@@ -85,6 +90,7 @@
     {
         "username": "education",
         "fullname": "Education",
+        "publicDescription": "Empowering Minds, Shaping Futures - Quality Education for All",
         "userCode": "EDU2024",
         "_comment_education": "=== EDUCATION ===",
         "website": "https://google.com",
@@ -101,6 +107,7 @@
     {
         "username": "realestate",
         "fullname": "Real Estate",
+        "publicDescription": "Your Trusted Real Estate Partner - Find Your Dream Home Today",
         "userCode": "REAL2024",
         "_comment_business": "=== REAL ESTATE ===",
         "website": "https://google.com",
@@ -113,6 +120,7 @@
     {
         "username": "gym",
         "fullname": "Gym",
+        "publicDescription": "Transform Your Body, Transform Your Life - Premium Fitness Center",
         "userCode": "GYM2024",
         "_comment_health": "=== FITNESS ===",
         "website": "https://google.com",
@@ -128,6 +136,7 @@
     {
         "username": "salon",
         "fullname": "Salon",
+        "publicDescription": "Beauty & Wellness Experts - Where Style Meets Elegance",
         "userCode": "SAL2024",
         "_comment_lifestyle": "=== LIFESTYLE ===",
         "website": "https://google.com",
@@ -143,6 +152,7 @@
     {
         "username": "event",
         "fullname": "Event",
+        "publicDescription": "Creating Unforgettable Events & Experiences",
         "userCode": "EVT2024",
         "_comment_social": "=== EVENTS ===",
         "website": "https://google.com",
@@ -157,6 +167,7 @@
     {
         "username": "student",
         "fullname": "Student",
+        "publicDescription": "Computer Science Student | Aspiring Software Engineer | Python & Data Science Enthusiast",
         "userCode": "STU2024",
         "_comment_education": "=== STUDENT ===",
         "linkedin": "https://google.com",
@@ -181,6 +192,7 @@
     {
         "username": "developer",
         "fullname": "Developer",
+        "publicDescription": "Full Stack Developer | Cloud Solutions Architect | Open Source Contributor",
         "userCode": "DEV2024",
         "_comment_tech": "=== TECH ===",
         "github": "https://google.com",
@@ -205,6 +217,7 @@
     {
         "username": "designer",
         "fullname": "Designer",
+        "publicDescription": "Creative Designer Crafting Beautiful Digital Experiences",
         "userCode": "DES2024",
         "_comment_creative": "=== CREATIVE ===",
         "behance": "https://google.com",
@@ -217,6 +230,7 @@
     {
         "username": "musician",
         "fullname": "Musician",
+        "publicDescription": "Singer-Songwriter | Live Performances | Available for Bookings",
         "userCode": "MUS2024",
         "_comment_music": "=== MUSIC ===",
         "spotify": "https://google.com",
@@ -229,6 +243,7 @@
     {
         "username": "photographer",
         "fullname": "Photographer",
+        "publicDescription": "Professional Wedding & Portrait Photographer - Capturing Your Special Moments",
         "userCode": "PHOTO2024",
         "_comment_creative": "=== VISUAL ARTS ===",
         "instagram": "https://google.com",
@@ -241,6 +256,7 @@
     {
         "username": "influencer",
         "fullname": "Influencer",
+        "publicDescription": "Lifestyle & Fashion Influencer | Brand Collaborations | DM for Partnerships",
         "userCode": "INF2024",
         "_comment_social": "=== SOCIAL MEDIA ===",
         "instagram": "https://google.com",
@@ -253,6 +269,7 @@
     {
         "username": "gamer",
         "fullname": "Gamer",
+        "publicDescription": "Pro Gamer & Streamer | FPS Specialist | Join the Squad!",
         "userCode": "GAME2024",
         "_comment_gaming": "=== GAMING ===",
         "twitch": "https://google.com",
@@ -265,6 +282,7 @@
     {
         "username": "writer",
         "fullname": "Writer",
+        "publicDescription": "Award-Winning Author & Content Creator",
         "userCode": "WRITE2024",
         "_comment_content": "=== CONTENT ===",
         "medium": "https://google.com",
@@ -277,6 +295,7 @@
     {
         "username": "lawyer",
         "fullname": "Lawyer",
+        "publicDescription": "Experienced Legal Counsel - Protecting Your Rights",
         "userCode": "LAW2024",
         "_comment_professional": "=== LEGAL ===",
         "linkedin": "https://google.com",
@@ -289,6 +308,7 @@
     {
         "username": "consultant",
         "fullname": "Consultant",
+        "publicDescription": "Business Strategy Consultant - Helping Companies Achieve Their Goals",
         "userCode": "CONS2024",
         "_comment_business": "=== CONSULTING ===",
         "linkedin": "https://google.com",
@@ -303,6 +323,7 @@
     {
         "username": "accountant",
         "fullname": "Accountant",
+        "publicDescription": "Certified Public Accountant - Tax & Financial Services",
         "userCode": "ACCT2024",
         "_comment_finance": "=== FINANCE ===",
         "linkedin": "https://google.com",
@@ -315,6 +336,7 @@
     {
         "username": "chef",
         "fullname": "Chef",
+        "publicDescription": "Culinary Artist | Private Chef Services | Cooking Classes",
         "userCode": "CHEF2024",
         "_comment_food": "=== CULINARY ===",
         "instagram": "https://google.com",
@@ -327,6 +349,7 @@
     {
         "username": "plumber",
         "fullname": "Plumber",
+        "publicDescription": "24/7 Emergency Plumbing Services - Fast & Reliable",
         "userCode": "PLUM2024",
         "_comment_trades": "=== TRADES ===",
         "phone": "+919876543210",
@@ -339,6 +362,7 @@
     {
         "username": "electrician",
         "fullname": "Electrician",
+        "publicDescription": "Licensed Electrician - Residential & Commercial Services",
         "userCode": "ELEC2024",
         "_comment_trades": "=== TRADES ===",
         "phone": "+919876543210",
@@ -351,6 +375,7 @@
     {
         "username": "mechanic",
         "fullname": "Mechanic",
+        "publicDescription": "Expert Auto Repair & Maintenance - Keeping You on the Road",
         "userCode": "MECH2024",
         "_comment_trades": "=== TRADES ===",
         "phone": "+919876543210",
@@ -363,6 +388,7 @@
     {
         "username": "petcare",
         "fullname": "Pet Services",
+        "publicDescription": "Professional Pet Grooming & Care - Your Pet's Best Friend",
         "userCode": "PET2024",
         "_comment_services": "=== SERVICES ===",
         "instagram": "https://google.com",
@@ -375,6 +401,7 @@
     {
         "username": "travelagent",
         "fullname": "Travel Agent",
+        "publicDescription": "Your Gateway to Amazing Adventures - Custom Travel Planning",
         "userCode": "TRAV2024",
         "_comment_travel": "=== TRAVEL ===",
         "website": "https://google.com",
@@ -387,6 +414,7 @@
     {
         "username": "charity",
         "fullname": "Charity",
+        "publicDescription": "Making a Difference Together - Support Our Cause",
         "userCode": "NGO2024",
         "_comment_nonprofit": "=== NON-PROFIT ===",
         "website": "https://google.com",
@@ -399,6 +427,7 @@
     {
         "username": "blogger",
         "fullname": "Blogger",
+        "publicDescription": "Travel & Lifestyle Blogger - Sharing Stories from Around the World",
         "userCode": "BLOG2024",
         "_comment_content": "=== CONTENT ===",
         "wordpress": "https://google.com",
@@ -411,6 +440,7 @@
     {
         "username": "podcaster",
         "fullname": "Podcaster",
+        "publicDescription": "Tech Talk Podcast - Weekly Insights on Innovation & Startups",
         "userCode": "POD2024",
         "_comment_media": "=== MEDIA ===",
         "spotify": "https://google.com",
@@ -425,6 +455,7 @@
     {
         "username": "coach",
         "fullname": "Coach",
+        "publicDescription": "Certified Life Coach - Transform Your Life, Achieve Your Dreams",
         "userCode": "COACH2024",
         "_comment_professional": "=== COACHING ===",
         "website": "https://google.com",
@@ -440,6 +471,7 @@
     {
         "username": "handyman",
         "fullname": "Handyman",
+        "publicDescription": "Home Repair & Maintenance Specialist - No Job Too Small",
         "userCode": "HAND2024",
         "_comment_trades": "=== TRADES ===",
         "phone": "+919876543210",
@@ -452,6 +484,7 @@
     {
         "username": "tutor",
         "fullname": "Tutor",
+        "publicDescription": "Math & Science Tutor - Helping Students Excel",
         "userCode": "TUT2024",
         "_comment_education": "=== TUTOR ===",
         "website": "https://google.com",
@@ -467,6 +500,7 @@
     {
         "username": "barber",
         "fullname": "Barber",
+        "publicDescription": "Classic Cuts & Modern Styles - Walk-ins Welcome",
         "userCode": "BARB2024",
         "_comment_lifestyle": "=== LIFESTYLE ===",
         "instagram": "https://google.com",
@@ -481,6 +515,7 @@
     {
         "username": "tattooartist",
         "fullname": "Tattoo Artist",
+        "publicDescription": "Custom Tattoo Art - Bringing Your Vision to Skin",
         "userCode": "TAT2024",
         "_comment_creative": "=== ART ===",
         "instagram": "https://google.com",
@@ -495,6 +530,7 @@
     {
         "username": "florist",
         "fullname": "Florist",
+        "publicDescription": "Fresh Flowers for Every Occasion 🌸",
         "userCode": "FLO2024",
         "_comment_business": "=== RETAIL ===",
         "instagram": "https://google.com",
@@ -507,6 +543,7 @@
     {
         "username": "caterer",
         "fullname": "Caterer",
+        "publicDescription": "Premium Catering Services - Making Your Events Delicious",
         "userCode": "CAT2024",
         "_comment_food": "=== CATERING ===",
         "instagram": "https://google.com",
@@ -521,6 +558,7 @@
     {
         "username": "bakery",
         "fullname": "Bakery",
+        "publicDescription": "Freshly Baked Goodness Every Day - From Our Oven to Your Table",
         "userCode": "BAK2024",
         "_comment_food": "=== BAKERY ===",
         "instagram": "https://google.com",
@@ -533,6 +571,7 @@
     {
         "username": "dentist",
         "fullname": "Dentist",
+        "publicDescription": "Gentle Dental Care for the Whole Family - Creating Beautiful Smiles",
         "userCode": "DENT2024",
         "_comment_health": "=== DENTAL ===",
         "practo": "https://google.com",
@@ -547,6 +586,7 @@
     {
         "username": "veterinarian",
         "fullname": "Veterinarian",
+        "publicDescription": "Compassionate Veterinary Care - Your Pet's Health is Our Priority",
         "userCode": "VET2024",
         "_comment_services": "=== PET CARE ===",
         "website": "https://google.com",
@@ -561,6 +601,7 @@
     {
         "username": "yogainstructor",
         "fullname": "Yoga Instructor",
+        "publicDescription": "Find Your Inner Peace - Yoga Classes for All Levels",
         "userCode": "YOGA2024",
         "_comment_health": "=== WELLNESS ===",
         "instagram": "https://google.com",
@@ -576,6 +617,7 @@
     {
         "username": "dj",
         "fullname": "DJ",
+        "publicDescription": "Professional DJ Services - Making Your Events Unforgettable 🎧",
         "userCode": "DJ2024",
         "_comment_entertainment": "=== ENTERTAINMENT ===",
         "instagram": "https://google.com",
@@ -590,6 +632,7 @@
     {
         "username": "realtor",
         "fullname": "Realtor",
+        "publicDescription": "Your Dedicated Real Estate Professional - Homes Sold with Excellence",
         "userCode": "RLTR2024",
         "_comment_business": "=== REAL ESTATE PROFESSIONAL ===",
         "website": "https://google.com",
@@ -603,6 +646,7 @@
     {
         "username": "school",
         "fullname": "School",
+        "publicDescription": "Nurturing Young Minds Since 1995 - Excellence in Education, Character, and Leadership",
         "userCode": "SCHOOL2024",
         "_comment_education": "=== EDUCATIONAL INSTITUTION ===",
         "website": "https://google.com",
@@ -634,6 +678,7 @@
     {
         "username": "university",
         "fullname": "University",
+        "publicDescription": "Shaping Tomorrow's Leaders - Excellence in Higher Education Since 1950",
         "userCode": "UNI2024",
         "_comment_education": "=== HIGHER EDUCATION ===",
         "website": "https://google.com",
@@ -662,6 +707,7 @@
     {
         "username": "library",
         "fullname": "Library",
+        "publicDescription": "Community Library - A World of Knowledge Awaits",
         "userCode": "LIB2024",
         "_comment_education": "=== PUBLIC LIBRARY ===",
         "website": "https://google.com",
@@ -676,6 +722,7 @@
     {
         "username": "architect",
         "fullname": "Architect",
+        "publicDescription": "Award-Winning Architectural Design - Building Dreams into Reality",
         "userCode": "ARCH2024",
         "_comment_professional": "=== ARCHITECTURE ===",
         "website": "https://google.com",
@@ -702,6 +749,7 @@
     {
         "username": "interiordesigner",
         "fullname": "Interior Designer",
+        "publicDescription": "Transforming Spaces, Elevating Lives - Luxury Interior Design",
         "userCode": "INTD2024",
         "_comment_creative": "=== INTERIOR DESIGN ===",
         "website": "https://google.com",
@@ -719,6 +767,7 @@
     {
         "username": "nutritionist",
         "fullname": "Nutritionist",
+        "publicDescription": "Certified Nutritionist - Your Partner in Health & Wellness",
         "userCode": "NUT2024",
         "_comment_health": "=== NUTRITION ===",
         "website": "https://google.com",
@@ -746,6 +795,7 @@
     {
         "username": "psychologist",
         "fullname": "Psychologist",
+        "publicDescription": "Licensed Clinical Psychologist - Mental Health Support & Therapy",
         "userCode": "PSY2024",
         "_comment_health": "=== MENTAL HEALTH ===",
         "website": "https://google.com",
@@ -772,6 +822,7 @@
     {
         "username": "hotel",
         "fullname": "Hotel",
+        "publicDescription": "Luxury Hospitality Redefined - Your Home Away From Home",
         "userCode": "HOTEL2024",
         "_comment_hospitality": "=== HOSPITALITY ===",
         "website": "https://google.com",
@@ -788,6 +839,7 @@
     {
         "username": "coffeeshop",
         "fullname": "Coffee Shop",
+        "publicDescription": "Artisan Coffee & Cozy Vibes ☕",
         "userCode": "CAFE2024",
         "_comment_food": "=== CAFE ===",
         "instagram": "https://google.com",
@@ -802,6 +854,7 @@
     {
         "username": "cardealer",
         "fullname": "Auto Dealer",
+        "publicDescription": "Premium Auto Sales - Drive Your Dream Car Today",
         "userCode": "AUTO2024",
         "_comment_automotive": "=== AUTOMOTIVE ===",
         "website": "https://google.com",
@@ -817,6 +870,7 @@
     {
         "username": "jeweler",
         "fullname": "Jeweler",
+        "publicDescription": "Fine Jewelry & Custom Designs - Crafting Timeless Elegance",
         "userCode": "JEW2024",
         "_comment_retail": "=== JEWELRY ===",
         "website": "https://google.com",
@@ -831,6 +885,7 @@
     {
         "username": "bookstore",
         "fullname": "Book Store",
+        "publicDescription": "Independent Bookstore - Where Stories Come Alive 📚",
         "userCode": "BOOK2024",
         "_comment_retail": "=== BOOKS ===",
         "website": "https://google.com",
@@ -845,6 +900,7 @@
     {
         "username": "sportsteam",
         "fullname": "Sports Team",
+        "publicDescription": "Champions on and off the Field - Join Our Winning Team!",
         "userCode": "SPORT2024",
         "_comment_sports": "=== SPORTS ===",
         "website": "https://google.com",
@@ -858,6 +914,7 @@
     {
         "username": "newsagency",
         "fullname": "News Agency",
+        "publicDescription": "Breaking News & In-Depth Analysis - Your Trusted Source for Information",
         "userCode": "NEWS2024",
         "_comment_media": "=== NEWS & MEDIA ===",
         "website": "https://google.com",

@@ -2,6 +2,7 @@
   {
     "username": "MohammedRehanAlam",
     "fullname": "Mohammed Rehan Alam",
+    "publicDescription": "Hello this is my personal QR code made for testing all the things though I dont have the account for all the things still I have included them and can be used to check whether it is working or not",
     "userCode": "RA2024X9K",
     "description": "This is a personal QR code - Mohammed Rehan Alam",
 
@@ -213,7 +214,7 @@
 
     "bookingCustom": [
       {
-        "title": "gooltidf",
+        "title": "Demo Custom",
         "url": "https://google.com"
       }
     ],

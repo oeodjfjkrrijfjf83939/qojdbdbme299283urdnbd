@@ -30,6 +30,16 @@
         <input type="text" id="username" placeholder="Username (e.g., john-doe)" required>
         <small class="form-hint">💡 Multiple users can have the same username - User Code makes each one unique</small>
         <input type="text" id="fullname" placeholder="Full Name" required>
+
+        <label for="publicDescription"
+          style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📄
+          About / Description (Public)</label>
+        <textarea id="publicDescription"
+          placeholder="Add a brief description about yourself or your organization (e.g., 'Slogans', 'Professional photographer specializing in weddings', 'Best Italian restaurant in downtown'). This will be shown on your public profile."
+          rows="3"></textarea>
+        <small class="form-hint">💡 This description will appear on your profile page. Leave blank to show your username
+          instead.</small>
+
         <input type="text" id="userCode" placeholder="User Code (auto-generated)" readonly class="readonly-input">
         <small class="form-note">🔒 User Code is auto-generated and ensures uniqueness - This is what makes each user
           unique!</small>
@@ -37,9 +47,8 @@
         <label for="description" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📝
           Internal Description (Admin Only)</label>
         <textarea id="description"
-          placeholder="Add notes about this client (e.g., Business type, contact details source, special requirements). This will NOT be shown on their public profile."
-          rows="3"
-          style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; resize: vertical;"></textarea>
+          placeholder="Add notes about this client (e.g., Business type, payment/plan type, contact details source, special requirements, personal secret id for future payment distributions). This will NOT be shown on their public profile."
+          rows="3"></textarea>
       </div>
 
       <!-- Professional & Business Networks -->
@@ -396,7 +405,8 @@
         <small>Direct links for bookings, appointments, tickets, reservations, and registrations (universal for any
           business)</small>
         <input type="url" id="bookingpage" placeholder="Booking Page - https://yourbooking.com">
-        <input type="url" id="appointment" placeholder="Appointment - https://example.com/appointment or scheduling link">
+        <input type="url" id="appointment"
+          placeholder="Appointment - https://example.com/appointment or scheduling link">
         <input type="url" id="buytickets" placeholder="Buy Tickets - https://yourtickets.com or event ticket link">
         <input type="url" id="reservation"
           placeholder="Reservation - https://yourreservation.com (tables, hotels, etc.)">
@@ -745,6 +755,11 @@
           document.getElementById('description').value = user.description;
         }
 
+        // Load public description if it exists
+        if (user.publicDescription) {
+          document.getElementById('publicDescription').value = user.publicDescription;
+        }
+
         // Load all platform values
         allPlatforms.forEach(platform => {
           const input = document.getElementById(platform);
@@ -790,6 +805,7 @@
       const data = {
         username: normalizedUsername,
         fullname: document.getElementById('fullname').value.trim(),
+        publicDescription: document.getElementById('publicDescription').value.trim(),
         userCode: document.getElementById('userCode').value.trim(),
         description: document.getElementById('description').value.trim()
       };
