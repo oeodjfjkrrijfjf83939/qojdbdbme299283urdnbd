@@ -2093,7 +2093,7 @@ form input::placeholder {
 }
 
 .profile-card h1 {
-  font-size: clamp(2.4rem, 10vw, 3rem);
+  font-size: clamp(2.4rem, 12vw, 3rem);
   /* increased the title size form 2rem to 2.4rem in the mobile view */
   color: var(--dark);
   margin-bottom: 0.75rem;
