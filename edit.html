@@ -399,6 +399,20 @@
         </button>
       </div>
 
+      <!-- App Downloads -->
+      <div class="form-section app-downloads">
+        <h3>📱 App Downloads <span class="platform-count">2</span></h3>
+        <small>Links to download your mobile application</small>
+        <input type="url" id="playstore"
+          placeholder="Google Play Store - https://play.google.com/store/apps/details?id=com.example.app">
+        <input type="url" id="appstore" placeholder="Apple App Store - https://apps.apple.com/app/id123456789">
+
+        <div id="appDownloads-custom-container" class="custom-links-container"></div>
+        <button type="button" class="add-certificate-btn" onclick="addCustomLink('appDownloads', '📱 App Downloads')">
+          ➕ Add Custom Link
+        </button>
+      </div>
+
       <!-- Booking & Actions -->
       <div class="form-section booking">
         <h3>📅 Booking & Actions <span class="platform-count">6</span></h3>
@@ -598,6 +612,7 @@
       business: ['crunchbase', 'glassdoor', 'indeed', 'naukri'],
       education: ['coursera', 'udemy', 'skillshare', 'khanacademy', 'byjus', 'unacademy', 'vedantu', 'upgrad', 'physicswallah'],
       pricing: ['pricelist'],
+      appDownloads: ['playstore', 'appstore'],
       booking: ['bookingpage', 'appointment', 'buytickets', 'reservation', 'registration', 'consultation'],
       food: ['swiggy', 'zomato', 'dineout', 'eatsure', 'magicpin', 'jiomart', 'swiggyinstamart', 'dunzo', 'menucard'],
       transportation: ['ola', 'uber', 'rapido', 'porter'],
@@ -777,7 +792,7 @@
         const categories = [
           'professional', 'design', 'social', 'video', 'music', 'developer',
           'messaging', 'gaming', 'creator', 'ecommerce', 'photography', 'blogging',
-          'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing',
+          'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing', 'appDownloads',
           'booking', 'food', 'transportation', 'travel', 'health', 'ott', 'books', 'contact'
         ];
 
@@ -865,6 +880,9 @@
       data._comment_pricing = "=== BUSINESS SERVICES & PRICING ===";
       platformGroups.pricing.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
 
+      data._comment_appDownloads = "=== APP DOWNLOADS ===";
+      platformGroups.appDownloads.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
       data._comment_booking = "=== BOOKING & ACTIONS ===";
       platformGroups.booking.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
 
@@ -907,7 +925,7 @@
       const categories = [
         'professional', 'design', 'social', 'video', 'music', 'developer',
         'messaging', 'gaming', 'creator', 'ecommerce', 'photography', 'blogging',
-        'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing',
+        'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing', 'appDownloads',
         'booking', 'food', 'transportation', 'travel', 'health', 'ott', 'books', 'contact'
       ];
 

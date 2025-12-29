@@ -234,6 +234,27 @@
 
 ---
 
+## 💼 Business Services & Pricing (1)
+
+| Platform | Description | Region |
+|----------|-------------|--------|
+| Price List | Service Menu / Pricing | Global |
+
+---
+
+## 📅 Booking & Actions (6)
+
+| Platform | Description | Region |
+|----------|-------------|--------|
+| Booking Page | General booking link | Global |
+| Appointment | Schedule appointment | Global |
+| Buy Tickets | Ticket purchase link | Global |
+| Reservation | Table/Service reservation | Global |
+| Registration | Event/Service registration | Global |
+| Consultation | Book consultation | Global |
+
+---
+
 ## 🎓 Education & Learning (9)
 
 | Platform | Description | Region |
@@ -296,6 +317,17 @@
 | 1mg | Online pharmacy | India |
 | PharmEasy | Healthcare delivery | India |
 | Cult.fit | Fitness platform | India |
+
+---
+
+---
+
+## 📱 App Downloads (2)
+
+| Platform | Description | Region |
+|----------|-------------|--------|
+| Play Store | Android Apps | Global |
+| App Store | iOS Apps | Global |
 
 ---
 

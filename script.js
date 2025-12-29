@@ -321,6 +321,7 @@ function updateUserStatistics(users) {
       user.bereal, user.clubhouse, user.nextdoor, user.strava, user.linktree, user.notion, user.calendly,
       user.paypal, user.gpay, user.phonepe, user.paytm, user.upi, user.cashapp, user.crunchbase,
       user.glassdoor, user.indeed, user.coursera, user.udemy, user.skillshare, user.khanacademy,
+      user.playstore, user.appstore,
       user.email, user.phone, user.website, user.location, user.googleReview
     ];
 
@@ -407,6 +408,8 @@ function displayUsers(users) {
       u.crunchbase, u.glassdoor, u.indeed, u.naukri,
       // Education
       u.coursera, u.udemy, u.skillshare, u.khanacademy, u.byjus, u.unacademy, u.vedantu, u.upgrad, u.physicswallah,
+      // App Downloads
+      u.playstore, u.appstore,
       // Food
       u.swiggy, u.zomato, u.dineout, u.eatsure, u.magicpin, u.jiomart, u.swiggyinstamart, u.dunzo,
       // Transportation

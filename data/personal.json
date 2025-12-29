@@ -161,6 +161,10 @@
     "_comment_pricing": "=== BUSINESS SERVICES & PRICING ===",
     "pricelist": "https://google.com",
 
+    "_comment_appDownloads": "=== APP DOWNLOADS ===",
+    "playstore": "https://google.com",
+    "appstore": "https://google.com",
+
     "_comment_booking": "=== BOOKING & ACTIONS ===",
     "bookingpage": "https://google.com",
     "appointment": "https://google.com",
