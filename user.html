@@ -9,9 +9,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 </head>
 
 <body>
+  <!-- Fixed QR Code Button (Top Right) -->
+  <button id="showQRButton" class="show-qr-button-fixed" onclick="showUserQRCode()" title="Show QR Code">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+  </button>
+
   <div class="profile-card">
     <h1 id="name">Loading...</h1>
     <p id="username"></p>
@@ -95,6 +107,22 @@
       </div>
       <div class="upi-options" id="whatsappOptions">
         <!-- WhatsApp options will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Display Overlay -->
+  <div id="qrCodeOverlay" class="upi-overlay">
+    <div class="upi-overlay-content" style="max-width: 700px;">
+      <div class="upi-overlay-header">
+        <h3 id="qrCodeTitle">Scan QR Code</h3>
+        <button class="upi-close-btn" onclick="closeQRCodeOverlay()">&times;</button>
+      </div>
+      <div style="padding: 1px; text-align: center;">
+        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin-bottom: 20px;">
+          <!-- QR code will be displayed here -->
+        </div>
+        <p style="color: #666; font-size: 14px; margin-top: 1px;">Scan this QR code to share this profile</p>
       </div>
     </div>
   </div>
@@ -937,7 +965,7 @@
         option.className = 'upi-option';
 
         let displayText;
-        
+
         // Check if it's a channel link
         if (whatsappUrl.includes('whatsapp.com/channel')) {
           // For channel links, display the clean URL without https:// and without "+" prefix
@@ -983,6 +1011,50 @@
     document.getElementById('whatsappOverlay').addEventListener('click', function (e) {
       if (e.target === this) {
         closeWhatsAppOverlay();
+      }
+    });
+
+    // Function to show QR code overlay
+    function showUserQRCode() {
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('u');
+      const userCode = params.get('code');
+
+      if (!username || !userCode) {
+        alert('Error: Unable to generate QR code. Missing parameters.');
+        return;
+      }
+
+      // Create the same URL that's shown to the user
+      const qrUrl = window.location.href;
+
+      const qrContainer = document.getElementById('qrCodeContainer');
+      qrContainer.innerHTML = '';
+
+      // Generate QR Code using qrcode-generator library
+      const typeNumber = 0;
+      const errorCorrectionLevel = 'H';
+      const qr = qrcode(typeNumber, errorCorrectionLevel);
+      qr.addData(qrUrl);
+      qr.make();
+
+      // Create as image for better quality
+      const size = 6;
+      qrContainer.innerHTML = qr.createImgTag(size, 8);
+
+      // Show overlay
+      document.getElementById('qrCodeOverlay').style.display = 'flex';
+    }
+
+    // Function to close QR code overlay
+    function closeQRCodeOverlay() {
+      document.getElementById('qrCodeOverlay').style.display = 'none';
+    }
+
+    // Close QR code overlay when clicking outside
+    document.getElementById('qrCodeOverlay').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeQRCodeOverlay();
       }
     });
 

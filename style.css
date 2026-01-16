@@ -3257,3 +3257,60 @@ form input::placeholder {
     gap: 0.4rem;
   }
 }
+
+/* ===================================
+   SHOW QR CODE BUTTON (USER PAGE)
+   =================================== */
+
+.show-qr-button-fixed {
+  position: fixed;
+  top: 11px;
+  right: 11px;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.show-qr-button-fixed svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+}
+
+.show-qr-button-fixed:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+}
+
+.show-qr-button-fixed:active {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+/* Mobile responsive for button */
+@media (max-width: 480px) {
+  .show-qr-button-fixed {
+    width: 48px;
+    height: 48px;
+    top: 7px; /* 16px Adjusted for smaller screens */
+    right: 7px; /* 16px Adjusted for smaller screens */
+  }
+
+  .show-qr-button-fixed svg {
+    width: 24px;
+    height: 24px;
+  }
+}
