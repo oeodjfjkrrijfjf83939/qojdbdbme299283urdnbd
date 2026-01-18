@@ -61,7 +61,7 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 ## 📁 **File Structure**
 
 ```
-MultiLinkQRgenerator/
+MultiLynkQRgenerator/
 ├── admin.html              # Admin login page
 ├── index.html              # Dashboard (protected)
 ├── edit.html               # Add/edit users (public)

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MultiLink QR Manager - Digital QR Codes</title>
+  <title>MultiLynk QR Manager - Digital QR Codes</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <div class="dashboard">
     <header>
@@ -45,7 +47,8 @@
     <!-- Admin Search Container (for admin users) -->
     <div id="adminSearchContainer" class="search-container" style="display: none;">
       <div class="search-box">
-        <input type="text" id="adminSearchInput" placeholder="🔍 Search login accounts by username, description, or data file..." />
+        <input type="text" id="adminSearchInput"
+          placeholder="🔍 Search login accounts by username, description, or data file..." />
         <button id="adminSearchBtn" class="search-btn">Search</button>
       </div>
     </div>
@@ -126,22 +129,22 @@
         <h3 id="qrTitle">QR Code</h3>
         <button class="close-btn" id="closeModal">&times;</button>
       </div>
-      
+
       <div class="qr-user-info">
         <h4 id="qrUserName">Loading...</h4>
         <p id="qrUserHandle">@username</p>
       </div>
-      
+
       <div class="qr-display">
         <div class="qr-wrapper">
           <div id="qrContainer"></div>
           <button class="edit-qr-btn" id="editQRBtn" title="Customize QR Code">✏️</button>
         </div>
-        
+
         <!-- QR Customization Panel (Inline) -->
         <div id="qrCustomizationPanel" class="customization-panel-inline">
           <div class="customization-controls">
-            
+
             <!-- QR Code Style -->
             <div class="control-group">
               <label>QR Code Style:</label>
@@ -160,50 +163,56 @@
                 <option value="pixels">🟦 Pixels</option>
               </select>
             </div>
-            
+
             <!-- Background Color -->
             <div class="control-group">
               <label>Background Color:</label>
               <div class="color-controls">
-                <input type="color" id="bgColorPicker" value="#ffffff" title="Select background color" aria-label="Background color picker">
+                <input type="color" id="bgColorPicker" value="#ffffff" title="Select background color"
+                  aria-label="Background color picker">
                 <button class="btn-small" id="transparentBgBtn">Transparent</button>
               </div>
             </div>
-            
+
             <!-- Background Transparency -->
             <div class="control-group">
               <label>Background Opacity:</label>
               <div class="slider-control">
-                <input type="range" id="bgOpacitySlider" min="0" max="100" value="100" title="Adjust background opacity" aria-label="Background opacity slider">
+                <input type="range" id="bgOpacitySlider" min="0" max="100" value="100" title="Adjust background opacity"
+                  aria-label="Background opacity slider">
                 <span id="bgOpacityValue">100%</span>
               </div>
             </div>
-            
+
             <!-- QR Code Spacing -->
             <div class="control-group">
               <label>QR Code Spacing:</label>
               <div class="slider-control">
-                <input type="range" id="qrSpacingSlider" min="0" max="20" value="16" title="Adjust spacing around QR code" aria-label="QR code spacing slider">
+                <input type="range" id="qrSpacingSlider" min="0" max="20" value="16"
+                  title="Adjust spacing around QR code" aria-label="QR code spacing slider">
                 <span id="qrSpacingValue">16px</span>
               </div>
             </div>
-            
+
             <!-- QR Code Color -->
             <div class="control-group">
               <label>QR Code Color:</label>
               <div class="color-controls">
-                <input type="color" id="qrColorPicker" value="#000000" title="Select QR code color" aria-label="QR code color picker">
+                <input type="color" id="qrColorPicker" value="#000000" title="Select QR code color"
+                  aria-label="QR code color picker">
                 <button class="btn-small" id="gradientToggleBtn">Gradient</button>
               </div>
             </div>
-            
+
             <!-- Gradient Controls (hidden by default) -->
             <div class="control-group gradient-controls" id="gradientControls">
               <label>Gradient Colors:</label>
               <div class="gradient-controls-inner">
                 <div class="gradient-colors-row">
-                  <input type="color" id="gradientColor1" value="#000000" title="First gradient color" aria-label="First gradient color">
-                  <input type="color" id="gradientColor2" value="#6366f1" title="Second gradient color" aria-label="Second gradient color">
+                  <input type="color" id="gradientColor1" value="#000000" title="First gradient color"
+                    aria-label="First gradient color">
+                  <input type="color" id="gradientColor2" value="#6366f1" title="Second gradient color"
+                    aria-label="Second gradient color">
                 </div>
                 <select id="gradientDirection" title="Gradient direction" aria-label="Gradient direction">
                   <option value="horizontal">Horizontal</option>
@@ -213,7 +222,7 @@
                 </select>
               </div>
             </div>
-            
+
             <!-- Preview & Apply -->
             <div class="control-group action-buttons">
               <button class="btn-primary" id="applyCustomization">Apply Changes</button>
@@ -221,7 +230,7 @@
             </div>
           </div>
         </div>
-        
+
         <p class="qr-url" id="qrUrl"></p>
       </div>
 
@@ -255,42 +264,44 @@
         <h2>🔐 Add New Login Account</h2>
         <button class="modal-close" onclick="closeAddLoginModal()">&times;</button>
       </div>
-      
+
       <form id="addLoginForm" class="modal-form">
         <div class="form-group">
           <label for="newUsername">Username *</label>
           <input type="text" id="newUsername" placeholder="Enter username" required>
         </div>
-        
+
         <div class="form-group">
           <label for="newPassword">Password *</label>
           <input type="password" id="newPassword" placeholder="Enter password" required>
         </div>
-        
+
         <div class="form-group">
           <label for="newDataFile">Data File *</label>
           <input type="text" id="newDataFile" placeholder="Enter data file name (e.g., new_users)" required>
-          <small class="form-help">Enter the name of the JSON file (without .json extension - it will be added automatically)</small>
+          <small class="form-help">Enter the name of the JSON file (without .json extension - it will be added
+            automatically)</small>
         </div>
-        
+
         <div class="form-group">
           <label for="newDescription">Description</label>
           <input type="text" id="newDescription" placeholder="Enter description (optional)">
         </div>
-        
+
         <div class="modal-actions">
           <button type="button" class="btn-secondary" onclick="closeAddLoginModal()">Cancel</button>
           <button type="submit" class="btn-primary">Generate Credentials</button>
         </div>
       </form>
-      
+
       <!-- Credentials Display Section -->
       <div id="credentialsDisplay" class="credentials-display hidden">
         <div class="credentials-header">
           <h3>✅ Credentials Generated Successfully!</h3>
-          <p>Copy the JSON below and manually add it to <code>credentials/login_credentials.json</code> to create the account:</p>
+          <p>Copy the JSON below and manually add it to <code>credentials/login_credentials.json</code> to create the
+            account:</p>
         </div>
-        
+
         <div class="credentials-content">
           <div class="json-display">
             <pre id="jsonCredentials" class="json-text"></pre>
@@ -299,7 +310,7 @@
             </button>
           </div>
         </div>
-        
+
         <div class="credentials-actions">
           <button type="button" class="btn-primary" onclick="closeAddLoginModal()">Done</button>
         </div>
@@ -310,4 +321,5 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <script src="script.js"></script>
 </body>
+
 </html>

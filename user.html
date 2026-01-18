@@ -359,12 +359,72 @@
       const userCode = params.get('code');
 
       if (!username) {
-        document.body.innerHTML = "<div class='profile-card'><h2>🔒 Access Denied</h2><p>Invalid link. Please scan the QR code.</p></div>";
+        document.body.innerHTML = `
+          <div class='profile-card'>
+            <h2>🔒 Access Denied</h2>
+            <p style='font-size: 16px; color: #666; margin: 20px 0;'>Invalid link or QR code.<br> Please re-scan the correct QR code.</p>
+            
+            <div style='background: #f8d7da; padding: 20px; border-radius: 12px; margin: 20px 0;'>
+              <p style='color: #555; margin: 5px 0;'><strong>❌ Not Found</strong></p>
+              <p style='color: #555; margin: 5px 0;'>Profile doesn't exist or credentials don't match.</p>
+            </div>
+            
+            <div style='background: #e8f4f8; padding: 20px; border-radius: 12px; margin: 20px 0;'>
+              <p style='color: #555; margin: 5px 0;'><strong>💡 What to do:</strong></p>
+              <p style='color: #555; margin: 5px 0;'>• Scan the QR code again •</p>
+              <p style='color: #555; margin: 5px 0;'>• Request a new / updated QR •</p>
+            </div>
+
+            <!-- MultiLynk QR Footer -->
+            <div class='multilynk-footer'>
+              Want your own MultiLynk QR?
+              <a href='tel:+917036412617' class='footer-icon-link' title='Call us'>
+                <img src='./assets/icons/phone.svg' alt='Call' onerror="this.src='./assets/icons/default.svg'">
+              </a>
+              <a href='mailto:multilynkqr@gmail.com' class='footer-icon-link' title='Email us'>
+                <img src='./assets/icons/email.svg' alt='Email' onerror="this.src='./assets/icons/default.svg'">
+              </a>
+              <a href='https://wa.me/917036412617' target='_blank' rel='noopener' class='footer-icon-link' title='WhatsApp us'>
+                <img src='./assets/icons/whatsapp.svg' alt='WhatsApp' onerror="this.src='./assets/icons/default.svg'">
+              </a>
+            </div>
+          </div>
+        `;
         return;
       }
 
       if (!userCode) {
-        document.body.innerHTML = "<div class='profile-card'><h2>🔒 Access Denied</h2><p>Security code required. Please scan the QR code.</p></div>";
+        document.body.innerHTML = `
+          <div class='profile-card'>
+            <h2>🔒 Access Denied</h2>
+            <p style='font-size: 16px; color: #666; margin: 20px 0;'>Invalid link or QR code.<br> Please re-scan the correct QR code.</p>
+            
+            <div style='background: #f8d7da; padding: 20px; border-radius: 12px; margin: 20px 0;'>
+              <p style='color: #555; margin: 5px 0;'><strong>❌ Not Found</strong></p>
+              <p style='color: #555; margin: 5px 0;'>Profile doesn't exist or credentials don't match.</p>
+            </div>
+            
+            <div style='background: #e8f4f8; padding: 20px; border-radius: 12px; margin: 20px 0;'>
+              <p style='color: #555; margin: 5px 0;'><strong>💡 What to do:</strong></p>
+              <p style='color: #555; margin: 5px 0;'>• Scan the QR code again •</p>
+              <p style='color: #555; margin: 5px 0;'>• Request a new / updated QR •</p>
+            </div>
+
+            <!-- MultiLynk QR Footer -->
+            <div class='multilynk-footer'>
+              Want your own MultiLynk QR?
+              <a href='tel:+917036412617' class='footer-icon-link' title='Call us'>
+                <img src='./assets/icons/phone.svg' alt='Call' onerror="this.src='./assets/icons/default.svg'">
+              </a>
+              <a href='mailto:multilynkqr@gmail.com' class='footer-icon-link' title='Email us'>
+                <img src='./assets/icons/email.svg' alt='Email' onerror="this.src='./assets/icons/default.svg'">
+              </a>
+              <a href='https://wa.me/917036412617' target='_blank' rel='noopener' class='footer-icon-link' title='WhatsApp us'>
+                <img src='./assets/icons/whatsapp.svg' alt='WhatsApp' onerror="this.src='./assets/icons/default.svg'">
+              </a>
+            </div>
+          </div>
+        `;
         return;
       }
 
@@ -398,7 +458,37 @@
         }
 
         if (!user) {
-          document.body.innerHTML = "<div class='profile-card'><h2>🔒 Access Denied</h2><p>Invalid link or security code. Please scan the correct QR code.</p></div>";
+          document.body.innerHTML = `
+            <div class='profile-card'>
+              <h2>🔒 Access Denied</h2>
+              <p style='font-size: 16px; color: #666; margin: 20px 0;'>Invalid link or QR code.<br> Please re-scan the correct QR code.</p>
+              
+              <div style='background: #f8d7da; padding: 20px; border-radius: 12px; margin: 20px 0;'>
+                <p style='color: #555; margin: 5px 0;'><strong>❌ Not Found</strong></p>
+                <p style='color: #555; margin: 5px 0;'>Profile doesn't exist or credentials don't match.</p>
+              </div>
+              
+              <div style='background: #e8f4f8; padding: 20px; border-radius: 12px; margin: 20px 0;'>
+                <p style='color: #555; margin: 5px 0;'><strong>💡 What to do:</strong></p>
+                <p style='color: #555; margin: 5px 0;'>• Scan the QR code again •</p>
+                <p style='color: #555; margin: 5px 0;'>• Request a new / updated QR •</p>
+              </div>
+
+              <!-- MultiLynk QR Footer -->
+              <div class='multilynk-footer'>
+                Want your own MultiLynk QR?
+                <a href='tel:+917036412617' class='footer-icon-link' title='Call us'>
+                  <img src='./assets/icons/phone.svg' alt='Call' onerror="this.src='./assets/icons/default.svg'">
+                </a>
+                <a href='mailto:multilynkqr@gmail.com' class='footer-icon-link' title='Email us'>
+                  <img src='./assets/icons/email.svg' alt='Email' onerror="this.src='./assets/icons/default.svg'">
+                </a>
+                <a href='https://wa.me/917036412617' target='_blank' rel='noopener' class='footer-icon-link' title='WhatsApp us'>
+                  <img src='./assets/icons/whatsapp.svg' alt='WhatsApp' onerror="this.src='./assets/icons/default.svg'">
+                </a>
+              </div>
+            </div>
+          `;
           return;
         }
 
