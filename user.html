@@ -114,16 +114,16 @@
 
   <!-- QR Code Display Overlay -->
   <div id="qrCodeOverlay" class="upi-overlay">
-    <div class="upi-overlay-content qr-overlay-special">
+    <div class="upi-overlay-content" style="max-width: 700px;">
       <div class="upi-overlay-header">
         <h3 id="qrCodeTitle">Scan QR Code</h3>
         <button class="upi-close-btn" onclick="closeQRCodeOverlay()">&times;</button>
       </div>
-      <div style="padding: 0.5rem; text-align: center;">
-        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin-bottom: 1rem;">
+      <div style="padding: 1px; text-align: center;">
+        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin-bottom: 20px;">
           <!-- QR code will be displayed here -->
         </div>
-        <p style="color: #666; font-size: 14px; margin-top: 0.5rem;">Scan this QR code to share this profile</p>
+        <p style="color: #666; font-size: 14px; margin-top: 1px;">Scan this QR code to share this profile</p>
       </div>
     </div>
   </div>
