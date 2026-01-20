@@ -1224,6 +1224,7 @@ button[type="submit"] {
   display: none;
   align-items: center;
   justify-content: center;
+  padding: 20px;
   z-index: 1000;
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
@@ -1233,9 +1234,9 @@ button[type="submit"] {
   background: var(--white);
   border-radius: var(--radius-lg);
   padding: 2rem;
-  max-width: auto;
+  max-width: 400px;
   width: 90%;
-  max-height: auto;
+  max-height: 80vh;
   overflow-y: auto;
   box-shadow: var(--shadow-xl);
   animation: overlaySlideIn 0.3s ease-out;
@@ -2470,36 +2471,37 @@ form input::placeholder {
 }
 
 /* Landscape Orientation - Critical for Horizontal Display */
+/* Only apply to QR code modal, not UPI/Phone/Email selection modals */
 @media (max-height: 500px) and (orientation: landscape) {
-  .upi-overlay-content {
+  .qr-overlay-special {
     max-height: 90vh;
     padding: 1rem;
     width: 70%;
   }
 
-  .upi-overlay-header {
+  .qr-overlay-special .upi-overlay-header {
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
   }
 
-  .upi-overlay-header h3 {
+  .qr-overlay-special .upi-overlay-header h3 {
     font-size: 0.9rem;
   }
 
-  .upi-close-btn {
+  .qr-overlay-special .upi-close-btn {
     font-size: 1.25rem;
     padding: 0.125rem;
   }
 
   /* Scale down QR code in landscape */
-  #qrCodeContainer {
+  .qr-overlay-special #qrCodeContainer {
     max-width: 100%;
     margin-bottom: 0.5rem !important;
   }
 
-  #qrCodeContainer canvas,
-  #qrCodeContainer img,
-  #qrCodeContainer svg {
+  .qr-overlay-special #qrCodeContainer canvas,
+  .qr-overlay-special #qrCodeContainer img,
+  .qr-overlay-special #qrCodeContainer svg {
     width: auto !important;
     height: auto !important;
     max-width: 200px !important;
@@ -2507,13 +2509,13 @@ form input::placeholder {
   }
 
   /* Reduce text size */
-  .upi-overlay-content p {
+  .qr-overlay-special p {
     font-size: 0.75rem !important;
     margin-top: 0.25rem !important;
   }
 
   /* Compact overlay wrapper padding */
-  .upi-overlay-content>div {
+  .qr-overlay-special>div {
     padding: 0.25rem !important;
   }
 }
