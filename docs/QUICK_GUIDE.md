@@ -13,9 +13,14 @@
 - Add certificates (optional) - see [CERTIFICATES.md](CERTIFICATES.md)
 - Click "💾 Generate JSON"
 - Copy the JSON that appears
-- Open `data/clients.json` or `data/personal.json`
-- Add the JSON to the array
-- Save the file
+- **Folder Organization (Optional)**:
+  - Create a folder e.g., `data/vip-clients/`
+  - Create a new file there e.g., `vip-list.json`
+  - Paste the JSON into that file
+- **Update System**: If you added a new file, run:
+  ```bash
+  node tools/generate_index.js
+  ```
 
 ### 3. Test It
 - Refresh the dashboard
@@ -38,6 +43,9 @@
 - **Custom Certificates**: Add unlimited credentials with custom titles
 - **Multiple UPI IDs**: Support multiple payment IDs per platform
 - **Multiple Phone/Email**: Add multiple contact methods
+- **Folder Organization**: Sort clients into unlimited nested folders
+- **System Indexing**: Auto-discovery of all data files
+- **Detailed Analytics**: Track user counts per folder and file
 - **Google Maps**: Combined location + review links
 - **QR Customization**: Colors, styles, gradients, transparency
 
@@ -177,8 +185,8 @@
 
 ### User Management
 - **Need to add user?** Use `edit.html` directly (no login needed)
-- **Can't see user?** Refresh dashboard (Ctrl+Shift+R)
-- **QR not working?** Check `data/clients.json` has the user
+- **Can't see user?** Run `node tools/generate_index.js` and refresh
+- **QR not working?** check `data/index.json` to see if file is listed
 
 ### Profile Access
 - **URL needs both username and code** for security

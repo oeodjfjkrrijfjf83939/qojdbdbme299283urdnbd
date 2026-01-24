@@ -30,26 +30,50 @@ const QR_PADDING_CONFIG = {
 // Load users from multiple JSON files for QR modal
 async function loadUsersForQR(username, userCode) {
   try {
-    // List of data files to load (using centralized config)
-    const dataFiles = DATA_FILES_CONFIG.files;
+    let filesToSearch = [];
+    const indexUrl = DATA_FILES_CONFIG.indexFile || './data/index.json';
 
-    const allUsers = [];
+    try {
+      const indexRes = await fetch(indexUrl);
+      if (indexRes.ok) {
+        const index = await indexRes.json();
 
-    // Load users from each file
-    for (const file of dataFiles) {
-      try {
-        const res = await fetch(file);
-        if (res.ok) {
-          const users = await res.json();
-          allUsers.push(...users);
+        // OPTIMIZATION: If we have userCode, look up exact file!
+        if (userCode && index[userCode]) {
+          filesToSearch = [index[userCode]];
+        } else {
+          // Fallback: search all known files
+          filesToSearch = [...new Set(Object.values(index))];
         }
-      } catch (fileErr) {
-        // Continue loading other files even if one fails
+      } else {
+        throw new Error("Index fetch failed");
       }
+    } catch (e) {
+      console.warn("Index lookup failed for QR, falling back", e);
+      filesToSearch = DATA_FILES_CONFIG.fallbackFiles || ['personal.json', 'clients.json', 'demo.json'];
     }
 
-    // Find the specific user
-    const user = allUsers.find(u => u.username === username && u.userCode === userCode);
+    let user = null;
+
+    // Load users from identified files
+    for (const file of filesToSearch) {
+      try {
+        // Handle both relative paths in index and simple filenames in fallback
+        const filePath = file.includes('/') ? `./data/${file}` : `./data/${file}`;
+        // Actually, index values are like "a/b/file.json", so prepending ./data/ is correct.
+        // Fallback files are "file.json", so prepending ./data/ is also correct.
+
+        const res = await fetch(`./data/${file}`);
+        if (res.ok) {
+          const users = await res.json();
+          // Find the specific user
+          user = users.find(u => u.username === username && u.userCode === userCode);
+          if (user) break;
+        }
+      } catch (fileErr) {
+        console.error(`Error loading ${file} for QR match:`, fileErr);
+      }
+    }
 
     if (user) {
       document.getElementById('qrUserName').innerText = user.fullname || 'Unknown User';
@@ -59,6 +83,7 @@ async function loadUsersForQR(username, userCode) {
       document.getElementById('qrUserHandle').innerText = `@${username}`;
     }
   } catch (err) {
+    console.error("Critical error in loadUsersForQR:", err);
     // Fallback if all files fail to load
     document.getElementById('qrUserName').innerText = 'Unknown User';
     document.getElementById('qrUserHandle').innerText = `@${username}`;
@@ -217,39 +242,34 @@ async function loadUsers() {
         updateUserStatistics(allUsers);
 
       } catch (indexErr) {
-        console.error('Error loading index, falling back to hardcoded files:', indexErr);
-        // Fallback to hardcoded files if index fails
-        const dataFiles = DATA_FILES_CONFIG.files;
-
-        const allUsers = [];
-        for (const file of dataFiles) {
-          try {
-            const res = await fetch(file);
-            if (res.ok) {
-              const users = await res.json();
-              allUsers.push(...users);
-              console.log(`✅ Loaded ${users.length} users from ${file} (fallback)`);
-            }
-          } catch (fileErr) {
-            console.log(`⚠️ Error loading ${file}:`, fileErr.message);
-          }
-        }
-
-        allUsersGlobal = allUsers;
-        showUserUI();
-        displayUsers(allUsers);
-        updateUserStatistics(allUsers);
+        console.error('Error loading index:', indexErr);
+        alert('Failed to load data index. Please ensure tools/generate_index.js has been run.');
+        // Fallback is no longer possible without files list
+        return;
       }
 
     } else if (userRole === 'main_admin') {
       // Admin users see all data and admin statistics
-      const dataFiles = DATA_FILES_CONFIG.files;
+      console.log('🔑 Main Admin Login - Loading all users from index');
+
+      let dataFiles = [];
+      try {
+        const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+        if (indexRes.ok) {
+          const index = await indexRes.json();
+          // Index is now { userCode: filePath }, so we must deduplicate the values
+          dataFiles = [...new Set(Object.values(index))];
+        }
+      } catch (err) {
+        console.error('Error loading index:', err);
+      }
 
       const allUsers = [];
 
       for (const file of dataFiles) {
         try {
-          const res = await fetch(file);
+          // Index contains relative paths (e.g. "a/file.json"), so we must prepend ./data/
+          const res = await fetch(`./data/${file}`);
           if (res.ok) {
             const users = await res.json();
             allUsers.push(...users);
@@ -268,35 +288,85 @@ async function loadUsers() {
       displayLoginAccountsTable();
 
     } else if (userRole === 'user') {
-      // Regular users see only their assigned data file
+      // Regular users see files based on their assigned dataFile (can be a file or folder)
       if (!userDataFile) {
         document.getElementById('userList').innerHTML =
-          '<div class="no-users"><p style="color: red;">❌ No data file assigned to this user!</p></div>';
+          '<div class="no-results-card"><p style="color: red;">❌ No data file assigned to this user!</p></div>';
         return;
       }
 
-      let users = [];
+      console.log(`👤 User Login - Loading data for scope: ${userDataFile}`);
+
+      let targetFiles = [];
+
       try {
-        const response = await fetch(`./data/${userDataFile}`);
-        if (response.ok) {
-          users = await response.json();
-        } else if (response.status === 404) {
-          // Data file doesn't exist yet - show empty state
-          users = [];
-        } else {
-          throw new Error('Failed to load data file');
+        // 1. Fetch the Master Index
+        const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+        if (!indexRes.ok) throw new Error('Failed to load master index');
+
+        const index = await indexRes.json();
+        // Index is now { userCode: filePath }, so we must deduplicate the values
+        const allKnownFiles = [...new Set(Object.values(index))];
+
+        // 2. Filter files based on userDataFile
+        // userDataFile could be "personal.json" (exact match) or "a" (folder)
+        targetFiles = allKnownFiles.filter(filePath => {
+          // Normalize paths to be safe (though index should be forward slashes)
+          const normFilePath = filePath.replace(/\\/g, '/');
+          const normScope = userDataFile.replace(/\\/g, '/');
+
+          // Case A: Exact File Match
+          if (normFilePath === normScope) return true;
+
+          // Case B: Folder Match (scope is a directory)
+          // Ensure scope ends with '/' for prefix check to avoid partial matches (e.g. "data" matching "database.json")
+          // But first Check if the scope itself is a prefix of the filepath
+          // If input is "a", we want to match "a/..."
+
+          if (normFilePath.startsWith(normScope + '/')) {
+            return true;
+          }
+
+          // Handle nested deep folder passed as scope e.g. "a/b" -> matches "a/b/c.json"
+          return false;
+        });
+
+        console.log(`📂 Found ${targetFiles.length} files matching scope "${userDataFile}":`, targetFiles);
+
+        if (targetFiles.length === 0) {
+          document.getElementById('userList').innerHTML =
+            `<div class="no-results-card"><p>No data files found for: ${userDataFile}</p></div>`;
+          return;
         }
-      } catch (error) {
-        console.error(`Error loading ${userDataFile}:`, error);
+
+      } catch (err) {
+        console.error('Error resolving file scope:', err);
         document.getElementById('userList').innerHTML =
-          '<div class="no-users"><p style="color: red;">❌ Error loading users!</p></div>';
+          '<div class="no-results-card"><p style="color: red;">❌ Error resolving file permissions.</p></div>';
         return;
       }
 
-      allUsersGlobal = users;
+      // 3. Load all matched files
+      const allUsers = [];
+
+      for (const file of targetFiles) {
+        try {
+          const res = await fetch(`./data/${file}`);
+          if (res.ok) {
+            const users = await res.json();
+            allUsers.push(...users);
+          } else {
+            console.warn(`Failed to fetch file: ${file}`);
+          }
+        } catch (e) {
+          console.error(`Error loading ${file}:`, e);
+        }
+      }
+
+      allUsersGlobal = allUsers;
       showUserUI();
-      displayUsers(users);
-      updateUserStatistics(users);
+      displayUsers(allUsers);
+      updateUserStatistics(allUsers);
 
     } else {
       // Unknown role - redirect to login
@@ -1364,7 +1434,45 @@ function setupCustomizationPanel() {
 // Display admin statistics
 async function displayAdminStatistics(users) {
   const totalClientUsers = users.length;
-  const totalDataFiles = 3; // personal.json, clients.json, demo.json
+
+  // Calculate total data files dynamically from the index
+  // Calculate total data files and folders dynamically from the index
+  let totalDataFilesText = '0';
+  try {
+    const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+    if (indexRes.ok) {
+      const index = await indexRes.json();
+      const filePaths = new Set(Object.values(index));
+      const totalFiles = filePaths.size;
+
+      // Count unique folders
+      const folders = new Set();
+      filePaths.forEach(path => {
+        // Normalize path separators
+        const p = path.replace(/\\/g, '/');
+        const lastSlash = p.lastIndexOf('/');
+        if (lastSlash !== -1) {
+          const dir = p.substring(0, lastSlash);
+          folders.add(dir);
+          // Verify if we should count all intermediate folders?
+          // For now, counting the direct parent folders of valid files seems most useful.
+        }
+      });
+
+      if (folders.size > 0) {
+        totalDataFilesText = `${totalFiles} Files / ${folders.size} Folders`;
+      } else {
+        totalDataFilesText = `${totalFiles}`;
+      }
+    }
+  } catch (e) {
+    console.error("Error counting data files:", e);
+    totalDataFilesText = '-';
+  }
+
+  // Update DOM with text instead of just number (ensure CSS allows this width)
+  const dataFilesEl = document.getElementById('totalDataFiles');
+  if (dataFilesEl) dataFilesEl.textContent = totalDataFilesText;
 
   let totalLinks = 0;
   users.forEach(user => {
@@ -1411,15 +1519,14 @@ async function displayAdminStatistics(users) {
     }
 
     if (credentials) {
-      // Exclude main admin from count - only count regular users (including inactive)
-      totalLoginAccounts = credentials.filter(cred => cred.role !== 'main_admin').length;
+      // Exclude main admin and super admin from count - only count regular users (including inactive)
+      totalLoginAccounts = credentials.filter(cred => cred.role !== 'main_admin' && cred.role !== 'super_admin').length;
     }
   } catch (error) {
     console.error('Error loading credentials:', error);
   }
 
   document.getElementById('totalLoginAccounts').textContent = totalLoginAccounts;
-  document.getElementById('totalDataFiles').textContent = totalDataFiles;
   document.getElementById('totalClientUsers').textContent = totalClientUsers;
   document.getElementById('totalLinksCount').textContent = totalLinks;
 }
@@ -1464,14 +1571,44 @@ async function displayLoginAccountsTable(accountsToShow = null) {
     tbody.innerHTML = "";
 
     // Count client users for each data file
-    const clientUserCounts = await getClientUserCounts();
+    const clientUserStats = await getClientUserCounts();
 
     allAccounts.forEach(account => {
-      const clientUsersCount = account.role === 'main_admin' ? '-' : (clientUserCounts[account.dataFile] || 0);
-      const roleDisplay = account.role === 'main_admin' ? 'Main Admin' : 'User';
+      let clientCountsDisplay = '-';
+
+      if (account.role !== 'main_admin' && account.role !== 'super_admin') {
+        const stats = clientUserStats[account.dataFile];
+        if (stats) {
+          if (stats.files > 1) {
+            // Encode details to pass to function securely or store globally
+            // Storing in a temporary global map is safer for complex objects
+            if (!window.folderDetailsCache) window.folderDetailsCache = {};
+            window.folderDetailsCache[account.dataFile] = stats.details;
+
+            clientCountsDisplay = `
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>${stats.users}</span>
+                <span style="font-size: 0.85em; color: #666;">(${stats.files} files)</span>
+                <span class="view-details-icon" 
+                      onclick="showFolderDetails('${account.dataFile}')" 
+                      title="View Details"
+                      style="cursor: pointer; font-size: 1.1em;">👁️</span>
+              </div>`;
+          } else {
+            clientCountsDisplay = `${stats.users}`;
+          }
+        } else {
+          clientCountsDisplay = '0';
+        }
+      }
+
+      let roleDisplay = 'User';
+      if (account.role === 'super_admin') roleDisplay = 'Super Admin';
+      else if (account.role === 'main_admin') roleDisplay = 'Main Admin';
+
       const statusClass = account.isActive ? 'active' : 'inactive';
       const statusText = account.isActive ? 'Active' : 'Inactive';
-      const isMainAdmin = account.role === 'main_admin';
+      const isMainAdmin = account.role === 'main_admin' || account.role === 'super_admin';
 
       const row = document.createElement('tr');
       if (isMainAdmin) {
@@ -1486,7 +1623,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
         </td>
         <td>${account.description || 'No description'}</td>
         <td>${account.dataFile || '-'}</td>
-        <td>${clientUsersCount}</td>
+        <td>${clientCountsDisplay}</td>
         <td>${roleDisplay}</td>
         <td>
           <div class="status-badge ${statusClass}">
@@ -1515,21 +1652,59 @@ async function displayLoginAccountsTable(accountsToShow = null) {
 // Get client user counts for each data file
 async function getClientUserCounts() {
   const counts = {};
-  const dataFiles = ['personal.json', 'clients.json', 'demo.json'];
 
-  for (const file of dataFiles) {
-    try {
-      const response = await fetch(`./data/${file}`);
-      if (response.ok) {
-        const users = await response.json();
-        counts[file] = users.length;
-      } else {
-        counts[file] = 0;
+  try {
+    // 1. Get credentials to know which dataFiles (scopes) exist
+    const credRes = await fetch('./credentials/login_credentials.json');
+    if (!credRes.ok) return counts;
+    const credentials = await credRes.json();
+
+    // 2. Get Master Index to resolve scopes to files
+    const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+    if (!indexRes.ok) return counts;
+    const index = await indexRes.json();
+
+    // 3. For each active dataFile scope, count users
+    const scopes = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
+
+    for (const scope of scopes) {
+      let count = 0;
+      const matchedFiles = new Set();
+      const fileDetails = [];
+
+      Object.values(index).forEach(filePath => {
+        const normPath = filePath.replace(/\\/g, '/');
+        const normScope = scope.replace(/\\/g, '/');
+
+        if (normPath === normScope || normPath.startsWith(normScope + '/')) {
+          matchedFiles.add(filePath);
+        }
+      });
+
+      // Fetch and count per file
+      for (const file of matchedFiles) {
+        try {
+          const res = await fetch(`./data/${file}`);
+          if (res.ok) {
+            const users = await res.json();
+            const fileCount = users.length;
+            count += fileCount;
+            fileDetails.push({ file: file, count: fileCount });
+          }
+        } catch (e) {
+          console.error(`Error counting users in ${file}:`, e);
+        }
       }
-    } catch (error) {
-      console.error(`Error loading ${file}:`, error);
-      counts[file] = 0;
+
+      counts[scope] = {
+        users: count,
+        files: matchedFiles.size,
+        details: fileDetails
+      };
     }
+
+  } catch (error) {
+    console.error('Error calculating client counts:', error);
   }
 
   return counts;
@@ -1570,6 +1745,137 @@ async function toggleAccountStatus(username, isActive) {
   } catch (error) {
     console.error('Error toggling account status:', error);
     alert('Error: Could not update account status');
+  }
+}
+
+// Show folder details modal
+function showFolderDetails(dataFile) {
+  const details = window.folderDetailsCache ? window.folderDetailsCache[dataFile] : null;
+
+  if (!details || details.length === 0) {
+    alert('No details available');
+    return;
+  }
+
+  const modal = document.getElementById('folderDetailsModal');
+  const modalContent = document.getElementById('folderDetailsContent');
+
+  if (!modal) return;
+
+  // Calculate total
+  const totalUsers = details.reduce((sum, item) => sum + item.count, 0);
+
+  // Determine folder display name
+  const folderName = dataFile.endsWith('/') ? dataFile : dataFile + '/';
+
+  // Build the new UI structure
+  let html = `
+    <div class="folder-modal-wrapper">
+      <!-- Custom Header -->
+      <div class="folder-modal-header">
+        <div class="folder-header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+        </div>
+        <div class="folder-header-info">
+          <h3>Folder Distribution</h3>
+          <p>${folderName}</p>
+        </div>
+        <button class="custom-close-btn" onclick="closeFolderDetailsModal()">&times;</button>
+      </div>
+
+      <!-- Summary Row -->
+      <div class="folder-stats-row">
+        <span class="stats-label">Total Users</span>
+        <span class="stats-value">${totalUsers}</span>
+      </div>
+
+      <!-- File List -->
+      <div class="folder-file-list">
+  `;
+
+  details.forEach(item => {
+    let typeLabel = "Root Folder"; // Default
+
+    // Normalize paths
+    const normFile = item.file.replace(/\\/g, '/');
+    const normScope = dataFile.replace(/\\/g, '/');
+
+    const relativePath = normFile.startsWith(normScope) ? normFile.substring(normScope.length) : normFile;
+    const cleanRelative = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
+    const depth = cleanRelative.split('/').length;
+
+    let iconSvg = '';
+
+    if (depth > 1) {
+      typeLabel = "Sub-folder";
+      // Folder Icon (Yellow)
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+    } else {
+      // File Icon (Blue/Gray) - for Root Folder items
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
+    }
+
+    html += `
+        <div class="folder-list-item">
+          <div class="item-icon">
+            ${iconSvg}
+          </div>
+          <div class="item-details">
+            <span class="item-name">${item.file}</span>
+            <span class="item-type">${typeLabel}</span>
+          </div>
+          <div class="item-stats">
+            <span class="item-count">${item.count}</span>
+            <span class="item-label">Users</span>
+          </div>
+        </div>
+    `;
+  });
+
+  html += `
+      </div>
+    </div>
+  `;
+
+  // Hide default modal header/footer to match design (safely check if they exist)
+  const defaultHeader = modal.querySelector('.modal-header');
+  if (defaultHeader) defaultHeader.style.display = 'none';
+
+  const defaultFooter = modal.querySelector('.modal-footer');
+  if (defaultFooter) defaultFooter.style.display = 'none';
+
+  modalContent.innerHTML = html;
+
+  // Remove padding from modal content to allow header to stretch
+  modalContent.style.padding = '0';
+  modalContent.style.overflow = 'hidden';
+
+  modal.classList.remove('hidden');
+
+  // Add click outside listener
+  const closeOnOutsideClick = (e) => {
+    // If click is on the overlay (the background), close the modal
+    if (e.target === modal) {
+      closeFolderDetailsModal();
+      modal.removeEventListener('click', closeOnOutsideClick);
+    }
+  };
+  modal.addEventListener('click', closeOnOutsideClick);
+}
+
+function closeFolderDetailsModal() {
+  const modal = document.getElementById('folderDetailsModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    // Restore default header/footer if they exist (for future proofing)
+    const defaultHeader = modal.querySelector('.modal-header');
+    if (defaultHeader) defaultHeader.style.display = '';
+    const defaultFooter = modal.querySelector('.modal-footer');
+    if (defaultFooter) defaultFooter.style.display = '';
+
+    // Reset content padding
+    const modalContent = document.getElementById('folderDetailsContent');
+    if (modalContent) modalContent.style.padding = '';
   }
 }
 
@@ -1618,11 +1924,8 @@ async function handleAddLoginForm(e) {
     return;
   }
 
-  // Process data file name
+  // Process data file name - use exactly what user entered
   let processedDataFile = dataFile;
-  if (!processedDataFile.endsWith('.json')) {
-    processedDataFile += '.json';
-  }
 
   // Check username and data file uniqueness
   try {
@@ -1673,6 +1976,13 @@ function showCredentialsDisplay(username, password, dataFile, role, userDescript
   // Format JSON with proper indentation
   const jsonString = JSON.stringify(jsonData, null, 4);
   document.getElementById('jsonCredentials').textContent = jsonString;
+
+  // Reset copy button to original state
+  const copyButton = document.querySelector('.copy-all-btn');
+  if (copyButton) {
+    copyButton.textContent = '📋 Copy JSON';
+    copyButton.style.background = '';
+  }
 }
 
 function copyJsonCredentials() {
@@ -1686,9 +1996,19 @@ function copyJsonCredentials() {
     button.textContent = '✅ Copied!';
     button.style.background = 'var(--success)';
 
+    // Select the text visually
+    if (window.getSelection && document.createRange) {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(jsonElement);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
     setTimeout(() => {
       button.textContent = originalText;
       button.style.background = '';
+      // Optional: clear selection after timeout? User didn't specify, but keeping it selected looks like the screenshot
     }, 2000);
   }).catch(function (err) {
     console.error('Could not copy text: ', err);
@@ -1748,9 +2068,9 @@ async function validateDataFile() {
     return;
   }
 
-  // Basic validation for data file name
-  if (!/^[a-zA-Z0-9_-]+$/.test(dataFile)) {
-    showFieldError(field, 'Data file name can only contain letters, numbers, hyphens, and underscores');
+  // Basic validation for data file name - Allow slashes for folders
+  if (!/^[a-zA-Z0-9_\-./\\]+$/.test(dataFile)) {
+    showFieldError(field, 'Data file name can only contain letters, numbers, hyphens, underscores, dots, and slashes');
     return;
   }
 
@@ -1759,7 +2079,7 @@ async function validateDataFile() {
     const response = await fetch('./credentials/login_credentials.json');
     if (response.ok) {
       const credentials = await response.json();
-      const processedDataFile = dataFile.endsWith('.json') ? dataFile : dataFile + '.json';
+      const processedDataFile = dataFile;
       const existingDataFile = credentials.find(cred =>
         cred.dataFile && cred.dataFile.toLowerCase() === processedDataFile.toLowerCase()
       );

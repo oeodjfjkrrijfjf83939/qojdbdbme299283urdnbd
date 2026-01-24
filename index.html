@@ -278,10 +278,10 @@
         </div>
 
         <div class="form-group">
-          <label for="newDataFile">Data File *</label>
-          <input type="text" id="newDataFile" placeholder="Enter data file name (e.g., new_users)" required>
-          <small class="form-help">Enter the name of the JSON file (without .json extension - it will be added
-            automatically)</small>
+          <label for="newDataFile">Data Access Scope *</label>
+          <input type="text" id="newDataFile" placeholder="e.g. users (for file) or data/clients (for folder)" required>
+          <small class="form-help">Enter the exact filename (e.g., users.json) or folder path (e.g.,
+            data/clients).</small>
         </div>
 
         <div class="form-group">
@@ -316,6 +316,14 @@
           <button type="button" class="btn-primary" onclick="closeAddLoginModal()">Done</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Folder Details Modal -->
+  <div id="folderDetailsModal" class="modal-overlay hidden">
+    <div class="modal-container" style="max-width: 550px; overflow: hidden; padding: 0;">
+      <!-- Content injected by JS -->
+      <div id="folderDetailsContent"></div>
     </div>
   </div>
 

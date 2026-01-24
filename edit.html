@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="config.js"></script>
 </head>
 
 <body>
@@ -645,27 +646,36 @@
     // Generate unique user code (checks against existing codes)
     async function generateUniqueUserCode() {
       try {
-        // List of data files to check for existing codes
-        const dataFiles = [
-          './data/personal.json',
-          './data/clients.json',
-          './data/demo.json',
-          // Add more files here as needed: './data/users_location2.json', etc.
-        ];
+        let allFiles = [];
+
+        try {
+          // Fetch master index to know all files
+          const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+          if (indexRes.ok) {
+            const index = await indexRes.json();
+            // Get unique file paths from index values
+            allFiles = [...new Set(Object.values(index))];
+          } else {
+            // Fallback if index fails
+            allFiles = DATA_FILES_CONFIG.fallbackFiles || ['personal.json', 'clients.json', 'demo.json'];
+          }
+        } catch (e) {
+          console.error("Error loading index for code generation:", e);
+          allFiles = DATA_FILES_CONFIG.fallbackFiles || ['personal.json', 'clients.json', 'demo.json'];
+        }
 
         const allUsers = [];
 
         // Load users from all files to check for duplicates
-        for (const file of dataFiles) {
+        for (const file of allFiles) {
           try {
-            const res = await fetch(file);
+            const res = await fetch(`./data/${file}`);
             if (res.ok) {
               const users = await res.json();
               allUsers.push(...users);
             }
           } catch (fileErr) {
             console.log(`⚠️ Error loading ${file} for code check:`, fileErr.message);
-            // Continue loading other files
           }
         }
 
@@ -716,20 +726,36 @@
       if (!username) return;
 
       try {
-        // List of data files to search
-        const dataFiles = [
-          './data/personal.json',
-          './data/clients.json',
-          './data/demo.json',
-          // Add more files here as needed: './data/users_location2.json', etc.
-        ];
+        let filesToSearch = [];
+        const indexUrl = DATA_FILES_CONFIG.indexFile || './data/index.json';
+
+        try {
+          const indexRes = await fetch(indexUrl);
+          if (indexRes.ok) {
+            const index = await indexRes.json();
+
+            // OPTIMIZATION: If we have userCode, look up exact file!
+            if (userCode && index[userCode]) {
+              console.log(`🎯 Index lookup: ${userCode} found in ${index[userCode]}`);
+              filesToSearch = [index[userCode]];
+            } else {
+              // Fallback: search all known files if code not in index or not provided
+              filesToSearch = [...new Set(Object.values(index))];
+            }
+          } else {
+            throw new Error("Index fetch failed");
+          }
+        } catch (e) {
+          console.warn("Index lookup failed, falling back to default list", e);
+          filesToSearch = DATA_FILES_CONFIG.fallbackFiles || ['personal.json', 'clients.json', 'demo.json'];
+        }
 
         let user = null;
 
-        // Search for user across all data files
-        for (const file of dataFiles) {
+        // Search for user across identified data files
+        for (const file of filesToSearch) {
           try {
-            const res = await fetch(file);
+            const res = await fetch(`./data/${file}`);
             if (res.ok) {
               const users = await res.json();
 
@@ -745,7 +771,7 @@
               if (user) {
                 console.log(`✅ Found user in ${file}`);
                 // Store found file for display
-                window.currentDataFile = file.replace('./', '');
+                window.currentDataFile = `data/${file}`;
                 break; // Stop searching once user is found
               }
             }

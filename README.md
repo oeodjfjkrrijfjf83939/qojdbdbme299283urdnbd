@@ -11,14 +11,17 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 - 📱 **Mobile friendly** design
 - 🌍 **175+ platforms** - Global & Indian platforms
 - 🎓 **Custom certificates** - Add unlimited credentials
+- 🗂️ **Folder-based Organization** - Manage clients in nested folders
+- 📊 **Advanced Analytics** - Track user counts per file and folder
 
 ## 🚀 **Quick Start**
 
 ### **Option A: Full Management (Admin)**
-1. **Open `admin.html`** → Enter password → Access dashboard
-2. **Click "➕ Add New User"** to create profiles
-3. **Click "📱 Show QR"** to generate QR codes
-4. **Download and print** for customers
+1. **Organize Data**: Place JSON files in `data/` or any subfolder (e.g., `data/clients/2024/`).
+2. **Run Indexing**: Execute `node tools/generate_index.js` to update the system.
+3. **Open `admin.html`** → Enter password → Access dashboard.
+4. **Click "👁️ Show Details"** on folder accounts to see file breakdowns.
+5. **Click "📱 Show QR"** to generate QR codes.
 
 ### **Option B: Quick Profile Creation (Public)**
 1. **Open `edit.html`** directly (no login needed)
@@ -41,6 +44,8 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 - **Multiple Emails**: Add multiple email addresses
 - **Google Maps Integration**: Location + Review links combined
 - **Custom Menu Cards**: Digital menu/business card links
+- **Folder Details Overlay**: Visual breakdown of users in nested folders
+- **System Indexing**: Auto-discovery of user data files via `generate_index.js`
 
 ## 🔐 **Security Features**
 
@@ -69,9 +74,16 @@ MultiLynkQRgenerator/
 ├── script.js               # Main JavaScript
 ├── style.css               # Styling
 ├── data/
-│   ├── personal.json       # Personal accounts
-│   ├── clients.json        # Client database
-│   └── demo.json           # Demo database
+│   ├── index.json          # System Index (Auto-generated)
+│   ├── personal/           # Folder example
+│   │   └── personal.json
+│   ├── clients/            # Client database folder
+│   │   ├── clients-1.json
+│   │   └── clients-2.json
+│   └── demo/               # Demo database folder
+│       └── demo.json
+├── tools/
+│   └── generate_index.js   # Index generator script
 ├── credentials/
 │   └── login_credentials.json  # Admin accounts
 ├── assets/
@@ -81,6 +93,20 @@ MultiLynkQRgenerator/
     ├── PLATFORMS.md        # Platform list
     └── CERTIFICATES.md     # Certificates guide
 ```
+
+## 🗂️ **Folder-Based Data Management**
+
+Organize your client data into folders for better structure. The system automatically detects files anywhere inside the `data/` directory.
+
+1. **Create Folders**: Make folders like `data/clients/january/` or `data/vip/`.
+2. **Add Files**: Place your `.json` data files inside these folders.
+3. **Update Index**: Run the tool to register new files:
+   ```bash
+   node tools/generate_index.js
+   ```
+4. **Assign Access**: In `credentials/login_credentials.json`, set `dataFile` to a specific file OR a folder path (e.g., `"dataFile": "clients/january"`).
+   - **File Access**: User sees only that specific file.
+   - **Folder Access**: User sees ALL files inside that folder and its subfolders.
 
 ## ⚠️ **Important Security Notes**
 

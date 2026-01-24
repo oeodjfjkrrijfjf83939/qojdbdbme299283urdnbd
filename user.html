@@ -120,13 +120,30 @@
         <button class="upi-close-btn" onclick="closeQRCodeOverlay()">&times;</button>
       </div>
       <div style="padding: 1px; text-align: center;">
-        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin-bottom: 10px;">
           <!-- QR code will be displayed here -->
         </div>
-        <p style="color: #666; font-size: 14px; margin-top: -5px; margin-bottom: 7px;">Scan this QR code to share this profile</p>
+        <p class="qr-scan-hint">Scan this QR code to share this profile</p>
       </div>
     </div>
   </div>
+
+  <style>
+    .qr-scan-hint {
+      color: #666;
+      font-size: 14px;
+      margin-top: 12px;
+      margin-bottom: -8px;
+      /* Desktop default */
+    }
+
+    @media (max-width: 480px) {
+      .qr-scan-hint {
+        margin-bottom: 6px;
+        /* Mobile override */
+      }
+    }
+  </style>
 
   <script>
     // Complete platform configuration with 50+ platforms

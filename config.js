@@ -2,21 +2,17 @@
 // CENTRALIZED CONFIGURATION
 // ==========================================
 // This is the SINGLE SOURCE OF TRUTH for all data files.
-// Add new data files here and they will be automatically
-// picked up by user.html, script.js, and index.html
+// We now use a generated index file to track all data files.
 
 const DATA_FILES_CONFIG = {
-    // List all your data files here
-    files: [
-        './data/personal.json',
-        './data/clients.json',
-        './data/demo.json',
-        // Add more files here as needed if the seperate login id is created then only this is useful 
-        // in the index.json file it should be updated compulsorily
-        // './data/users_location2.json',
-        // './data/corporate.json',
-        // etc.
-    ]
+    // The master index file containing all data file paths
+    indexFile: './data/index.json',
+
+    // Legacy support (optional, but good to keep structure)
+    useIndex: true,
+
+    // Fallback files if index cannot be loaded
+    fallbackFiles: ['personal.json', 'clients.json', 'demo.json']
 };
 
 // Export for use in other files
