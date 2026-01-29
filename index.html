@@ -229,6 +229,7 @@
                 <option value="octagons">🛑 Octagons</option>
                 <option value="fluid">💧 Fluid</option>
                 <option value="stripes">➖ Stripes</option>
+                <option value="vertical-stripes">┃ Vertical Stripes</option>
                 <option value="cross">➕ Cross</option>
                 <option value="leaf">🍃 Leaf</option>
                 <option value="boxed">▣ Boxed</option>
@@ -284,14 +285,17 @@
                 <div class="gradient-colors-row">
                   <input type="color" id="gradientColor1" value="#000000" title="First gradient color"
                     aria-label="First gradient color">
+                  <button id="gradientSwapBtn" class="btn-icon" title="Swap Colors"
+                    style="margin: 0 5px; padding: 5px; cursor: pointer; background: none; border: none; font-size: 1.2rem;">⇄</button>
                   <input type="color" id="gradientColor2" value="#6366f1" title="Second gradient color"
                     aria-label="Second gradient color">
                 </div>
                 <select id="gradientDirection" title="Gradient direction" aria-label="Gradient direction">
                   <option value="horizontal">Horizontal</option>
                   <option value="vertical">Vertical</option>
-                  <option value="diagonal">Diagonal</option>
-                  <option value="radial">Radial</option>
+                  <option value="diagonal">Diagonal (TL-BR)</option>
+                  <option value="diagonal-reverse">Diagonal (TR-BL)</option>
+                  <option value="radial">Radial (Center)</option>4
                 </select>
               </div>
             </div>

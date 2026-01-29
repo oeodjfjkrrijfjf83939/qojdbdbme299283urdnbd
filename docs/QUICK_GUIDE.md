@@ -213,10 +213,10 @@
 ### QR Code Customization
 - **Colors**: Change QR and background colors
 - **Styles**: Choose from **12+ unique styles** including:
-  - **Modern**: Fluid 💧, Stripes ➖, Cross ➕
+  - **Modern**: Fluid 💧, Stripes ➖, Vertical Stripes ┃, Cross ➕
   - **Creative**: Leaf 🍃, Boxed ▣, Target 🎯, Glitch 👾
   - **Classic**: Squares 🔲, Rounded Dots 🔘, etc.
-- **Gradients**: Apply gradient colors
+- **Gradients**: Apply global gradients with multiple directions (Diagonal, Radial, etc.) and color swapping
 - **Transparency**: Adjust background opacity
 - **Spacing**: Control padding around QR code
 

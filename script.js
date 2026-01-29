@@ -785,6 +785,14 @@ function downloadQRPNG(username, userCode, size = 512) {
     logoEndPos = centerEnd;
   }
 
+  // Create Global Gradient if needed
+  let globalFillStyle = null;
+  if (qrCustomization.isGradient) {
+    globalFillStyle = createGradient(ctx, 0, 0, size, size, qrCustomization.gradientDirection);
+  } else {
+    globalFillStyle = qrCustomization.qrColor;
+  }
+
   // Draw QR code modules with custom colors and styles
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
@@ -835,7 +843,8 @@ function downloadQRPNG(username, userCode, size = 512) {
           moduleSize,
           moduleSize,
           qrCustomization.qrStyle,
-          neighbors
+          neighbors,
+          globalFillStyle
         );
       }
     }
@@ -964,6 +973,31 @@ function downloadQRSVG(username, userCode) {
 
   let svgString = `<svg width="${totalSize}" height="${totalSize}" xmlns="http://www.w3.org/2000/svg">`;
 
+  // Global Gradient Definition
+  let globalGradientId = null;
+  if (qrCustomization.isGradient) {
+    globalGradientId = `gradient-${Math.random().toString(36).substr(2, 9)}`;
+    let gradientDef = `<defs>`;
+
+    const isRadial = qrCustomization.gradientDirection === 'radial';
+    if (isRadial) {
+      gradientDef += `<radialGradient id="${globalGradientId}" cx="50%" cy="50%" r="50%" gradientUnits="userSpaceOnUse">`;
+    } else {
+      gradientDef += `<linearGradient id="${globalGradientId}" gradientUnits="userSpaceOnUse"`;
+      switch (qrCustomization.gradientDirection) {
+        case 'horizontal': gradientDef += ` x1="0%" y1="0%" x2="100%" y2="0%"`; break;
+        case 'vertical': gradientDef += ` x1="0%" y1="0%" x2="0%" y2="100%"`; break;
+        case 'diagonal': gradientDef += ` x1="0%" y1="0%" x2="100%" y2="100%"`; break;
+        case 'diagonal-reverse': gradientDef += ` x1="100%" y1="0%" x2="0%" y2="100%"`; break;
+        default: gradientDef += ` x1="0%" y1="0%" x2="100%" y2="0%"`;
+      }
+      gradientDef += `>`;
+    }
+
+    gradientDef += `<stop offset="0%" stop-color="${qrCustomization.gradientColor1}"/><stop offset="100%" stop-color="${qrCustomization.gradientColor2}"/></${isRadial ? 'radialGradient' : 'linearGradient'}></defs>`;
+    svgString += gradientDef;
+  }
+
   // Background
   const bgColor = hexToRgba(qrCustomization.backgroundColor, qrCustomization.backgroundOpacity / 100);
   svgString += `<rect width="${totalSize}" height="${totalSize}" fill="${bgColor}"/>`;
@@ -993,29 +1027,8 @@ function downloadQRSVG(username, userCode) {
 
         // Set color
         let fillColor = qrCustomization.qrColor;
-        if (qrCustomization.isGradient) {
-          // Create gradient definition
-          const gradientId = `gradient-${Math.random().toString(36).substr(2, 9)}`;
-          let gradientDef = `<defs><linearGradient id="${gradientId}"`;
-
-          switch (qrCustomization.gradientDirection) {
-            case 'horizontal':
-              gradientDef += ` x1="0%" y1="0%" x2="100%" y2="0%"`;
-              break;
-            case 'vertical':
-              gradientDef += ` x1="0%" y1="0%" x2="0%" y2="100%"`;
-              break;
-            case 'diagonal':
-              gradientDef += ` x1="0%" y1="0%" x2="100%" y2="100%"`;
-              break;
-            case 'radial':
-              gradientDef = `<defs><radialGradient id="${gradientId}" cx="50%" cy="50%" r="50%"`;
-              break;
-          }
-
-          gradientDef += `><stop offset="0%" stop-color="${qrCustomization.gradientColor1}"/><stop offset="100%" stop-color="${qrCustomization.gradientColor2}"/></linearGradient></defs>`;
-          svgString = svgString.replace('<svg', gradientDef + '<svg');
-          fillColor = `url(#${gradientId})`;
+        if (qrCustomization.isGradient && globalGradientId) {
+          fillColor = `url(#${globalGradientId})`;
         }
 
         // Draw different styles
@@ -1165,6 +1178,28 @@ function downloadQRSVG(username, userCode) {
             sd += ` Z`;
 
             svgString += `<path d="${sd}" fill="${fillColor}" />`;
+            break;
+
+          case 'vertical-stripes':
+            const vStripeWidth = moduleSize * 0.7;
+            const vStripeX = x + (moduleSize - vStripeWidth) / 2;
+            const vStripeRad = vStripeWidth / 2;
+            const { top: vTop, bottom: vBottom } = neighbors;
+
+            const tR = vTop ? 0 : vStripeRad;
+            const bR = vBottom ? 0 : vStripeRad;
+
+            let vsd = `M ${vStripeX} ${y + tR}`;
+            if (tR > 0) vsd += ` A ${tR} ${tR} 0 0 1 ${vStripeX + tR} ${y}`;
+            vsd += ` L ${vStripeX + vStripeWidth - tR} ${y}`;
+            if (tR > 0) vsd += ` A ${tR} ${tR} 0 0 1 ${vStripeX + vStripeWidth} ${y + tR}`;
+            vsd += ` L ${vStripeX + vStripeWidth} ${y + moduleSize - bR}`;
+            if (bR > 0) vsd += ` A ${bR} ${bR} 0 0 1 ${vStripeX + vStripeWidth - bR} ${y + moduleSize}`;
+            vsd += ` L ${vStripeX + bR} ${y + moduleSize}`;
+            if (bR > 0) vsd += ` A ${bR} ${bR} 0 0 1 ${vStripeX} ${y + moduleSize - bR}`;
+            vsd += ` Z`;
+
+            svgString += `<path d="${vsd}" fill="${fillColor}" />`;
             break;
 
           case 'cross':
@@ -1407,6 +1442,9 @@ function createGradient(ctx, x, y, width, height, direction) {
     case 'diagonal':
       gradient = ctx.createLinearGradient(x, y, x + width, y + height);
       break;
+    case 'diagonal-reverse':
+      gradient = ctx.createLinearGradient(x + width, y, x, y + height);
+      break;
     case 'radial':
       gradient = ctx.createRadialGradient(x + width / 2, y + height / 2, 0, x + width / 2, y + height / 2, Math.max(width, height) / 2);
       break;
@@ -1422,14 +1460,17 @@ function createGradient(ctx, x, y, width, height, direction) {
 
 // Draw QR code modules with different styles
 // Draw QR code modules with different styles
-function drawQRModule(ctx, x, y, width, height, style, neighbors = {}) {
+function drawQRModule(ctx, x, y, width, height, style, neighbors = {}, optFillStyle = null) {
   const centerX = x + width / 2;
   const centerY = y + height / 2;
   const radius = Math.min(width, height) / 2;
   const size = Math.min(width, height);
 
-  // Set color based on gradient or solid color
-  if (qrCustomization.isGradient) {
+  // Set color: Use optional global style if provided, else fall back to local logic (backward compatibility)
+  if (optFillStyle) {
+    ctx.fillStyle = optFillStyle;
+  } else if (qrCustomization.isGradient) {
+    // This fallback is per-module gradient, which we are moving away from but keeping for safety
     const gradient = createGradient(ctx, x, y, width, height, qrCustomization.gradientDirection);
     ctx.fillStyle = gradient;
   } else {
@@ -1583,6 +1624,26 @@ function drawQRModule(ctx, x, y, width, height, style, neighbors = {}) {
       ctx.fill();
       break;
 
+    case 'vertical-stripes':
+      // Continuous vertical stripes
+      const vStripeW = width * 0.7;
+      const vStripeX = x + (width - vStripeW) / 2;
+      const vStripeR = vStripeW / 2;
+
+      if (!neighbors) neighbors = {};
+      const { top: vT, bottom: vB } = neighbors;
+
+      // Top corners (top-left, top-right) - rounded if no top neighbor
+      const tRad = vT ? 0 : vStripeR;
+      // Bottom corners (bottom-left, bottom-right) - rounded if no bottom neighbor
+      const bRad = vB ? 0 : vStripeR;
+
+      ctx.beginPath();
+      // roundRect syntax: [tl, tr, br, bl]
+      ctx.roundRect(vStripeX, y, vStripeW, height, [tRad, tRad, bRad, bRad]);
+      ctx.fill();
+      break;
+
     case 'cross':
       const thick = width * 0.35;
       const offset = (width - thick) / 2;
@@ -1726,6 +1787,14 @@ function updateQRDisplay() {
     logoEndPos = centerEnd;
   }
 
+  // Create Global Gradient if needed
+  let globalFillStyle = null;
+  if (qrCustomization.isGradient) {
+    globalFillStyle = createGradient(ctx, 0, 0, canvasSize, canvasSize, qrCustomization.gradientDirection);
+  } else {
+    globalFillStyle = qrCustomization.qrColor;
+  }
+
   // Draw QR code modules with custom colors and styles
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
@@ -1777,7 +1846,8 @@ function updateQRDisplay() {
           moduleSize,
           moduleSize,
           qrCustomization.qrStyle,
-          neighbors
+          neighbors,
+          globalFillStyle
         );
       }
     }
@@ -2136,6 +2206,23 @@ function setupCustomizationPanel() {
     });
   });
 
+  // Swap Gradient Colors
+  const gradientSwapBtn = document.getElementById('gradientSwapBtn');
+  if (gradientSwapBtn) {
+    gradientSwapBtn.addEventListener('click', () => {
+      const color1 = gradientColor1.value;
+      const color2 = gradientColor2.value;
+
+      gradientColor1.value = color2;
+      gradientColor2.value = color1;
+
+      qrCustomization.gradientColor1 = color2;
+      qrCustomization.gradientColor2 = color1;
+
+      updateQRDisplay();
+    });
+  }
+
   // Logo BG Color Picker
   logoBgColorPicker.addEventListener('input', (e) => {
     qrCustomization.logoBgColor = e.target.value;
@@ -2250,10 +2337,13 @@ function setupCustomizationPanel() {
     if (gradientControls.style.display === 'none') {
       gradientControls.style.display = 'block';
       gradientToggle.textContent = 'Solid';
+      qrCustomization.isGradient = true;
     } else {
       gradientControls.style.display = 'none';
       gradientToggle.textContent = 'Gradient';
+      qrCustomization.isGradient = false;
     }
+    updateQRDisplay();
   });
 
   // Transparent background
