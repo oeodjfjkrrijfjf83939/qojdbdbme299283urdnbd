@@ -816,13 +816,26 @@ function downloadQRPNG(username, userCode, size = 512) {
       }
 
       if (qr.isDark(row, col)) {
+        const isDarkSafe = (r, c) => {
+          if (r < 0 || r >= moduleCount || c < 0 || c >= moduleCount) return false;
+          return qr.isDark(r, c);
+        };
+
+        const neighbors = {
+          top: isDarkSafe(row - 1, col),
+          bottom: isDarkSafe(row + 1, col),
+          left: isDarkSafe(row, col - 1),
+          right: isDarkSafe(row, col + 1)
+        };
+
         drawQRModule(
           ctx,
           padding + col * moduleSize,
           padding + row * moduleSize,
           moduleSize,
           moduleSize,
-          qrCustomization.qrStyle
+          qrCustomization.qrStyle,
+          neighbors
         );
       }
     }
@@ -959,6 +972,19 @@ function downloadQRSVG(username, userCode) {
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
       if (qr.isDark(row, col)) {
+        // Calculate neighbors
+        const isDarkSafe = (r, c) => {
+          if (r < 0 || r >= moduleCount || c < 0 || c >= moduleCount) return false;
+          return qr.isDark(r, c);
+        };
+
+        const neighbors = {
+          top: isDarkSafe(row - 1, col),
+          bottom: isDarkSafe(row + 1, col),
+          left: isDarkSafe(row, col - 1),
+          right: isDarkSafe(row, col + 1)
+        };
+
         const x = padding + col * moduleSize;
         const y = padding + row * moduleSize;
         const centerX = x + moduleSize / 2;
@@ -998,19 +1024,6 @@ function downloadQRSVG(username, userCode) {
             svgString += `<rect x="${x}" y="${y}" width="${moduleSize}" height="${moduleSize}" fill="${fillColor}"/>`;
             break;
 
-          case 'dots':
-            svgString += `<circle cx="${centerX}" cy="${centerY}" r="${radius * 0.9}" fill="${fillColor}"/>`;
-            break;
-
-          case 'rounded':
-            const cornerRadius = moduleSize * 0.2;
-            svgString += `<rect x="${x}" y="${y}" width="${moduleSize}" height="${moduleSize}" rx="${cornerRadius}" ry="${cornerRadius}" fill="${fillColor}"/>`;
-            break;
-
-          case 'circles':
-            svgString += `<circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="${fillColor}"/>`;
-            break;
-
           case 'diamonds':
             // Larger diamond shape (covers more of the module for better scannability)
             const diamondScale = 1.25; // Increase to 125% of standard size
@@ -1048,9 +1061,25 @@ function downloadQRSVG(username, userCode) {
             break;
 
           case 'hearts':
-            const heartSize = radius * 2.0; // Increased to 200% for maximum scannability
-            // Much larger, bolder heart path
-            svgString += `<path d="M ${centerX} ${centerY + heartSize * 0.6} C ${centerX} ${centerY}, ${centerX - heartSize * 0.6} ${centerY - heartSize * 0.4}, ${centerX - heartSize * 0.6} ${centerY} C ${centerX - heartSize * 0.6} ${centerY + heartSize * 0.5}, ${centerX} ${centerY + heartSize * 0.8}, ${centerX} ${centerY + heartSize * 1.0} C ${centerX} ${centerY + heartSize * 0.8}, ${centerX + heartSize * 0.6} ${centerY + heartSize * 0.5}, ${centerX + heartSize * 0.6} ${centerY} C ${centerX + heartSize * 0.6} ${centerY - heartSize * 0.4}, ${centerX} ${centerY}, ${centerX} ${centerY + heartSize * 0.6} Z" fill="${fillColor}"/>`;
+            const hOffset = moduleSize * 0.1;
+            const hY = y + hOffset;
+            const hH = moduleSize - (hOffset * 2);
+            const topC = hH * 0.3;
+            const mx = x + moduleSize / 2;
+
+            // Constructing SVG path command equivalent to the canvas bezier curves
+            // M mx, hY+hH*0.2
+            // C mx, hY, x, hY, x, hY+topC
+            // C x, hY+(hH+topC)/2, mx, hY+hH, mx, hY+hH
+            // C mx, hY+hH, x+moduleSize, hY+(hH+topC)/2, x+moduleSize, hY+topC
+            // C x+moduleSize, hY, mx, hY, mx, hY+hH*0.2
+            let hd = `M ${mx} ${hY + hH * 0.2}`;
+            hd += ` C ${mx} ${hY}, ${x} ${hY}, ${x} ${hY + topC}`;
+            hd += ` C ${x} ${hY + (hH + topC) / 2}, ${mx} ${hY + hH}, ${mx} ${hY + hH}`;
+            hd += ` C ${mx} ${hY + hH}, ${x + moduleSize} ${hY + (hH + topC) / 2}, ${x + moduleSize} ${hY + topC}`;
+            hd += ` C ${x + moduleSize} ${hY}, ${mx} ${hY}, ${mx} ${hY + hH * 0.2}`;
+
+            svgString += `<path d="${hd}" fill="${fillColor}"/>`;
             break;
 
           case 'triangles':
@@ -1078,6 +1107,157 @@ function downloadQRSVG(username, userCode) {
             const pixelSize = moduleSize * 0.8;
             const pixelOffset = (moduleSize - pixelSize) / 2;
             svgString += `<rect x="${x + pixelOffset}" y="${y + pixelOffset}" width="${pixelSize}" height="${pixelSize}" fill="${fillColor}"/>`;
+            break;
+
+          case 'fluid':
+            const { top, right, bottom, left } = neighbors;
+            const maxR = moduleSize / 2;
+
+            const tl = (top || left) ? 0 : maxR;
+            const tr = (top || right) ? 0 : maxR;
+            const br = (bottom || right) ? 0 : maxR;
+            const bl = (bottom || left) ? 0 : maxR;
+
+            let d = `M ${x + tl} ${y}`;
+            d += ` L ${x + moduleSize - tr} ${y}`;
+            if (tr > 0) d += ` A ${tr} ${tr} 0 0 1 ${x + moduleSize} ${y + tr}`;
+            d += ` L ${x + moduleSize} ${y + moduleSize - br}`;
+            if (br > 0) d += ` A ${br} ${br} 0 0 1 ${x + moduleSize - br} ${y + moduleSize}`;
+            d += ` L ${x + bl} ${y + moduleSize}`;
+            if (bl > 0) d += ` A ${bl} ${bl} 0 0 1 ${x} ${y + moduleSize - bl}`;
+            d += ` L ${x} ${y + tl}`;
+            if (tl > 0) d += ` A ${tl} ${tl} 0 0 1 ${x + tl} ${y}`;
+            d += ` Z`;
+
+            svgString += `<path d="${d}" fill="${fillColor}" />`;
+            break;
+
+          case 'stripes':
+            const stripeHeight = moduleSize * 0.7;
+            const stripeY = y + (moduleSize - stripeHeight) / 2;
+            const sRad = stripeHeight / 2;
+            const { left: sLeft, right: sRight } = neighbors;
+
+            // Left side
+            const lR = sLeft ? 0 : sRad;
+            // Right side
+            const rR = sRight ? 0 : sRad;
+
+            // Construct path manually for control over specific corners
+            // Start top-left
+            let sd = `M ${x + lR} ${stripeY}`;
+            // Line to top-right
+            sd += ` L ${x + moduleSize - rR} ${stripeY}`;
+            // Arc top-right if needed
+            if (rR > 0) sd += ` A ${rR} ${rR} 0 0 1 ${x + moduleSize} ${stripeY + rR}`;
+            // Line down right side (if flat, it's just a point, effectively logic holds)
+            sd += ` L ${x + moduleSize} ${stripeY + stripeHeight - rR}`;
+            // Arc bottom-right if needed
+            if (rR > 0) sd += ` A ${rR} ${rR} 0 0 1 ${x + moduleSize - rR} ${stripeY + stripeHeight}`;
+            // Line to bottom-left
+            sd += ` L ${x + lR} ${stripeY + stripeHeight}`;
+            // Arc bottom-left if needed
+            if (lR > 0) sd += ` A ${lR} ${lR} 0 0 1 ${x} ${stripeY + stripeHeight - lR}`;
+            // Line up left side
+            sd += ` L ${x} ${stripeY + lR}`;
+            // Arc top-left if needed
+            if (lR > 0) sd += ` A ${lR} ${lR} 0 0 1 ${x + lR} ${stripeY}`;
+            sd += ` Z`;
+
+            svgString += `<path d="${sd}" fill="${fillColor}" />`;
+            break;
+
+          case 'cross':
+            const thick = moduleSize * 0.35;
+            const offset = (moduleSize - thick) / 2;
+            const crossRad = thick / 3;
+            svgString += `<rect x="${x}" y="${y + offset}" width="${moduleSize}" height="${thick}" rx="${crossRad}" ry="${crossRad}" fill="${fillColor}" />`;
+            svgString += `<rect x="${x + offset}" y="${y}" width="${thick}" height="${moduleSize}" rx="${crossRad}" ry="${crossRad}" fill="${fillColor}" />`;
+            break;
+
+          case 'leaf':
+            // Leaf: Top-Right & Bottom-Left sharp, others round
+            // [tl, tr, br, bl] -> [r, 0, r, 0]
+            const leafR = moduleSize / 2;
+            // Using path A rx ry x-axis-rotation large-arc-flag sweep-flag x y
+            // tl
+            let lPath = `M ${x} ${y + leafR} A ${leafR} ${leafR} 0 0 1 ${x + leafR} ${y}`;
+            // tr (sharp)
+            lPath += ` L ${x + moduleSize} ${y}`;
+            // br
+            lPath += ` L ${x + moduleSize} ${y + moduleSize - leafR} A ${leafR} ${leafR} 0 0 1 ${x + moduleSize - leafR} ${y + moduleSize}`;
+            // bl (sharp)
+            lPath += ` L ${x} ${y + moduleSize} Z`;
+
+            svgString += `<path d="${lPath}" fill="${fillColor}" />`;
+            break;
+
+          case 'boxed':
+            // Boxed: Outer Black, Inner White (Background), Center Black
+            // Note: SVG order is painters algo. We draw Black Outer. Then White Inner. Then Black Center.
+            // Issue: fillColor might be a gradient. If we draw White, we assume white background.
+            // If bg is transparent or different, this fails. 
+            // Better approach: Path with a hole? (Fill rule: evenodd)
+            // Outer rectangle (clockwise) + Inner rectangle (counter-clockwise) = Hole
+
+            const bBorder = moduleSize * 0.25;
+            const bInner = moduleSize - (bBorder * 2);
+            const bDotSize = moduleSize * 0.35;
+            const bDotOffset = (moduleSize - bDotSize) / 2;
+
+            // Path construction for frame (Outer square minus inner square)
+            // Outer: M x y h width v height h -width z
+            let bPath = `M ${x} ${y} h ${moduleSize} v ${moduleSize} h -${moduleSize} z`;
+            // Inner (hole): M x+bBorder y+bBorder v bInner h bInner v -bInner z (counter-clockwise relative to outer? No, standard SVG winding rule usually requires reversing direction or using fill-rule="evenodd")
+            // Simplest: just use fill-rule="evenodd" on the path tag if we combine them.
+            // OR: Since we can't easily change fill-rule for just this one if using a shared style...
+            // Let's assume white background for "Inner White" is acceptable OR use a mask.
+            // BUT, wait, for PNG we used destination-out which clears to transparent.
+            // To match that in SVG with simple shapes is hard without masks.
+            // Alternative: Compound Path.
+            // M x y L x+w y L x+w y+h L x y+h Z  M x+b x+b L x+b y+b+i L x+b+i y+b+i L x+b+i y+b Z
+            // Let's try drawing the frame as 4 rectangles if complex path is too risky? No, path is better.
+            // Let's use 2 shapes. 
+            // Shape 1: Frame. 
+            // Shape 2: Center Dot.
+
+            // Frame via Path (Outer - Inner)
+            // Using mask simulation by drawing 4 rects? No, too many elements.
+            // Let's use the 'evenodd' trick. 
+            // If we append this path to string, we need to add fill-rule="evenodd" to this specific path element.
+
+            let framePath = `M ${x} ${y} h ${moduleSize} v ${moduleSize} h -${moduleSize} z`;
+            framePath += ` M ${x + bBorder} ${y + bBorder} v ${bInner} h ${bInner} v -${bInner} z`; // Hole
+
+            svgString += `<path d="${framePath}" fill="${fillColor}" fill-rule="evenodd"/>`;
+            svgString += `<rect x="${x + bDotOffset}" y="${y + bDotOffset}" width="${bDotSize}" height="${bDotSize}" fill="${fillColor}" />`;
+            break;
+
+          case 'target':
+            // Target: Outer Circle, Hole, Inner Dot
+            const tRad = moduleSize / 2;
+            const tHoleRad = tRad * 0.7;
+            const tDotRad = tRad * 0.35;
+
+            // Circle with hole
+            let tPath = `M ${centerX} ${centerY - tRad}`; // Top of outer
+            tPath += ` A ${tRad} ${tRad} 0 1 0 ${centerX} ${centerY + tRad} A ${tRad} ${tRad} 0 1 0 ${centerX} ${centerY - tRad} Z`;
+            // Inner hole (reverse direction for nonzero winding, or just use evenodd)
+            tPath += ` M ${centerX} ${centerY - tHoleRad}`;
+            tPath += ` A ${tHoleRad} ${tHoleRad} 0 1 1 ${centerX} ${centerY + tHoleRad} A ${tHoleRad} ${tHoleRad} 0 1 1 ${centerX} ${centerY - tHoleRad} Z`;
+
+            svgString += `<path d="${tPath}" fill="${fillColor}" fill-rule="evenodd"/>`;
+
+            // Inner Dot
+            svgString += `<circle cx="${centerX}" cy="${centerY}" r="${tDotRad}" fill="${fillColor}" />`;
+            break;
+
+          case 'glitch':
+            const slH = moduleSize / 4;
+            svgString += `<rect x="${x}" y="${y}" width="${moduleSize}" height="${slH}" fill="${fillColor}" />`;
+            svgString += `<rect x="${x - moduleSize * 0.1}" y="${y + slH}" width="${moduleSize}" height="${slH}" fill="${fillColor}" />`;
+            svgString += `<rect x="${x + moduleSize * 0.1}" y="${y + slH * 2}" width="${moduleSize}" height="${slH}" fill="${fillColor}" />`;
+            svgString += `<rect x="${x}" y="${y + slH * 3}" width="${moduleSize}" height="${slH}" fill="${fillColor}" />`;
             break;
 
           default:
@@ -1241,7 +1421,8 @@ function createGradient(ctx, x, y, width, height, direction) {
 }
 
 // Draw QR code modules with different styles
-function drawQRModule(ctx, x, y, width, height, style) {
+// Draw QR code modules with different styles
+function drawQRModule(ctx, x, y, width, height, style, neighbors = {}) {
   const centerX = x + width / 2;
   const centerY = y + height / 2;
   const radius = Math.min(width, height) / 2;
@@ -1255,48 +1436,29 @@ function drawQRModule(ctx, x, y, width, height, style) {
     ctx.fillStyle = qrCustomization.qrColor;
   }
 
+  // Helper for fluid corners
+  const drawCorner = (ctx, startX, startY, cornerX, cornerY, endX, endY, r) => {
+    ctx.moveTo(startX, startY);
+    ctx.arcTo(cornerX, cornerY, endX, endY, r);
+  };
+
   switch (style) {
     case 'squares':
-      // Default square style
       ctx.fillRect(x, y, width, height);
       break;
 
-    case 'dots':
-      // Circular dots
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius * 0.9, 0, 2 * Math.PI);
-      ctx.fill();
-      break;
-
-    case 'rounded':
-      // Rounded squares
-      const cornerRadius = Math.min(width, height) * 0.2;
-      ctx.beginPath();
-      ctx.roundRect(x, y, width, height, cornerRadius);
-      ctx.fill();
-      break;
-
-    case 'circles':
-      // Full circles
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      ctx.fill();
-      break;
-
     case 'diamonds':
-      // Larger diamond shape (covers more of the module for better scannability)
       ctx.beginPath();
-      const diamondScale = 1.25; // Increase to 125% of standard size
-      ctx.moveTo(centerX, centerY - radius * diamondScale);             // Top
-      ctx.lineTo(centerX + radius * diamondScale, centerY);             // Right
-      ctx.lineTo(centerX, centerY + radius * diamondScale);             // Bottom
-      ctx.lineTo(centerX - radius * diamondScale, centerY);             // Left
+      const diamondScale = 1.25;
+      ctx.moveTo(centerX, centerY - radius * diamondScale);
+      ctx.lineTo(centerX + radius * diamondScale, centerY);
+      ctx.lineTo(centerX, centerY + radius * diamondScale);
+      ctx.lineTo(centerX - radius * diamondScale, centerY);
       ctx.closePath();
       ctx.fill();
       break;
 
     case 'hexagons':
-      // Hexagon shape
       ctx.beginPath();
       const hexRadius = radius * 1.0;
       for (let i = 0; i < 6; i++) {
@@ -1311,10 +1473,9 @@ function drawQRModule(ctx, x, y, width, height, style) {
       break;
 
     case 'stars':
-      // Much larger 5-pointed star for better scannability
       ctx.beginPath();
-      const starRadius = radius * 1.2; // Increased to full radius (100%)
-      const innerRadius = starRadius * 0.6; // Increased from 0.5 to 0.6
+      const starRadius = radius * 1.2;
+      const innerRadius = starRadius * 0.6;
       for (let i = 0; i < 10; i++) {
         const angle = (Math.PI / 5) * i - Math.PI / 2;
         const r = i % 2 === 0 ? starRadius : innerRadius;
@@ -1328,30 +1489,32 @@ function drawQRModule(ctx, x, y, width, height, style) {
       break;
 
     case 'hearts':
-      // Much larger and bolder heart shape for maximum scannability
       ctx.beginPath();
-      const heartSize = radius * 2.0; // Increased beyond full radius to 110%
-      // Much larger, bolder heart using stronger curves
-      ctx.moveTo(centerX, centerY + heartSize * 0.6);
-      ctx.bezierCurveTo(centerX, centerY, centerX - heartSize * 0.6, centerY - heartSize * 0.4, centerX - heartSize * 0.6, centerY);
-      ctx.bezierCurveTo(centerX - heartSize * 0.6, centerY + heartSize * 0.5, centerX, centerY + heartSize * 0.8, centerX, centerY + heartSize * 1.0);
-      ctx.bezierCurveTo(centerX, centerY + heartSize * 0.8, centerX + heartSize * 0.6, centerY + heartSize * 0.5, centerX + heartSize * 0.6, centerY);
-      ctx.bezierCurveTo(centerX + heartSize * 0.6, centerY - heartSize * 0.4, centerX, centerY, centerX, centerY + heartSize * 0.6);
+      // Improved heart shape
+      // Pushing the heart slightly up to center it visually in the square
+      const hOffset = height * 0.1;
+      const hY = y + hOffset;
+      const hHeight = height - (hOffset * 2); // Keep some padding
+
+      const topCurveHeight = hHeight * 0.3;
+      ctx.moveTo(x + width / 2, hY + hHeight * 0.2);
+      ctx.bezierCurveTo(x + width / 2, hY, x, hY, x, hY + topCurveHeight);
+      ctx.bezierCurveTo(x, hY + (hHeight + topCurveHeight) / 2, x + width / 2, hY + hHeight, x + width / 2, hY + hHeight);
+      ctx.bezierCurveTo(x + width / 2, hY + hHeight, x + width, hY + (hHeight + topCurveHeight) / 2, x + width, hY + topCurveHeight);
+      ctx.bezierCurveTo(x + width, hY, x + width / 2, hY, x + width / 2, hY + hHeight * 0.2);
       ctx.fill();
       break;
 
     case 'triangles':
-      // Much larger triangle shape for better scannability
       ctx.beginPath();
-      ctx.moveTo(centerX, y + size * 0.02); // Reduced margin from 0.05 to 0.02
-      ctx.lineTo(x + size * 0.02, y + size * 0.98); // Reduced margin from 0.05 to 0.02
-      ctx.lineTo(x + size * 0.98, y + size * 0.98); // Increased from 0.95 to 0.98
+      ctx.moveTo(centerX, y + size * 0.02);
+      ctx.lineTo(x + size * 0.02, y + size * 0.98);
+      ctx.lineTo(x + size * 0.98, y + size * 0.98);
       ctx.closePath();
       ctx.fill();
       break;
 
     case 'octagons':
-      // Octagon shape
       ctx.beginPath();
       const octRadius = radius * 0.9;
       for (let i = 0; i < 8; i++) {
@@ -1366,21 +1529,152 @@ function drawQRModule(ctx, x, y, width, height, style) {
       break;
 
     case 'rounded-dots':
-      // Rounded dots (larger radius)
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius * 0.9, 0, 2 * Math.PI);
       ctx.fill();
       break;
 
     case 'pixels':
-      // Pixelated squares (smaller)
       const pixelSize = size * 0.8;
       const pixelOffset = (size - pixelSize) / 2;
       ctx.fillRect(x + pixelOffset, y + pixelOffset, pixelSize, pixelSize);
       break;
 
+    case 'fluid':
+      if (!neighbors) neighbors = {};
+      const { top, right, bottom, left } = neighbors;
+      const maxR = size / 2;
+
+      // Smart corner rounding logic
+      // If neighbor is dark, corner is sharp (0 radius)
+      // If neighbor is light, corner is rounded (0.5 * size radius)
+
+      // Top Left
+      const tl = (top || left) ? 0 : maxR;
+      // Top Right
+      const tr = (top || right) ? 0 : maxR;
+      // Bottom Right
+      const br = (bottom || right) ? 0 : maxR;
+      // Bottom Left
+      const bl = (bottom || left) ? 0 : maxR;
+
+      ctx.beginPath();
+      ctx.roundRect(x, y, width, height, [tl, tr, br, bl]);
+      ctx.fill();
+      break;
+
+    case 'stripes':
+      // Continuous horizontal stripes
+      const stripeHeight = height * 0.7; // Slightly thicker
+      const stripeY = y + (height - stripeHeight) / 2;
+      const stripeRad = stripeHeight / 2; // Maximum radius
+
+      if (!neighbors) neighbors = {};
+      const { left: sLeft, right: sRight } = neighbors;
+
+      // Left corners (top-left, bottom-left) - rounded if no left neighbor
+      const lRad = sLeft ? 0 : stripeRad;
+      // Right corners (top-right, bottom-right) - rounded if no right neighbor
+      const rRad = sRight ? 0 : stripeRad;
+
+      ctx.beginPath();
+      // roundRect syntax: [tl, tr, br, bl]
+      ctx.roundRect(x, stripeY, width, stripeHeight, [lRad, rRad, rRad, lRad]);
+      ctx.fill();
+      break;
+
+    case 'cross':
+      const thick = width * 0.35;
+      const offset = (width - thick) / 2;
+
+      ctx.beginPath();
+      // Horizontal bar
+      ctx.roundRect(x, y + offset, width, thick, thick / 3);
+      // Vertical bar
+      ctx.roundRect(x + offset, y, thick, height, thick / 3);
+      ctx.fill();
+      break;
+
+    case 'leaf':
+      ctx.beginPath();
+      // Leaf: Top-Right & Bottom-Left sharp, others round
+      // [tl, tr, br, bl]
+      // tr=0, bl=0. tl=r, br=r
+      const leafR = size / 1.6;
+      ctx.roundRect(x, y, width, height, [leafR, 0, leafR, 0]);
+      ctx.fill();
+      break;
+
+    case 'boxed':
+      // Boxed: Square with a hole
+      // Draw outer square
+      ctx.beginPath();
+      ctx.rect(x, y, width, height);
+      ctx.fill();
+
+      // Clear inner square
+      const boxBorder = width * 0.25;
+      const boxInner = width - (boxBorder * 2);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.rect(x + boxBorder, y + boxBorder, boxInner, boxInner);
+      ctx.fill();
+
+      // Reset composite operation to default
+      ctx.globalCompositeOperation = 'source-over';
+      // Draw center dot? implementation_plan said Frame+Dot
+      const boxDotSize = width * 0.35;
+      const boxDotOffset = (width - boxDotSize) / 2;
+      // Re-apply fill style (it might have been lost or we need to be safe)
+      if (qrCustomization.isGradient) {
+        // Gradient needs to be recreated if context state shifted, but usually fine.
+        // Simpler to just fill.
+      }
+      ctx.beginPath();
+      ctx.rect(x + boxDotOffset, y + boxDotOffset, boxDotSize, boxDotSize);
+      ctx.fill();
+      break;
+
+    case 'target':
+      // Target: Concentric circles
+      // Outer
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Clear middle ring
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 0.7, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Reset
+      ctx.globalCompositeOperation = 'source-over';
+
+      // Inner dot
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 0.35, 0, 2 * Math.PI);
+      ctx.fill();
+      break;
+
+    case 'glitch':
+      // Glitch: horizontal strips with offsets
+      const sliceH = height / 4;
+
+      // Slice 1: Normal
+      ctx.fillRect(x, y, width, sliceH);
+
+      // Slice 2: Offset Left
+      ctx.fillRect(x - width * 0.1, y + sliceH, width, sliceH);
+
+      // Slice 3: Offset Right
+      ctx.fillRect(x + width * 0.1, y + sliceH * 2, width, sliceH);
+
+      // Slice 4: Normal
+      ctx.fillRect(x, y + sliceH * 3, width, sliceH);
+      break;
+
     default:
-      // Fallback to squares
       ctx.fillRect(x, y, width, height);
   }
 }
@@ -1464,13 +1758,26 @@ function updateQRDisplay() {
       }
 
       if (qr.isDark(row, col)) {
+        const isDarkSafe = (r, c) => {
+          if (r < 0 || r >= moduleCount || c < 0 || c >= moduleCount) return false;
+          return qr.isDark(r, c);
+        };
+
+        const neighbors = {
+          top: isDarkSafe(row - 1, col),
+          bottom: isDarkSafe(row + 1, col),
+          left: isDarkSafe(row, col - 1),
+          right: isDarkSafe(row, col + 1)
+        };
+
         drawQRModule(
           ctx,
           padding + col * moduleSize,
           padding + row * moduleSize,
           moduleSize,
           moduleSize,
-          qrCustomization.qrStyle
+          qrCustomization.qrStyle,
+          neighbors
         );
       }
     }

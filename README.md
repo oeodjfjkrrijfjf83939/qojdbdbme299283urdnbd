@@ -45,6 +45,8 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 - **Multiple Emails**: Add multiple email addresses
 - **Google Maps Integration**: Location + Review links combined
 - **Custom Menu Cards**: Digital menu/business card links
+- **Advanced Analytics**: Track user counts per file and folder
+- **12+ Unique QR Styles**: Fluid, Stripes, Leaf, Boxed, Target, Glitch, and more
 - **Folder Details Overlay**: Visual breakdown of users in nested folders
 - **System Indexing**: Auto-discovery of user data files via `generate_index.js`
 
