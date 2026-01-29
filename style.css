@@ -807,7 +807,7 @@ button[type="submit"] {
 }
 
 .customization-panel-inline.expanded {
-  max-height: 1000px;
+  max-height: 1600px;
   opacity: 1;
   margin-top: 0.1rem;
 }
