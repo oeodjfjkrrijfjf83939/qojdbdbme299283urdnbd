@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - MultiLynk QR</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .page-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-size: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+        }
+
+        p,
+        ul {
+            color: var(--gray);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            background: var(--light);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            background: var(--border);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <a href="admin.html" class="back-link">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Login
+        </a>
+
+        <h1>Terms and Conditions</h1>
+
+        <p>Last updated: January 2026</p>
+
+        <p>We believe in simplicity and building strong relationships with our clients.</p>
+
+        <h2>Collaboration</h2>
+        <p>There are no complex terms to use our service. Our primary goal is to collaborate properly in a friendly and
+            professional way.</p>
+
+        <h2>Client Commitment</h2>
+        <p>We are dedicated to properly obeying and fulfilling the client's specific needs and requirements to the best
+            of our ability.</p>
+
+        <h2>Transactions</h2>
+        <p>We ensure the proper maintenance of transactions, ensuring they are completed on time and with full
+            transparency between all parties.</p>
+
+        <h2>Contact Us</h2>
+        <p>If you have any questions about these Terms, please visit our <a href="contact.html">Contact Us</a> page.</p>
+    </div>
+</body>
+
+</html>

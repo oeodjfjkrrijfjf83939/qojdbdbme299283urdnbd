@@ -14,6 +14,22 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 - 🗂️ **Folder-based Organization** - Manage clients in nested folders
 - 📊 **Advanced Analytics** - Track user counts per file and folder
 
+## 📚 **Table of Contents**
+- [Quick Start](#-quick-start)
+- [Key Features](#-key-features)
+- [Security Features](#-security-features)
+- [File Structure](#-file-structure)
+- [Folder-Based Data Management](#%EF%B8%8F-folder-based-data-management)
+- [Detailed Guide](#-detailed-guide)
+  - [Get Started in 2 Minutes](#-get-started-in-2-minutes)
+  - [Deploy Online](#-deploy-online-optional)
+  - [Pro Tips](#-pro-tips)
+  - [Troubleshooting](#-quick-fixes)
+- [Certificates & Credentials](#-certificates--credentials-guide)
+- [Supported Platforms](#-supported-platforms)
+
+---
+
 ## 🚀 **Quick Start**
 
 ### **Option A: Full Management (Admin)**
@@ -61,12 +77,6 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 - **Multi-User Login:** Multiple admin accounts with role-based access
 - **Unique User Codes:** Each profile secured with auto-generated code
 
-## 📚 **Documentation**
-
-- **🚀 [Quick Start Guide](docs/QUICK_GUIDE.md)** - Get started in 2 minutes
-- **🌐 [Platform List](docs/PLATFORMS.md)** - All 175+ supported platforms
-- **🎓 [Certificates Guide](docs/CERTIFICATES.md)** - How to add custom certificates
-
 ## 📁 **File Structure**
 
 ```
@@ -90,12 +100,8 @@ MultiLynkQRgenerator/
 │   └── generate_index.js   # Index generator script
 ├── credentials/
 │   └── login_credentials.json  # Admin accounts
-├── assets/
-│   └── icons/              # 155 platform icons
-└── docs/
-    ├── QUICK_GUIDE.md      # Setup guide
-    ├── PLATFORMS.md        # Platform list
-    └── CERTIFICATES.md     # Certificates guide
+└── assets/
+    └── icons/              # 155 platform icons
 ```
 
 ## 🗂️ **Folder-Based Data Management**
@@ -121,41 +127,31 @@ Organize your client data into folders for better structure. The system automati
 5. **Multi-user access** - Multiple admin accounts with different permissions
 6. **Change default passwords** before deployment
 
-## 🎯 **Platform Categories**
+## 💡 Pro Tips
 
-- 💼 Professional & Business (9 platforms)
-- 🎨 Design & Creative (6 platforms)
-- 📱 Social Media (6 platforms)
-- 🎥 Video & Streaming (6 platforms)
-- 🎵 Music & Audio (4 platforms)
-- 💻 Developer & Tech (6 platforms)
-- 💬 Messaging & Chat (10 platforms)
-- 🎮 Gaming (7 platforms)
-- 💰 Creator & Monetization (4 platforms)
-- 🛒 E-commerce & Shopping (10 platforms)
-- 📸 Photography & Visual (3 platforms)
-- ✍️ Blogging & Writing (3 platforms)
-- 🌐 Other Social (17 platforms)
-- 🔧 Productivity & Tools (3 platforms)
-- 💳 Payment & Donation (15 platforms)
-- 🏢 Business Tools (4 platforms)
-- 💼 Business Services & Pricing (1 platform)
-- 📅 Booking & Actions (6 platforms)
-- 🎓 Education & Learning (9 platforms)
-- 🍔 Food & Dining (8 platforms)
-- 🚗 Ride & Transportation (4 platforms)
-- ✈️ Travel & Hospitality (5 platforms)
-- 🏥 Health & Wellness (4 platforms)
-- 📱 App Downloads (2 platforms)
-- 📚 Books & Reading (1 platform)
-- 🎬 Entertainment & OTT (8 platforms)
-- 🎓 Certificates & Credentials (unlimited)
-- 📋 Forms (unlimited)
-- 📞 Contact Information (6 fields)
+### QR Code Customization
+- **Colors**: Change QR and background colors
+- **Styles**: Choose from **12+ unique styles** including:
+  - **Modern**: Fluid 💧, Stripes ➖, Vertical Stripes ┃, Cross ➕
+  - **Creative**: Leaf 🍃, Boxed ▣, Target 🎯, Glitch 👾
+  - **Classic**: Squares 🔲, Rounded Dots 🔘, etc.
+- **Gradients**: Apply global gradients with multiple directions (Diagonal, Radial, etc.) and color swapping
+- **Transparency**: Adjust background opacity
+- **Spacing**: Control padding around QR code
 
-## 🔗 **Navigation**
+### Best Practices
+- **Use unique usernames** for each profile
+- **Keep user codes secure** - they're like passwords
+- **Update credentials** before deployment
+- **Test QR codes** before printing
+- **Backup data files** regularly
 
-**🚀 [Quick Guide](docs/QUICK_GUIDE.md)** | **🌐 [Platforms](docs/PLATFORMS.md)** | **🎓 [Certificates](docs/CERTIFICATES.md)**
+# 🌐 **Supported Platforms**
+
+**Total Platforms**: 175+  
+**Categories**: 25+  
+**Icons**: 155 SVG icons  
+**Geographic Coverage**: Global + India-specific
 
 ---
 
