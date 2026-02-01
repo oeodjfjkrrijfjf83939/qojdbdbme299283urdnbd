@@ -276,14 +276,14 @@
       upi: { icon: 'upi', label: 'UPI', color: '#00BAF2', isUPI: true },
       cashapp: { icon: 'cashapp', label: 'Cash App', color: '#00D632' },
       razorpay: { icon: 'razorpay', label: 'Razorpay', color: '#0C2451' },
-      cred: { icon: 'cred', label: 'CRED', color: '#000000' },
-      mobikwik: { icon: 'mobikwik', label: 'MobiKwik', color: '#D91E36' },
-      freecharge: { icon: 'freecharge', label: 'Freecharge', color: '#F7C50E' },
-      bhim: { icon: 'bhim', label: 'BHIM', color: '#097FD9' },
-      amazonpay: { icon: 'amazonpay', label: 'Amazon Pay', color: '#FF9900' },
-      navi: { icon: 'navi', label: 'Navi', color: '#0066FF' },
-      jupiter: { icon: 'jupiter', label: 'Jupiter', color: '#6C5CE7' },
-      jiofinance: { icon: 'jiofinance', label: 'JioFinance', color: '#0A7CFF' },
+      cred: { icon: 'cred', label: 'CRED', color: '#000000', isUPI: true },
+      mobikwik: { icon: 'mobikwik', label: 'MobiKwik', color: '#D91E36', isUPI: true },
+      freecharge: { icon: 'freecharge', label: 'Freecharge', color: '#F7C50E', isUPI: true },
+      bhim: { icon: 'bhim', label: 'BHIM', color: '#097FD9', isUPI: true },
+      amazonpay: { icon: 'amazonpay', label: 'Amazon Pay', color: '#FF9900', isUPI: true },
+      navi: { icon: 'navi', label: 'Navi', color: '#0066FF', isUPI: true },
+      jupiter: { icon: 'jupiter', label: 'Jupiter', color: '#6C5CE7', isUPI: true },
+      jiofinance: { icon: 'jiofinance', label: 'JioFinance', color: '#0A7CFF', isUPI: true },
 
       // Business & Professional Tools
       crunchbase: { icon: 'crunchbase', label: 'Crunchbase', color: '#0288D1' },
@@ -714,10 +714,9 @@
                 // Check if there are multiple UPI IDs (comma-separated)
                 const upiIds = url.split(',').map(id => id.trim()).filter(id => id);
 
-                if (upiIds.length > 1) {
-                  // Multiple UPI IDs - show overlay option
-                  categoryLinks.push(`
-                    <div class="social-link upi-link" onclick="showUPIOverlay('${upiIds.join('|')}', '${config.label}')" title="Click to select ${config.label} UPI ID">
+                // Always show overlay for UPI IDs (even if single)
+                categoryLinks.push(`
+                    <div class="social-link upi-link" onclick="showUPIOverlay('${upiIds.join('|')}', '${config.label}')" title="Click to view ${config.label} UPI options">
                       <img src="${iconPath}" alt="${config.label}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
@@ -725,17 +724,6 @@
                       <span class="upi-count-top-right">${upiIds.length}</span>
                     </div>
                   `);
-                } else {
-                  // Single UPI ID - direct copy
-                  categoryLinks.push(`
-                    <div class="social-link upi-link" onclick="copyUPI('${url}', '${config.label}')" title="Click to copy ${config.label} UPI ID">
-                      <img src="${iconPath}" alt="${config.label}" 
-                           onerror="this.src='./assets/icons/default.svg'" 
-                           style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
-                    </div>
-                  `);
-                }
                 return; // Skip the regular link creation
               } else if (config.isWhatsApp) {
                 // Check if there are multiple WhatsApp numbers (comma-separated wa.me URLs)
@@ -947,6 +935,23 @@
       });
     }
 
+    // Open UPI App
+    function openUPI(upiId) {
+      if (!upiId) return;
+
+      const upiRegex = /^[\w.-]+@[\w.-]+$/;
+      if (!upiRegex.test(upiId)) {
+        console.warn("Invalid UPI ID format:", upiId);
+        // We might still want to try opening it, or show an error. 
+        // For now, let's proceed but maybe with a warning or just return if strict.
+        // User requested regex check logic.
+        // return; 
+      }
+
+      const upiUrl = `upi://pay?pa=${upiId}`;
+      window.location.href = upiUrl;
+    }
+
     // Show UPI overlay for multiple IDs
     function showUPIOverlay(upiIdsString, platformName) {
       const upiIds = upiIdsString.split('|').map(id => id.trim()).filter(id => id);
@@ -957,19 +962,40 @@
       title.textContent = `Select ${platformName} UPI ID`;
       options.innerHTML = '';
 
+      // Validate UPI format
+      const upiRegex = /^[\w.-]+@[\w.-]+$/;
+
       upiIds.forEach((upiId, index) => {
+        const isValidUPI = upiRegex.test(upiId);
+
+        // Only show Open button if valid UPI ID
+        let openButtonHtml = '';
+        if (isValidUPI) {
+          openButtonHtml = `
+            <button class="upi-action-btn open-btn" onclick="event.stopPropagation(); openUPI('${upiId}')" title="Open in App">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </button>`;
+        }
+
         const option = document.createElement('div');
-        option.className = 'upi-option';
-        option.innerHTML = `
-          <div class="upi-option-content">
-            <span class="upi-id">${upiId}</span>
-            <span class="upi-index">${index + 1}</span>
-          </div>
-        `;
+        option.className = 'upi-option-row clickable-row';
         option.onclick = () => {
           copyUPI(upiId, platformName);
-          closeUPIOverlay();
         };
+        option.title = "Click to copy";
+
+        option.innerHTML = `
+          <div class="upi-id-text-container">
+             <span class="upi-id-text">${upiId}</span>
+          </div>
+          <div class="upi-actions-container">
+            ${openButtonHtml}
+          </div>
+        `;
         options.appendChild(option);
       });
 
@@ -1004,7 +1030,6 @@
         option.innerHTML = `
           <div class="upi-option-content">
             <span class="upi-id">${phoneNumber}</span>
-            <span class="upi-index">${index + 1}</span>
           </div>
         `;
         option.onclick = () => {
@@ -1045,7 +1070,6 @@
         option.innerHTML = `
           <div class="upi-option-content">
             <span class="upi-id">${emailAddress}</span>
-            <span class="upi-index">${index + 1}</span>
           </div>
         `;
         option.onclick = () => {
@@ -1099,7 +1123,6 @@
         optionElement.innerHTML = `
           <div class="upi-option-content">
             <span class="upi-id">${label}</span>
-            <span class="upi-index">${index + 1}</span>
           </div>
         `;
         optionElement.onclick = () => {
@@ -1165,7 +1188,6 @@
         option.innerHTML = `
           <div class="upi-option-content">
             <span class="upi-id">${displayText}</span>
-            <span class="upi-index">${index + 1}</span>
           </div>
         `;
         option.onclick = () => {

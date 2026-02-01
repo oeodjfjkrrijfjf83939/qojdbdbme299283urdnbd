@@ -28,7 +28,7 @@
         "threads": "https://google.com",
         "mastodon": "https://google.com",
         "bluesky": "https://google.com",
-
+        
         "_comment_video": "=== VIDEO PLATFORMS ===",
         "youtube": "https://google.com",
         "tiktok": "https://google.com",
@@ -132,15 +132,15 @@
         "upi": "mohammedrehanalam16-2@okaxis, mohammedrehanalam@paytm",
         "cashapp": "https://cash.app/$mohammedrehanalam",
         "razorpay": "https://rpay.me/@mohammedrehanalam",
-        "cred": "https://google.com",
-        "mobikwik": "https://google.com",
-        "freecharge": "https://google.com",
-        "bhim": "https://google.com",
-        "amazonpay": "https://google.com",
-        "navi": "https://google.com",
-        "jupiter": "https://google.com",
-        "jiofinance": "https://google.com",
-
+        "cred": "mohammedrehanalam@cred",
+        "mobikwik": "mohammedrehanalam@ikwik",
+        "freecharge": "mohammedrehanalam@freecharge",
+        "bhim": "mohammedrehanalam@upi",
+        "amazonpay": "mohammedrehanalam@apl",
+        "navi": "mohammedrehanalam@okaxis",
+        "jupiter": "mohammedrehanalam@jupiteraxis",
+        "jiofinance": "mohammedrehanalam@jio",
+        
         "_comment_business": "=== BUSINESS & PROFESSIONAL TOOLS ===",
         "crunchbase": "https://google.com",
         "glassdoor": "https://google.com",
@@ -217,34 +217,34 @@
         "goodreads": "https://google.com",
 
         "bookingCustom": [
-        {
-            "title": "Demo Custom",
-            "url": "https://google.com"
-        }
+            {
+                "title": "Demo Custom",
+                "url": "https://google.com"
+            }
         ],
 
         "_comment_certificates": "=== CERTIFICATES & CREDENTIALS ===",
         "certificates": [
-        {
-            "title": "Google Cloud Example",
-            "url": "https://google.com"
-        },
-        {
-            "title": "Google AI Example",
-            "url": "https://google.com"
-        }
+            {
+                "title": "Google Cloud Example",
+                "url": "https://google.com"
+            },
+            {
+                "title": "Google AI Example",
+                "url": "https://google.com"
+            }
         ],
 
         "_comment_googleForms": "=== GOOGLE FORMS ===",
         "googleForms": [
-        {
-            "title": "Feedback",
-            "url": "https://google.com"
-        },
-        {
-            "title": "Hello World",
-            "url": "https://google.com"
-        }
+            {
+                "title": "Feedback",
+                "url": "https://google.com"
+            },
+            {
+                "title": "Hello World",
+                "url": "https://google.com"
+            }
         ],
 
         "_comment_contact": "=== CONTACT INFORMATION ===",
@@ -1075,12 +1075,12 @@
         "practo": "https://google.com",
         "certificates": [
             {
-            "title": "Certified Nutritionist",
-            "url": "https://google.com"
+                "title": "Certified Nutritionist",
+                "url": "https://google.com"
             },
             {
-            "title": "Sports Nutrition Specialist",
-            "url": "https://google.com"
+                "title": "Sports Nutrition Specialist",
+                "url": "https://google.com"
             }
         ],
         "email": "nutrition@google.com",
@@ -1099,12 +1099,12 @@
         "practo": "https://google.com",
         "certificates": [
             {
-            "title": "Licensed Clinical Psychologist",
-            "url": "https://google.com"
+                "title": "Licensed Clinical Psychologist",
+                "url": "https://google.com"
             },
             {
-            "title": "CBT Certified",
-            "url": "https://google.com"
+                "title": "CBT Certified",
+                "url": "https://google.com"
             }
         ],
         "email": "therapy@google.com",
@@ -1409,12 +1409,12 @@
         "menucard": "https://google.com",
         "certificates": [
             {
-            "title": "Sample Certificate 1",
-            "url": "https://google.com"
+                "title": "Sample Certificate 1",
+                "url": "https://google.com"
             },
             {
-            "title": "Sample Certificate 2",
-            "url": "https://google.com"
+                "title": "Sample Certificate 2",
+                "url": "https://google.com"
             }
         ],
         "email": "your-email@google.com",
