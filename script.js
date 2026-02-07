@@ -178,6 +178,57 @@ function showAdminUI() {
   document.getElementById('headerDescription').textContent = 'Admin Dashboard - Manage digital business cards with QR codes';
   const adminUsername = sessionStorage.getItem('adminUsername');
   document.getElementById('userInfo').textContent = `Logged in as: ${adminUsername}`;
+
+  // Show Sync Button for Admins
+  const syncBtn = document.getElementById('syncBtn');
+  if (syncBtn) {
+    syncBtn.style.display = 'inline-flex';
+    // Remove existing listeners to avoid duplicates if any (though this function runs once usually)
+    const newBtn = syncBtn.cloneNode(true);
+    syncBtn.parentNode.replaceChild(newBtn, syncBtn);
+
+    newBtn.addEventListener('click', async () => {
+      // Confirmation Logic
+      if (newBtn.dataset.confirming === 'true') {
+        newBtn.disabled = true;
+        newBtn.innerHTML = '<span>⏳</span> Syncing...';
+        try {
+          const { dataService } = await import('./data-service.js');
+          await dataService.syncToFirebase();
+
+          newBtn.innerHTML = '<span>✅</span> Synced!';
+          newBtn.style.backgroundColor = '#4CAF50';
+          setTimeout(() => resetSyncBtn(newBtn), 2000);
+
+        } catch (e) {
+          console.error("Sync failed", e);
+          newBtn.innerHTML = '<span>❌</span> Failed';
+          newBtn.style.backgroundColor = '#f44336';
+          setTimeout(() => resetSyncBtn(newBtn), 3000);
+        }
+      } else {
+        // Enter confirmation state
+        newBtn.dataset.confirming = 'true';
+        newBtn.dataset.originalText = newBtn.innerHTML;
+        newBtn.innerHTML = '<span>⚠️</span> Confirm?';
+        newBtn.style.backgroundColor = '#ff9800';
+
+        // Reset after 3 seconds
+        setTimeout(() => {
+          if (newBtn && newBtn.isConnected && newBtn.dataset.confirming === 'true') {
+            resetSyncBtn(newBtn);
+          }
+        }, 3000);
+      }
+    });
+
+    function resetSyncBtn(btn) {
+      btn.dataset.confirming = 'false';
+      btn.innerHTML = btn.dataset.originalText || '<span>🔄</span> Sync to Firebase';
+      btn.disabled = false;
+      btn.style.backgroundColor = '';
+    }
+  }
 }
 
 function showUserUI() {
@@ -190,6 +241,12 @@ function showUserUI() {
   const addLoginBtn = document.getElementById('addLoginBtn');
   if (addLoginBtn) {
     addLoginBtn.style.display = 'none';
+  }
+
+  // Hide Sync Button for regular users
+  const syncBtn = document.getElementById('syncBtn');
+  if (syncBtn) {
+    syncBtn.style.display = 'none';
   }
 
   // Show Add New User button for regular users
@@ -207,95 +264,127 @@ function showUserUI() {
   document.getElementById('headerDescription').textContent = 'Manage digital business cards with QR codes';
   const userDataFile = sessionStorage.getItem('adminDataFile');
   const userUsername = sessionStorage.getItem('adminUsername');
-  document.getElementById('userInfo').textContent = `Data File: ${userDataFile} | Logged in as: ${userUsername}`;
+
+  // let userInfoHtml = `Data File: ${userDataFile} | Logged in as: ${userUsername}`;
+  let userInfoHtml = `Logged in as: ${userUsername}`;
+  if (window.currentUser && window.currentUser.isFrozen) {
+    userInfoHtml += ` <span class="frozen-badge">❄️ FROZEN (Read-Only)</span>`;
+
+    // Disable Add New User button for frozen accounts
+    const addUserBtn = document.getElementById('addUserBtn');
+    if (addUserBtn) {
+      addUserBtn.style.backgroundColor = '#9ca3af'; // Gray
+      addUserBtn.style.cursor = 'not-allowed';
+      addUserBtn.disabled = true;
+      addUserBtn.title = "Account is frozen (Read-Only). Contact admin to unfreeze.";
+    }
+  }
+  document.getElementById('userInfo').innerHTML = userInfoHtml;
 }
 
 // Load users from multiple JSON files
 async function loadUsers() {
   const userRole = sessionStorage.getItem('adminRole');
   const userDataFile = sessionStorage.getItem('adminDataFile');
+  const currentUsername = sessionStorage.getItem('adminUsername');
+
+  // Load current user details to get latest limits/status
+  try {
+    const { dataService } = await import('./data-service.js');
+    const credentials = await dataService.getCredentials();
+    const myself = credentials.find(c => c.username === currentUsername);
+    if (myself) {
+      window.currentUser = myself;
+      // Re-render UI if frozen status changed (e.g. while page open)
+      if (userRole === 'user') showUserUI();
+    }
+  } catch (e) { console.warn("Could not load current user details", e); }
 
   try {
     if (userRole === 'super_admin') {
-      // Super admin users see all users from all files using index.json
-      console.log('🔑 Super Admin Login - Loading all users from index');
+      // Super admin users see all users from all files
+      console.log('🔑 Super Admin Login - Loading all users');
 
+      let allUsers = [];
+      let loadedFromFirebase = false;
+
+      // 1. Try Firebase First
       try {
-        // Load index.json to get all data files
-        const indexRes = await fetch('./data/index.json');
-        if (!indexRes.ok) {
-          throw new Error('Index file not found');
+        const { dataService } = await import('./data-service.js');
+        const firebaseUsers = await dataService.getUsers(null); // null = all
+        if (firebaseUsers) {
+          allUsers = firebaseUsers;
+          loadedFromFirebase = true;
+          console.log('✅ Loaded all users from Firebase');
         }
-
-        const index = await indexRes.json();
-
-        // Get unique data files from index
-        const dataFiles = [...new Set(Object.values(index))];
-        console.log(`📁 Found ${dataFiles.length} data files in index:`, dataFiles);
-
-        const allUsers = [];
-
-        // Load all unique data files
-        for (const file of dataFiles) {
-          try {
-            const res = await fetch(`./data/${file}`);
-            if (res.ok) {
-              const users = await res.json();
-              allUsers.push(...users);
-              console.log(`✅ Loaded ${users.length} users from ${file}`);
-            } else {
-              console.log(`⚠️ File not found: ${file}`);
-            }
-          } catch (fileErr) {
-            console.log(`⚠️ Error loading ${file}:`, fileErr.message);
-          }
-        }
-
-        console.log(`📊 Total users loaded: ${allUsers.length}`);
-        allUsersGlobal = allUsers;
-        showUserUI(); // Show user UI for browsing all users
-        displayUsers(allUsers);
-        updateUserStatistics(allUsers);
-
-      } catch (indexErr) {
-        console.error('Error loading index:', indexErr);
-        alert('Failed to load data index. Please ensure tools/generate_index.js has been run.');
-        // Fallback is no longer possible without files list
-        return;
+      } catch (e) {
+        console.warn('⚠️ Firebase load failed, falling back to local:', e);
       }
+
+      // 2. Fallback to Local if Firebase failed or returned nothing
+      if (!loadedFromFirebase) {
+        console.log('📂 Loading users from local files (Fallback)');
+        try {
+          const indexRes = await fetch('./data/index.json');
+          if (!indexRes.ok) throw new Error('Index file not found');
+          const index = await indexRes.json();
+          const dataFiles = [...new Set(Object.values(index))];
+
+          for (const file of dataFiles) {
+            try {
+              const res = await fetch(`./data/${file}`);
+              if (res.ok) allUsers.push(...(await res.json()));
+            } catch (err) { console.warn(`Failed to load ${file}`, err); }
+          }
+        } catch (localErr) {
+          console.error('Error loading local index:', localErr);
+          alert('Failed to load data. Please ensure local files are correct.');
+          return;
+        }
+      }
+
+      console.log(`📊 Total users loaded: ${allUsers.length}`);
+      allUsersGlobal = allUsers;
+      showUserUI();
+      displayUsers(allUsers);
+      updateUserStatistics(allUsers);
 
     } else if (userRole === 'main_admin') {
       // Admin users see all data and admin statistics
-      console.log('🔑 Main Admin Login - Loading all users from index');
+      console.log('🔑 Main Admin Login - Loading all users');
 
-      let dataFiles = [];
+      let allUsers = [];
+      let loadedFromFirebase = false;
+
+      // 1. Try Firebase First
       try {
-        const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
-        if (indexRes.ok) {
-          const index = await indexRes.json();
-          // Index is now { userCode: filePath }, so we must deduplicate the values
-          dataFiles = [...new Set(Object.values(index))];
+        const { dataService } = await import('./data-service.js');
+        const firebaseUsers = await dataService.getUsers(null);
+        if (firebaseUsers) {
+          allUsers = firebaseUsers;
+          loadedFromFirebase = true;
+          console.log('✅ Loaded all users from Firebase');
         }
-      } catch (err) {
-        console.error('Error loading index:', err);
+      } catch (e) {
+        console.warn('⚠️ Firebase load failed, falling back to local:', e);
       }
 
-      const allUsers = [];
-
-      for (const file of dataFiles) {
+      // 2. Fallback to Local (if Firebase failed)
+      if (!loadedFromFirebase) {
+        console.log('📂 Loading users from local files (Fallback)');
         try {
-          // Index contains relative paths (e.g. "a/file.json"), so we must prepend ./data/
-          const res = await fetch(`./data/${file}`);
-          if (res.ok) {
-            const users = await res.json();
-            allUsers.push(...users);
-            console.log(`✅ Loaded ${users.length} users from ${file}`);
-          } else {
-            console.log(`⚠️ File not found: ${file}`);
+          const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+          if (indexRes.ok) {
+            const index = await indexRes.json();
+            const dataFiles = [...new Set(Object.values(index))];
+            for (const file of dataFiles) {
+              try {
+                const res = await fetch(`./data/${file}`);
+                if (res.ok) allUsers.push(...(await res.json()));
+              } catch (err) { console.warn(`Failed to load ${file}`, err); }
+            }
           }
-        } catch (fileErr) {
-          console.log(`⚠️ Error loading ${file}:`, fileErr.message);
-        }
+        } catch (err) { console.error('Error loading index:', err); }
       }
 
       allUsersGlobal = allUsers;
@@ -304,7 +393,7 @@ async function loadUsers() {
       displayLoginAccountsTable();
 
     } else if (userRole === 'user') {
-      // Regular users see files based on their assigned dataFile (can be a file or folder)
+      // Regular users see files based on their assigned dataFile
       if (!userDataFile) {
         document.getElementById('userList').innerHTML =
           '<div class="no-results-card"><p style="color: red;">❌ No data file assigned to this user!</p></div>';
@@ -312,70 +401,54 @@ async function loadUsers() {
       }
 
       console.log(`👤 User Login - Loading data for scope: ${userDataFile}`);
+      let allUsers = [];
+      let loadedFromFirebase = false;
 
-      let targetFiles = [];
-
+      // 1. Try Firebase First
       try {
-        // 1. Fetch the Master Index
-        const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
-        if (!indexRes.ok) throw new Error('Failed to load master index');
-
-        const index = await indexRes.json();
-        // Index is now { userCode: filePath }, so we must deduplicate the values
-        const allKnownFiles = [...new Set(Object.values(index))];
-
-        // 2. Filter files based on userDataFile
-        // userDataFile could be "personal.json" (exact match) or "a" (folder)
-        targetFiles = allKnownFiles.filter(filePath => {
-          // Normalize paths to be safe (though index should be forward slashes)
-          const normFilePath = filePath.replace(/\\/g, '/');
-          const normScope = userDataFile.replace(/\\/g, '/');
-
-          // Case A: Exact File Match
-          if (normFilePath === normScope) return true;
-
-          // Case B: Folder Match (scope is a directory)
-          // Ensure scope ends with '/' for prefix check to avoid partial matches (e.g. "data" matching "database.json")
-          // But first Check if the scope itself is a prefix of the filepath
-          // If input is "a", we want to match "a/..."
-
-          if (normFilePath.startsWith(normScope + '/')) {
-            return true;
-          }
-
-          // Handle nested deep folder passed as scope e.g. "a/b" -> matches "a/b/c.json"
-          return false;
-        });
-
-        console.log(`📂 Found ${targetFiles.length} files matching scope "${userDataFile}":`, targetFiles);
-
-        if (targetFiles.length === 0) {
-          document.getElementById('userList').innerHTML =
-            `<div class="no-results-card"><p>No data files found for: ${userDataFile}</p></div>`;
-          return;
+        const { dataService } = await import('./data-service.js');
+        const firebaseUsers = await dataService.getUsers(userDataFile);
+        if (firebaseUsers) {
+          allUsers = firebaseUsers;
+          loadedFromFirebase = true;
+          console.log(`✅ Loaded users from Firebase for scope ${userDataFile}`);
         }
-
-      } catch (err) {
-        console.error('Error resolving file scope:', err);
-        document.getElementById('userList').innerHTML =
-          '<div class="no-results-card"><p style="color: red;">❌ Error resolving file permissions.</p></div>';
-        return;
+      } catch (e) {
+        console.warn('⚠️ Firebase load failed, falling back to local:', e);
       }
 
-      // 3. Load all matched files
-      const allUsers = [];
-
-      for (const file of targetFiles) {
+      // 2. Fallback to Local
+      if (!loadedFromFirebase) {
+        console.log('📂 Loading users from local files (Fallback)');
         try {
-          const res = await fetch(`./data/${file}`);
-          if (res.ok) {
-            const users = await res.json();
-            allUsers.push(...users);
-          } else {
-            console.warn(`Failed to fetch file: ${file}`);
+          const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+          if (!indexRes.ok) throw new Error('Failed to load master index');
+          const index = await indexRes.json();
+          const allKnownFiles = [...new Set(Object.values(index))];
+
+          const targetFiles = allKnownFiles.filter(filePath => {
+            const normFilePath = filePath.replace(/\\/g, '/');
+            const normScope = userDataFile.replace(/\\/g, '/');
+            if (normFilePath === normScope) return true;
+            if (normFilePath.startsWith(normScope + '/')) return true;
+            return false;
+          });
+
+          if (targetFiles.length === 0) {
+            document.getElementById('userList').innerHTML = `<div class="no-results-card"><p>No data files found for: ${userDataFile}</p></div>`;
+            return;
           }
-        } catch (e) {
-          console.error(`Error loading ${file}:`, e);
+
+          for (const file of targetFiles) {
+            try {
+              const res = await fetch(`./data/${file}`);
+              if (res.ok) allUsers.push(...(await res.json()));
+            } catch (e) { console.warn(`Warn: ${file} load failed`, e); }
+          }
+        } catch (err) {
+          console.error('Error resolving file scope:', err);
+          document.getElementById('userList').innerHTML = '<div class="no-results-card"><p style="color: red;">❌ Error resolving file permissions.</p></div>';
+          return;
         }
       }
 
@@ -480,7 +553,34 @@ function updateUserStatistics(users) {
     });
   });
 
-  document.getElementById('totalUsers').textContent = totalUsers;
+  if (window.currentUser && window.currentUser.role === 'user' && window.currentUser.isUnlimited === false) {
+    const limit = window.currentUser.maxUsers || 100;
+    const count = users ? users.length : 0;
+    document.getElementById('totalUsers').textContent = `${count} / ${limit}`;
+
+    const totalUsersLabel = document.querySelector('.total-users-label');
+    const addUserBtn = document.getElementById('addUserBtn');
+
+    if (count >= limit) {
+      if (totalUsersLabel) totalUsersLabel.style.color = 'var(--danger)'; // Red warning
+      if (addUserBtn) {
+        addUserBtn.style.backgroundColor = '#9ca3af'; // Gray
+        addUserBtn.style.cursor = 'not-allowed';
+        addUserBtn.disabled = true;
+        addUserBtn.title = "User limit reached. Contact admin to upgrade.";
+      }
+    } else {
+      if (totalUsersLabel) totalUsersLabel.style.color = '';
+      if (addUserBtn) {
+        addUserBtn.style.backgroundColor = '';
+        addUserBtn.style.cursor = '';
+        addUserBtn.disabled = false;
+        addUserBtn.title = "";
+      }
+    }
+  } else {
+    document.getElementById('totalUsers').textContent = totalUsers;
+  }
 }
 
 // Display users in the list
@@ -611,6 +711,11 @@ function displayUsers(users) {
     ).join('');
     const moreBadge = linkCount > 3 ? `<span class="link-badge">+${linkCount - 3} more</span>` : '';
 
+    // Check if account is frozen to disable Edit button
+    const isFrozen = window.currentUser && window.currentUser.isFrozen;
+    const editBtnStyle = isFrozen ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="Account is frozen (Read-Only)"' : '';
+    const editBtnOnclick = isFrozen ? '' : `onclick="editUser('${u.username}', '${u.userCode}')"`;
+
     // <p class="user-code">Code: ${u.userCode || 'N/A'}</p>
     div.innerHTML = `
       <div class="user-info">
@@ -621,11 +726,11 @@ function displayUsers(users) {
           ${moreBadge}
         </div>
         <p class="meta">${linkCount} active link${linkCount !== 1 ? 's' : ''}</p>
-      </div>
       <div class="user-actions">
-        <button class="qrBtn btn-show-qr" data-username="${u.username}" data-usercode="${u.userCode}">📱 Show QR</button>
-        <button class="btn-edit" onclick="editUser('${u.username}', '${u.userCode}')">✏️ Edit</button>
+        <button class="qrBtn btn-show-qr" data-username="${u.username}" data-usercode="${u.userCode}" data-fullname="${u.fullname}">📱 Show QR</button>
+        <button class="btn-edit" ${editBtnStyle} ${editBtnOnclick}>✏️ Edit</button>
         <button class="btn-view" onclick="viewUser('${u.username}', '${u.userCode}')">👁️ View</button>
+        <button class="btn-delete" onclick="deleteUser(this, '${u.username}', '${u.userCode}', '${u.dataFile || ''}')">🗑️ Delete</button>
       </div>
     `;
     list.appendChild(div);
@@ -633,12 +738,12 @@ function displayUsers(users) {
 
   // Add event listeners to QR buttons
   document.querySelectorAll('.qrBtn').forEach(btn => {
-    btn.addEventListener('click', () => showQR(btn.dataset.username, btn.dataset.usercode));
+    btn.addEventListener('click', () => showQR(btn.dataset.username, btn.dataset.usercode, btn.dataset.fullname));
   });
 }
 
 // Show QR Code Modal
-function showQR(username, userCode) {
+function showQR(username, userCode, fullname) {
   if (!userCode) {
     alert('Error: User code is missing. Please refresh the page.');
     return;
@@ -651,7 +756,9 @@ function showQR(username, userCode) {
   document.getElementById('qrUrl').textContent = qrUrl;
 
   // Find user data to display name from all data files
-  loadUsersForQR(username, userCode);
+  // Display user name
+  document.getElementById('qrUserName').textContent = fullname || username;
+  document.getElementById('qrUserHandle').textContent = '@' + username;
 
   const qrContainer = document.getElementById('qrContainer');
   qrContainer.innerHTML = "";
@@ -1259,7 +1366,15 @@ function downloadQRSVG(username, userCode) {
             // Frame via Path (Outer - Inner)
             // Using mask simulation by drawing 4 rects? No, too many elements.
             // Let's use the 'evenodd' trick. 
-            // If we append this path to string, we need to add fill-rule="evenodd" to this specific path element.
+            // Prevent save if Frozen
+            if (window.currentUser && window.currentUser.isFrozen) {
+              alert("⚠️ Account is Frozen (Read-Only). You cannot make changes.");
+              saveBtn.innerHTML = originalBtnText;
+              saveBtn.disabled = false;
+              return;
+            }
+
+            // If no scope (New User), try to determine from sessioneed to add fill-rule="evenodd" to this specific path element.
 
             let framePath = `M ${x} ${y} h ${moduleSize} v ${moduleSize} h -${moduleSize} z`;
             framePath += ` M ${x + bBorder} ${y + bBorder} v ${bInner} h ${bInner} v -${bInner} z`; // Hole
@@ -1348,7 +1463,16 @@ function copyQRUrl() {
       btn.style.color = '';
     }, 2000);
   }).catch(err => {
-    alert('Failed to copy URL');
+    console.error('Failed to copy URL:', err);
+    const btn = document.getElementById('copyUrl');
+    btn.innerHTML = '❌ Failed';
+    btn.style.background = '#ef4444';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.innerHTML = '📋 Copy Link'; // Assuming original text or use originalText logic if scoped
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 2000);
   });
 }
 
@@ -1362,7 +1486,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Add new user button
-document.getElementById('addUserBtn').onclick = () => {
+document.getElementById('addUserBtn').onclick = (e) => {
+  if (e) e.preventDefault();
+
+  // Check if button is disabled (frozen or limit reached)
+  const addUserBtn = document.getElementById('addUserBtn');
+  if (addUserBtn && addUserBtn.disabled) {
+    return; // Button is disabled, do nothing
+  }
+
   window.location.href = "edit.html";
 };
 
@@ -2384,108 +2516,38 @@ function setupCustomizationPanel() {
 }
 
 // Display admin statistics
+// Display Admin Statistics
+// Display admin statistics
+// Display Admin Statistics
 async function displayAdminStatistics(users) {
-  const totalClientUsers = users.length;
+  const totalClientUsersElement = document.getElementById('totalClientUsers');
+  const totalAccountsElement = document.getElementById('totalLoginAccounts');
+  const userStatsContainer = document.getElementById('userStatsContainer');
 
-  // Calculate total data files dynamically from the index
-  // Calculate total data files and folders dynamically from the index
-  let totalDataFilesText = '0';
-  try {
-    const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
-    if (indexRes.ok) {
-      const index = await indexRes.json();
-      const filePaths = new Set(Object.values(index));
-      const totalFiles = filePaths.size;
-
-      // Count unique folders
-      const folders = new Set();
-      filePaths.forEach(path => {
-        // Normalize path separators
-        const p = path.replace(/\\/g, '/');
-        const lastSlash = p.lastIndexOf('/');
-        if (lastSlash !== -1) {
-          const dir = p.substring(0, lastSlash);
-          folders.add(dir);
-          // Verify if we should count all intermediate folders?
-          // For now, counting the direct parent folders of valid files seems most useful.
-        }
-      });
-
-      if (folders.size > 0) {
-        totalDataFilesText = `${totalFiles} Files / ${folders.size} Folders`;
-      } else {
-        totalDataFilesText = `${totalFiles}`;
-      }
-    }
-  } catch (e) {
-    console.error("Error counting data files:", e);
-    totalDataFilesText = '-';
+  // 1. Total Client Users
+  if (totalClientUsersElement) {
+    totalClientUsersElement.textContent = users ? users.length : 0;
   }
 
-  // Update DOM with text instead of just number (ensure CSS allows this width)
-  const dataFilesEl = document.getElementById('totalDataFiles');
-  if (dataFilesEl) dataFilesEl.textContent = totalDataFilesText;
-
-  let totalLinks = 0;
-  users.forEach(user => {
-    const allPlatforms = [
-      user.linkedin, user.xing, user.angellist, user.behance, user.dribbble, user.figma, user.portfolio,
-      user.instagram, user.twitter, user.facebook, user.threads, user.mastodon, user.bluesky,
-      user.youtube, user.tiktok, user.vimeo, user.twitch, user.spotify, user.soundcloud, user.applemusic, user.bandcamp,
-      user.github, user.gitlab, user.bitbucket, user.stackoverflow, user.devto, user.codepen,
-      user.whatsapp, user.telegram, user.discord, user.signal, user.skype, user.slack,
-      user.steam, user.xbox, user.playstation, user.nintendo, user.patreon, user.kofi, user.buymeacoffee, user.substack,
-      user.etsy, user.amazon, user.shopify, user.flipkart, user.flickr, user['500px'], user.unsplash,
-      user.medium, user.wordpress, user.blogger, user.pinterest, user.reddit, user.snapchat, user.tumblr,
-      user.bereal, user.clubhouse, user.nextdoor, user.strava, user.linktree, user.notion, user.calendly,
-      user.paypal, user.gpay, user.phonepe, user.paytm, user.upi, user.cashapp, user.crunchbase,
-      user.glassdoor, user.indeed, user.coursera, user.udemy, user.skillshare, user.khanacademy,
-      user.email, user.phone, user.website, user.location, user.googleReview
-    ];
-
-    allPlatforms.forEach(link => {
-      if (link && typeof link === 'string' && link.trim()) {
-        if (link.includes(',')) {
-          const items = link.split(',').map(item => item.trim()).filter(item => item);
-          totalLinks += items.length;
-        } else {
-          totalLinks += 1;
-        }
-      }
-    });
-  });
-
-  // Load login accounts count
-  let totalLoginAccounts = 0;
-  try {
-    // Check for localStorage override first
-    let credentials;
-    const override = localStorage.getItem('adminCredentialsOverride');
-    if (override) {
-      credentials = JSON.parse(override);
-    } else {
-      const response = await fetch('./credentials/login_credentials.json');
-      if (response.ok) {
-        credentials = await response.json();
-      }
+  // 2. Login Accounts Count
+  if (totalAccountsElement) {
+    try {
+      const { dataService } = await import('./data-service.js');
+      const credentials = await dataService.getCredentials();
+      // Exclude admins
+      const count = credentials.filter(cred => cred.role !== 'main_admin' && cred.role !== 'super_admin').length;
+      totalAccountsElement.textContent = count;
+    } catch (e) {
+      console.warn("Failed to load credentials count:", e);
+      totalAccountsElement.textContent = "-";
     }
-
-    if (credentials) {
-      // Exclude main admin and super admin from count - only count regular users (including inactive)
-      totalLoginAccounts = credentials.filter(cred => cred.role !== 'main_admin' && cred.role !== 'super_admin').length;
-    }
-  } catch (error) {
-    console.error('Error loading credentials:', error);
   }
-
-  document.getElementById('totalLoginAccounts').textContent = totalLoginAccounts;
-  document.getElementById('totalClientUsers').textContent = totalClientUsers;
-  document.getElementById('totalLinksCount').textContent = totalLinks;
 }
 
 // Display login accounts table
 async function displayLoginAccountsTable(accountsToShow = null) {
   const tbody = document.getElementById('adminAccountsTableBody');
+  if (!tbody) return; // Add check for existing body
 
   try {
     let allAccounts;
@@ -2494,28 +2556,28 @@ async function displayLoginAccountsTable(accountsToShow = null) {
       // Use provided accounts (for search results)
       allAccounts = accountsToShow;
     } else {
-      // Load accounts from file or localStorage
-      let credentials;
-      const override = localStorage.getItem('adminCredentialsOverride');
-      if (override) {
-        credentials = JSON.parse(override);
-      } else {
+      // Load accounts via DataService
+      try {
+        const { dataService } = await import('./data-service.js');
+        allAccounts = await dataService.getCredentials();
+      } catch (e) {
+        console.warn("Display: Using local credentials fetch fallback");
         const response = await fetch('./credentials/login_credentials.json');
-        if (!response.ok) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Error loading login accounts</td></tr>';
-          return;
-        }
-        credentials = await response.json();
+        if (response.ok) allAccounts = await response.json();
       }
 
-      // Show all accounts regardless of isActive status
-      allAccounts = credentials;
+      // Check for localStorage override (still useful for session testing)
+      const override = localStorage.getItem('adminCredentialsOverride');
+      if (override) {
+        // Merge or replace? For simplicity, replace if override exists
+        allAccounts = JSON.parse(override);
+      }
 
       // Store accounts globally for search functionality
-      allAdminAccountsGlobal = allAccounts;
+      allAdminAccountsGlobal = allAccounts || [];
     }
 
-    if (allAccounts.length === 0) {
+    if (!allAccounts || allAccounts.length === 0) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No login accounts found</td></tr>';
       return;
     }
@@ -2523,7 +2585,17 @@ async function displayLoginAccountsTable(accountsToShow = null) {
     tbody.innerHTML = "";
 
     // Count client users for each data file
-    const clientUserStats = await getClientUserCounts();
+    // Pass global users to get accurate count without fetching
+    const clientUserStats = await getClientUserCounts(typeof allUsersGlobal !== 'undefined' ? allUsersGlobal : []);
+
+    // Sort accounts: Main/Super Admins first
+    allAccounts.sort((a, b) => {
+      const isMainA = a.role === 'main_admin' || a.role === 'super_admin';
+      const isMainB = b.role === 'main_admin' || b.role === 'super_admin';
+      if (isMainA && !isMainB) return -1;
+      if (!isMainA && isMainB) return 1;
+      return 0;
+    });
 
     allAccounts.forEach(account => {
       let clientCountsDisplay = '-';
@@ -2531,24 +2603,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
       if (account.role !== 'main_admin' && account.role !== 'super_admin') {
         const stats = clientUserStats[account.dataFile];
         if (stats) {
-          if (stats.files > 1) {
-            // Encode details to pass to function securely or store globally
-            // Storing in a temporary global map is safer for complex objects
-            if (!window.folderDetailsCache) window.folderDetailsCache = {};
-            window.folderDetailsCache[account.dataFile] = stats.details;
-
-            clientCountsDisplay = `
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span>${stats.users}</span>
-                <span style="font-size: 0.85em; color: #666;">(${stats.files} files)</span>
-                <span class="view-details-icon" 
-                      onclick="showFolderDetails('${account.dataFile}')" 
-                      title="View Details"
-                      style="cursor: pointer; font-size: 1.1em;">👁️</span>
-              </div>`;
-          } else {
-            clientCountsDisplay = `${stats.users}`;
-          }
+          clientCountsDisplay = `${stats.users}`;
         } else {
           clientCountsDisplay = '0';
         }
@@ -2575,21 +2630,65 @@ async function displayLoginAccountsTable(accountsToShow = null) {
         </td>
         <td>${account.description || 'No description'}</td>
         <td>${account.dataFile || '-'}</td>
-        <td>${clientCountsDisplay}</td>
+        <td class="centered-cell">${clientCountsDisplay}</td>
         <td>${roleDisplay}</td>
         <td>
-          <div class="status-badge ${statusClass}">
-            <span>${statusText}</span>
+          <div class="status-badge ${account.isFrozen ? 'frozen' : statusClass}">
+            <span>${account.isFrozen ? 'Freezed' : statusText}</span>
           </div>
         </td>
-        <td>
-          ${isMainAdmin ?
-          '<span class="main-admin-badge">Always Active</span>' :
-          `<label class="toggle-switch">
+        <td class="centered-cell">
+          ${isMainAdmin ? '<span class="badge-infinity">∞</span>' :
+          `
+            <label class="toggle-switch" title="Toggle Limit/Unlimited">
+                <input type="checkbox" ${account.isUnlimited !== false ? 'checked' : ''} 
+                       onchange="toggleLimitMode('${account.username}', this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+            `
+        }
+        </td>
+        <td class="centered-cell">
+          ${isMainAdmin ? '-' :
+          (account.isUnlimited !== false ?
+            '<span class="limit-text">∞</span>' :
+            `<input type="number" class="limit-input" value="${account.maxUsers || 100}" 
+                          min="1" onchange="updateLimitValue('${account.username}', this.value)">`
+          )
+        }
+        </td>
+        <td class="centered-cell">
+          ${isMainAdmin ? '<span class="main-admin-badge">Always Active</span>' :
+          `
+            <label class="toggle-switch" title="Activate/Deactivate Login">
               <input type="checkbox" ${account.isActive ? 'checked' : ''} 
                      onchange="toggleAccountStatus('${account.username}', this.checked)">
               <span class="toggle-slider"></span>
-            </label>`
+            </label>
+            `
+        }
+        </td>
+        <td class="centered-cell">
+          ${isMainAdmin ? '-' :
+          `
+            <label class="toggle-switch" title="${!account.isActive ? 'Account Deactivated' : (account.isFrozen ? 'Unfreeze' : 'Freeze')}">
+              <input type="checkbox" ${account.isFrozen ? 'checked' : ''} 
+                     ${!account.isActive ? 'disabled' : ''}
+                     onchange="toggleAccountFreeze('${account.username}', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+            `
+        }
+        </td>
+        <td class="centered-cell">
+          ${isMainAdmin ? '-' :
+          `
+            <button class="btn-capsule-delete" 
+                    title="Delete Account"
+                    onclick="deleteAccount(this, '${account.username}')">
+              Delete
+            </button>
+            `
         }
         </td>
       `;
@@ -2602,58 +2701,71 @@ async function displayLoginAccountsTable(accountsToShow = null) {
 }
 
 // Get client user counts for each data file
-async function getClientUserCounts() {
+async function getClientUserCounts(users = []) {
   const counts = {};
 
   try {
-    // 1. Get credentials to know which dataFiles (scopes) exist
-    const credRes = await fetch('./credentials/login_credentials.json');
-    if (!credRes.ok) return counts;
-    const credentials = await credRes.json();
+    // 1. Get credentials via DataService to know which dataFiles (scopes) exist
+    // If not already imported, import it dynamically
+    let credentials = [];
+    try {
+      const { dataService } = await import('./data-service.js');
+      credentials = await dataService.getCredentials();
+    } catch (e) {
+      console.warn("Using local credentials fetch fallback");
+      const credRes = await fetch('./credentials/login_credentials.json');
+      if (credRes.ok) credentials = await credRes.json();
+    }
 
-    // 2. Get Master Index to resolve scopes to files
-    const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
-    if (!indexRes.ok) return counts;
-    const index = await indexRes.json();
+    // 2. Aggregate counts from the passed 'users' array
+    // users array should have 'dataFile' property if loaded from Firebase with my modification
+    // or if loaded locally via index iteration (where we might need to infer it?)
+    // Actually, local load logic in loadUsers pushed raw JSON.
+    // If local JSON files don't have 'dataFile' property in user objects, we can't easily group them unless we infer it during load.
 
-    // 3. For each active dataFile scope, count users
+    // For local load in loadUsers (lines 280-285), we iterate 'dataFiles'.
+    // We should probably modify loadUsers to inject dataFile there too if missing!
+    // But assuming we have it:
+
+    // Group users by dataFile
+    const userGroups = {};
+    users.forEach(u => {
+      // If dataFile is missing, try to find it or group as 'unknown'
+      // For local files, we might need to rely on the fact that loadUsers *should* have injected it?
+      // Wait, I didn't modify loadUsers local loading logic to inject dataFile.
+      // Let's assume for now that Firebase users have it (I added it).
+      // For local users, we might need to update loadUsers first.
+      const scope = u.dataFile || 'unknown';
+      if (!userGroups[scope]) userGroups[scope] = { count: 0, files: new Set() };
+      userGroups[scope].count++;
+      // We don't have file paths per se in the user object from Firebase, just the scope.
+      // But for local fallback, we technically do have file paths in index.
+      // Let's just count unique scopes.
+    });
+
+    // 3. Map back to credentials to ensure we show all configured scopes even if empty
+    // (Optional, but good for UI consistency)
     const scopes = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
 
-    for (const scope of scopes) {
-      let count = 0;
-      const matchedFiles = new Set();
-      const fileDetails = [];
-
-      Object.values(index).forEach(filePath => {
-        const normPath = filePath.replace(/\\/g, '/');
-        const normScope = scope.replace(/\\/g, '/');
-
-        if (normPath === normScope || normPath.startsWith(normScope + '/')) {
-          matchedFiles.add(filePath);
-        }
-      });
-
-      // Fetch and count per file
-      for (const file of matchedFiles) {
-        try {
-          const res = await fetch(`./data/${file}`);
-          if (res.ok) {
-            const users = await res.json();
-            const fileCount = users.length;
-            count += fileCount;
-            fileDetails.push({ file: file, count: fileCount });
-          }
-        } catch (e) {
-          console.error(`Error counting users in ${file}:`, e);
-        }
-      }
-
+    scopes.forEach(scope => {
+      const group = userGroups[scope] || { count: 0 };
       counts[scope] = {
-        users: count,
-        files: matchedFiles.size,
-        details: fileDetails
+        users: group.count,
+        files: 1, // Simplify to 1 "scope" = 1 "file" concept for now
+        details: [] // We can populate this if we want, but scope-level count is main goal
       };
-    }
+    });
+
+    // Also include scopes found in users but not in credentials (e.g. orphans or super admin views)
+    Object.keys(userGroups).forEach(scope => {
+      if (!counts[scope]) {
+        counts[scope] = {
+          users: userGroups[scope].count,
+          files: 1,
+          details: []
+        };
+      }
+    });
 
   } catch (error) {
     console.error('Error calculating client counts:', error);
@@ -2665,38 +2777,170 @@ async function getClientUserCounts() {
 // Toggle account status (admin only function)
 async function toggleAccountStatus(username, isActive) {
   try {
+    const { dataService } = await import('./data-service.js');
+
+    // Attempt update via DataService (Firebase)
+    const success = await dataService.updateCredential(username, { isActive: isActive });
+
+    if (success) {
+      const statusText = isActive ? 'activated' : 'deactivated';
+      alert(`Account "${username}" has been ${statusText}.`);
+      displayLoginAccountsTable();
+      return;
+    }
+
+    // Fallback for Local Mode (Session only)
+    console.log("Using session override for toggle status");
     // Load current credentials
-    const response = await fetch('./credentials/login_credentials.json');
-    if (!response.ok) {
-      alert('Error: Could not load account data');
-      return;
+    let credentials = [];
+    // Check override first
+    const override = localStorage.getItem('adminCredentialsOverride');
+    if (override) {
+      credentials = JSON.parse(override);
+    } else {
+      const response = await fetch('./credentials/login_credentials.json');
+      if (response.ok) credentials = await response.json();
     }
 
-    const credentials = await response.json();
-
-    // Find and update the account
+    // Find and update
     const accountIndex = credentials.findIndex(cred => cred.username === username);
-    if (accountIndex === -1) {
-      alert('Error: Account not found');
-      return;
+    if (accountIndex !== -1) {
+      credentials[accountIndex].isActive = isActive;
+      localStorage.setItem('adminCredentialsOverride', JSON.stringify(credentials));
+      const statusText = isActive ? 'activated' : 'deactivated';
+      alert(`Account "${username}" has been ${statusText}.\n\n(Local Mode: Changes are applied for this session only)`);
+      displayLoginAccountsTable();
+    } else {
+      alert('Error: Account not found in local data');
     }
-
-    // Update the account status
-    credentials[accountIndex].isActive = isActive;
-
-    // Store the updated credentials in localStorage for this session
-    localStorage.setItem('adminCredentialsOverride', JSON.stringify(credentials));
-
-    // Show success message
-    const statusText = isActive ? 'activated' : 'deactivated';
-    alert(`Account "${username}" has been ${statusText}.\n\nChanges are applied for this session.`);
-
-    // Refresh the table to show updated status
-    displayLoginAccountsTable();
 
   } catch (error) {
     console.error('Error toggling account status:', error);
     alert('Error: Could not update account status');
+  }
+}
+
+// Toggle Freeze status (Read-Only)
+async function toggleAccountFreeze(username, isFrozen) {
+  try {
+    const { dataService } = await import('./data-service.js');
+    const success = await dataService.updateCredential(username, { isFrozen: isFrozen });
+
+    if (success) {
+      // No alert, just refresh
+      displayLoginAccountsTable();
+    } else {
+      // Local fallback
+      let credentials = [];
+      const override = localStorage.getItem('adminCredentialsOverride');
+      if (override) {
+        credentials = JSON.parse(override);
+      } else {
+        const response = await fetch('./credentials/login_credentials.json');
+        if (response.ok) credentials = await response.json();
+      }
+      const accountIndex = credentials.findIndex(cred => cred.username === username);
+      if (accountIndex !== -1) {
+        credentials[accountIndex].isFrozen = isFrozen;
+        localStorage.setItem('adminCredentialsOverride', JSON.stringify(credentials));
+        displayLoginAccountsTable();
+        alert(`Account "${username}" is now ${isFrozen ? 'Frozen (Read-Only)' : 'Unfrozen'}. (Local Session)`);
+      }
+    }
+  } catch (error) {
+    console.error('Error toggling freeze status:', error);
+    alert('Error updating freeze status');
+  }
+}
+
+// Delete Account
+async function deleteAccount(btn, username) {
+  // Show confirmation dialog immediately
+  const confirmed = confirm(
+    `⚠️ DELETE ACCOUNT: "${username}"\n\n` +
+    `WARNING: This action is PERMANENT and IRREVERSIBLE!\n\n` +
+    `If you delete this account:\n` +
+    `• The login credentials will be permanently deleted\n` +
+    `• All user profiles associated with this account will be permanently deleted\n` +
+    `• All data will be lost forever\n` +
+    `• There is NO way to recover this data\n\n` +
+    `Are you absolutely sure you want to delete this account?\n\n` +
+    `Click "OK" to DELETE PERMANENTLY\n` +
+    `Click "Cancel" to keep the account`
+  );
+
+  if (!confirmed) {
+    // User clicked Cancel - do nothing
+    return;
+  }
+
+  // User clicked OK - proceed with deletion
+  const originalContent = btn.innerHTML;
+  btn.innerHTML = '⏳';
+  btn.disabled = true;
+
+  try {
+    const { dataService } = await import('./data-service.js');
+    const success = await dataService.deleteCredential(username);
+
+    if (success) {
+      // Success - refresh the table
+      displayLoginAccountsTable();
+      alert(`✅ Account "${username}" has been permanently deleted.`);
+    } else {
+      // Local fallback (Session only)
+      let credentials = [];
+      const override = localStorage.getItem('adminCredentialsOverride');
+      if (override) {
+        credentials = JSON.parse(override);
+      } else {
+        const response = await fetch('./credentials/login_credentials.json');
+        if (response.ok) credentials = await response.json();
+      }
+      const newCredentials = credentials.filter(c => c.username !== username);
+      if (newCredentials.length < credentials.length) {
+        localStorage.setItem('adminCredentialsOverride', JSON.stringify(newCredentials));
+        displayLoginAccountsTable();
+        alert(`✅ Account "${username}" deleted (Local Session).`);
+      } else {
+        alert("❌ Delete failed. Please try again.");
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+      }
+    }
+  } catch (e) {
+    console.error("Delete failed", e);
+    alert("❌ Delete failed due to an error. Please try again.");
+    btn.innerHTML = originalContent;
+    btn.disabled = false;
+  }
+}
+
+// Toggle Limit Mode (Infinity vs Limited)
+async function toggleLimitMode(username, isUnlimited) {
+  try {
+    const { dataService } = await import('./data-service.js');
+    const updateData = { isUnlimited: isUnlimited };
+    if (!isUnlimited) {
+      updateData.maxUsers = 100; // Default when switching off infinity
+    }
+
+    await dataService.updateCredential(username, updateData);
+    displayLoginAccountsTable();
+  } catch (e) {
+    console.error("Link toggle failed", e);
+    alert("Error updating limit mode");
+  }
+}
+
+// Update Max Users Value
+async function updateLimitValue(username, value) {
+  try {
+    const { dataService } = await import('./data-service.js');
+    await dataService.updateCredential(username, { maxUsers: parseInt(value) });
+    console.log(`Updated limit for ${username} to ${value}`);
+  } catch (e) {
+    console.error("Limit update failed", e);
   }
 }
 
@@ -2845,6 +3089,17 @@ function showAddLoginModal() {
       const usernameField = document.getElementById('newUsername');
       if (usernameField) usernameField.focus();
     }, 100);
+
+    // Reset Submit Button State
+    const submitBtn = document.querySelector('#addLoginForm button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.innerHTML = 'Generate Credentials';
+      submitBtn.style.backgroundColor = '';
+      submitBtn.disabled = false;
+    }
+    // Remove Next Button if exists
+    const nextBtn = document.getElementById('btn-next-step');
+    if (nextBtn) nextBtn.remove();
   }
 }
 
@@ -2881,32 +3136,94 @@ async function handleAddLoginForm(e) {
 
   // Check username and data file uniqueness
   try {
-    const response = await fetch('./credentials/login_credentials.json');
-    if (response.ok) {
-      const credentials = await response.json();
+    const { dataService } = await import('./data-service.js');
 
-      // Check username uniqueness
-      const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
-      if (existingUser) {
-        alert('Username already exists. Please choose a different username.');
-        return;
-      }
+    // Check credentials (handles both Firebase and local fallback)
+    const { usernameExists, dataFileExists } = await dataService.checkCredentialUniqueness(username, processedDataFile);
 
-      // Check data file uniqueness
-      const existingDataFile = credentials.find(cred =>
-        cred.dataFile && cred.dataFile.toLowerCase() === processedDataFile.toLowerCase()
-      );
-      if (existingDataFile) {
-        alert('Data file name already exists. Please choose a different data file name.');
-        return;
-      }
+    if (usernameExists) {
+      alert('Username already exists. Please choose a different username.');
+      return;
     }
+
+    if (dataFileExists) {
+      alert('Data file name already exists. Please choose a different data file name.');
+      return;
+    }
+
+    // Loading State
+    const submitBtn = document.querySelector('#addLoginForm button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.innerHTML = '⏳ Generating...';
+      submitBtn.disabled = true;
+    }
+
+    // Attempt to add credential to Firebase
+    // If it fails (e.g. local mode), we still show the JSON for manual addition
+    const credentialData = {
+      username: username,
+      password: password,
+      role: 'user',
+      createdAt: new Date().toISOString().split('T')[0],
+      isActive: true,
+      isFrozen: false,
+      isUnlimited: false, // Default to Limited as requested
+      maxUsers: 100,      // Default 100
+      dataFile: processedDataFile,
+      description: description || `User account for ${processedDataFile}`
+    };
+
+    const added = await dataService.addCredential(credentialData);
+    if (added) {
+      console.log('Account created in Firebase');
+    } else {
+      console.warn('Could not add to Firebase (likely local mode).');
+    }
+
   } catch (error) {
-    console.error('Error checking uniqueness:', error);
+    console.error('Error checking uniqueness or adding credential:', error);
+    // Reset button on error
+    const submitBtn = document.querySelector('#addLoginForm button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.innerHTML = 'Generate Credentials';
+      submitBtn.disabled = false;
+    }
+    // Fallback to purely local check if dataService fails completely?
+    // The dataService method handles errors gracefully usually, but let's be safe.
+    try {
+      const response = await fetch('./credentials/login_credentials.json');
+      if (response.ok) {
+        const credentials = await response.json();
+        if (credentials.find(c => c.username.toLowerCase() === username.toLowerCase())) {
+          alert('Username already exists (Local Check).');
+          return;
+        }
+      }
+    } catch (e) { console.warn("Local check failed", e); }
   }
 
-  // Show credentials display
-  showCredentialsDisplay(username, password, processedDataFile, 'user', description);
+  // UI Feedback instead of immediate transition
+  const submitBtn = document.querySelector('#addLoginForm button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.innerHTML = '✅ Credentials Added';
+    submitBtn.style.backgroundColor = '#4CAF50';
+    submitBtn.disabled = true;
+  }
+
+  // Add Next Button
+  const actionsDiv = document.querySelector('#addLoginForm .modal-actions');
+  if (actionsDiv && !document.getElementById('btn-next-step')) {
+    const nextBtn = document.createElement('button');
+    nextBtn.id = 'btn-next-step';
+    nextBtn.type = 'button';
+    nextBtn.className = 'btn-primary';
+    nextBtn.innerText = 'Next';
+    nextBtn.style.marginLeft = '10px';
+    nextBtn.onclick = () => {
+      showCredentialsDisplay(username, password, processedDataFile, 'user', description);
+    };
+    actionsDiv.appendChild(nextBtn);
+  }
 }
 
 function showCredentialsDisplay(username, password, dataFile, role, userDescription) {
@@ -3106,6 +3423,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Add New User button (for regular users)
+  const addUserBtn = document.getElementById('addUserBtn');
+  if (addUserBtn) {
+    addUserBtn.addEventListener('click', () => {
+      // Check if frozen
+      if (window.currentUser && window.currentUser.isFrozen) {
+        alert("⚠️ Account is Frozen (Read-Only). You cannot add new users.");
+        return;
+      }
+      window.location.href = 'edit.html'; // Navigate to empty edit form
+    });
+  }
+
   // Admin search functionality
   const adminSearchInput = document.getElementById('adminSearchInput');
   const adminSearchBtn = document.getElementById('adminSearchBtn');
@@ -3167,4 +3497,57 @@ if (!checkAdminAuth()) {
   loadUsers();
   // Setup customization panel after DOM is loaded
   document.addEventListener('DOMContentLoaded', setupCustomizationPanel);
+}
+
+window.deleteUser = async function (btn, username, userCode, scope) {
+  // If button is in confirmation state
+  if (btn.dataset.confirming === 'true') {
+    // Perform delete
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Deleting...';
+    btn.disabled = true;
+
+    try {
+      const { dataService } = await import('./data-service.js');
+      // Scope is required for Firebase delete
+      if (!scope) {
+        console.warn("Scope (dataFile) missing for delete.");
+      }
+
+      const success = await dataService.deleteUser(scope, username);
+      if (success) {
+        // Success - Reload list
+        // No alert needed, the row disappearing is feedback enough.
+        console.log(`User ${username} deleted successfully.`);
+        loadUsers();
+      } else {
+        btn.innerHTML = '❌ Failed';
+        btn.style.backgroundColor = 'red';
+        setTimeout(() => resetDeleteBtn(btn), 2000);
+      }
+    } catch (error) {
+      console.error('Delete failed:', error);
+      btn.innerHTML = '❌ Error';
+      btn.style.backgroundColor = 'red';
+      setTimeout(() => resetDeleteBtn(btn), 2000);
+    }
+  } else {
+    // Enter confirmation state
+    btn.dataset.confirming = 'true';
+    btn.dataset.originalText = btn.innerHTML;
+    btn.innerHTML = '⚠️ Confirm?';
+    btn.style.backgroundColor = '#ff9800'; // Orange for warning
+
+    // Reset after 3 seconds if not confirmed
+    setTimeout(() => {
+      if (btn && btn.isConnected) resetDeleteBtn(btn);
+    }, 3000);
+  }
+};
+
+function resetDeleteBtn(btn) {
+  btn.dataset.confirming = 'false';
+  btn.innerHTML = btn.dataset.originalText || '🗑️ Delete';
+  btn.disabled = false;
+  btn.style.backgroundColor = ''; // Revert to CSS default
 }

@@ -452,74 +452,78 @@
       try {
         let user = null;
 
-        // First, load the index to find the correct data file
+        // 1. Try to find scope via Index
         try {
           const indexRes = await fetch('./data/index.json');
-
           if (indexRes.ok) {
             const index = await indexRes.json();
             const dataFile = index[userCode];
 
             if (dataFile) {
-              // Found the data file path in index
-              const dataFilePath = `./data/${dataFile}`;
               console.log(`📋 Index lookup: ${userCode} → ${dataFile}`);
-
+              // Try Firebase with known scope
               try {
-                const res = await fetch(dataFilePath);
+                let scope = dataFile.split('/')[0].replace('.json', '');
+                const { dataService } = await import('./data-service.js');
+                const fbUser = await dataService.getUser(scope, username);
+                if (fbUser) {
+                  user = fbUser;
+                  console.log(`✅ Loaded user from Firebase scope: ${scope}`);
+                }
+              } catch (fbErr) {
+                console.warn("⚠️ Firebase load attempt failed, falling back to local scoped:", fbErr);
+              }
+
+              // Fallback to specific local file
+              if (!user) {
+                const res = await fetch(`./data/${dataFile}`);
                 if (res.ok) {
                   const users = await res.json();
                   user = users.find(u => u.username === username && u.userCode === userCode);
-                  if (user) {
-                    console.log(`✅ Found user in ${dataFile}`);
-                  }
                 }
-              } catch (fileErr) {
-                console.log(`⚠️ Error loading ${dataFile}:`, fileErr.message);
               }
             } else {
               console.log(`⚠️ UserCode ${userCode} not found in index`);
             }
-          } else {
-            console.log('⚠️ Index file not found, falling back to sequential search');
-            // Fallback: search all files if index doesn't exist
-            const dataFiles = DATA_FILES_CONFIG.files;
-
-            for (const file of dataFiles) {
-              try {
-                const res = await fetch(file);
-                if (res.ok) {
-                  const users = await res.json();
-                  user = users.find(u => u.username === username && u.userCode === userCode);
-                  if (user) {
-                    console.log(`✅ Found user in ${file} (fallback)`);
-                    break;
-                  }
-                }
-              } catch (fileErr) {
-                console.log(`⚠️ Error searching ${file}:`, fileErr.message);
-              }
-            }
           }
-        } catch (indexErr) {
-          console.log('⚠️ Error loading index, falling back to sequential search:', indexErr.message);
-          // Fallback: search all files if index loading fails
-          const dataFiles = DATA_FILES_CONFIG.files;
+        } catch (e) {
+          console.warn("Index lookup failed:", e);
+        }
+
+        // 2. If not found, try Global Firebase Search (for new users not in index)
+        if (!user) {
+          console.log("🔍 Attempting Global Firebase Search...");
+          try {
+            const { dataService } = await import('./data-service.js');
+            const allFbUsers = await dataService.getUsers(null);
+            user = allFbUsers.find(u =>
+              (u.username === username) || (userCode && u.userCode === userCode)
+            );
+            if (user) console.log("✅ Found user via Global Firebase Search");
+          } catch (globalErr) {
+            console.warn("⚠️ Global Firebase Search failed:", globalErr);
+          }
+        }
+
+        // 3. Last Resort: Sequential Local Search
+        if (!user) {
+          console.log("📂 Starting sequential local file search...");
+          const dataFiles = DATA_FILES_CONFIG.files || DATA_FILES_CONFIG.fallbackFiles || ['data/personal/personal.json', 'data/clients/clients.json', 'data/demo/demo.json'];
 
           for (const file of dataFiles) {
             try {
-              const res = await fetch(file);
+              // Ensure path has data/ prefix if needed
+              const filePath = file.startsWith('data/') || file.startsWith('./data/') ? file : `./data/${file}`;
+              const res = await fetch(filePath);
               if (res.ok) {
                 const users = await res.json();
                 user = users.find(u => u.username === username && u.userCode === userCode);
                 if (user) {
-                  console.log(`✅ Found user in ${file} (fallback)`);
+                  console.log(`✅ Found user in ${filePath} (fallback)`);
                   break;
                 }
               }
-            } catch (fileErr) {
-              console.log(`⚠️ Error searching ${file}:`, fileErr.message);
-            }
+            } catch (fileErr) { /* ignore */ }
           }
         }
 
@@ -716,7 +720,7 @@
 
                 // Always show overlay for UPI IDs (even if single)
                 categoryLinks.push(`
-                    <div class="social-link upi-link" onclick="showUPIOverlay('${upiIds.join('|')}', '${config.label}')" title="Click to view ${config.label} UPI options">
+                    <div class="social-link upi-link" onclick="showUPIOverlay('${upiIds.join('|')}', '${config.label}')" title="Click to view ${config.label} options">
                       <img src="${iconPath}" alt="${config.label}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">

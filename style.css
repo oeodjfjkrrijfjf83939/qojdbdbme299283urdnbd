@@ -136,6 +136,47 @@ header p {
   animation: fadeIn 0.8s ease-out 0.2s backwards;
 }
 
+/* Admin Table Container - Horizontal Scroll */
+.admin-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* smooth scrolling on iOS */
+  padding-bottom: 1rem;
+  /* Space for scrollbar */
+}
+
+/* Capsule Delete Button */
+.btn-capsule-delete {
+  background-color: #ef4444;
+  /* Red */
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  /* Fully rounded capsule */
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-capsule-delete:hover {
+  background-color: #dc2626;
+  /* Darker red */
+}
+
+/* Frozen Status Badge */
+.status-badge.frozen {
+  background-color: #3b82f6;
+  /* Blue for frozen */
+  color: white;
+}
+
+
 /* Search Container */
 .search-container {
   margin-bottom: 2rem;
@@ -371,7 +412,7 @@ button[type="submit"] {
 /* Action Buttons */
 .user-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
   margin-top: 1.5rem;
 }
@@ -2238,15 +2279,6 @@ form input::placeholder {
   user-select: none;
 }
 
-.upi-link:hover {
-  background: linear-gradient(135deg, var(--success), #059669);
-  color: var(--white);
-}
-
-.upi-link:hover .link-label {
-  color: var(--white);
-}
-
 /* UPI Toast Notification */
 .upi-toast {
   position: fixed;
@@ -2368,9 +2400,7 @@ form input::placeholder {
     font-size: 1.5rem;
   }
 
-  .user-actions {
-    grid-template-columns: 1fr;
-  }
+  /* Keep 2-column grid on mobile - removed single column override */
 
   .container {
     padding: 1.5rem 1rem;
@@ -3868,4 +3898,109 @@ form input::placeholder {
   font-weight: 700;
   border-radius: 50%;
   margin-left: 0.5rem;
+}
+
+/* Admin Action Buttons */
+.action-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--white);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1.1rem;
+}
+
+.icon-btn:hover {
+  background: var(--light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* Limit Controls */
+.limit-cell {
+  min-width: 140px;
+}
+
+.limit-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.limit-input {
+  width: 70px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.badge-infinity {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.limit-text {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.small-toggle {
+  /* transform: scale(0.8); */
+  /* Removed scaling to match other toggles */
+}
+
+/* Frozen Banner */
+.frozen-badge {
+  display: inline-block;
+  background-color: #e0f2fe;
+  color: #0284c7;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: 600;
+  margin-left: 10px;
+  border: 1px solid #bae6fd;
+}
+
+.icon-btn.delete-btn:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #ef4444;
+}
+
+.centered-cell {
+  text-align: center;
+}
+
+/* Updated Capsule Delete Button Size */
+.btn-capsule-delete {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  /* Increased padding */
+  font-size: 0.85rem;
+  /* Increased font size */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }

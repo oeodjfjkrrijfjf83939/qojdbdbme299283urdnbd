@@ -30,6 +30,9 @@
       <button id="logoutBtn" class="btn-secondary">
         <span>🚪</span> Logout
       </button>
+      <button id="syncBtn" class="btn-primary" style="display: none; background-color: #ff9800;">
+        <span>🔄</span> Sync to Firebase
+      </button>
     </div>
 
     <!-- Search Container (for regular users) -->
@@ -62,10 +65,7 @@
           <h3>👤 Total Login Accounts</h3>
           <span id="totalLoginAccounts">0</span>
         </div>
-        <div class="stat-card">
-          <h3>📁 Data Files</h3>
-          <span id="totalDataFiles">0</span>
-        </div>
+
         <div class="stat-card">
           <h3>👥 Total Client Users</h3>
           <span id="totalClientUsers">0</span>
@@ -113,7 +113,11 @@
             <th>Client Users Count</th>
             <th>Role</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th>Unlimited</th>
+            <th>Limit Cap</th>
+            <th>Active</th>
+            <th>Freeze</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody id="adminAccountsTableBody">

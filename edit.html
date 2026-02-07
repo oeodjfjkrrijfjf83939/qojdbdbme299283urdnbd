@@ -589,7 +589,7 @@
         <div style="display: flex; align-items: center; gap: 15px;">
           <label
             style="display: flex; align-items: center; gap: 12px; cursor: pointer; color: white; font-weight: 500; flex: 1;">
-            <input type="checkbox" id="includeAllFields" checked
+            <input type="checkbox" id="includeAllFields"
               style="width: 20px; height: 20px; cursor: pointer; accent-color: #4CAF50;">
             <div>
               <div style="font-size: 15px; margin-bottom: 4px;">📋 Include all fields in JSON output</div>
@@ -600,7 +600,9 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn-primary">💾 Save User</button>
+        <button type="submit" class="btn-primary" id="saveUserBtn" disabled
+          style="background-color: #9ca3af; cursor: not-allowed;" title="Checking account status...">⏳
+          Checking...</button>
         <button type="button" class="btn-secondary" id="backBtn">← Back to Dashboard</button>
       </div>
     </form>
@@ -726,10 +728,121 @@
       const params = new URLSearchParams(window.location.search);
       const username = params.get('user');
 
+      // CRITICAL: Check if user is authenticated FIRST
+      const adminUsername = sessionStorage.getItem('adminUsername');
+      const adminRole = sessionStorage.getItem('adminRole');
+      const adminAuthenticated = sessionStorage.getItem('adminAuthenticated');
+      const saveBtn = document.getElementById('saveUserBtn');
+
+      // Block unauthenticated access
+      if (!adminAuthenticated || !adminUsername || !adminRole) {
+        // No authentication - redirect to login
+        alert('⚠️ Authentication Required\n\nYou must be logged in to create or edit user profiles.\n\nRedirecting to login page...');
+        window.location.href = 'admin.html';
+        return;
+      }
+
+      // Block admin accounts (main_admin and super_admin) from creating/editing profiles
+      if (adminRole === 'main_admin' || adminRole === 'super_admin') {
+        alert('⚠️ Access Denied\n\nAdmin accounts cannot create or edit user profiles.\n\nAdmin accounts are for managing credentials only.\n\nRedirecting to dashboard...');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Global flag to track frozen status
+      window.isAccountFrozen = false;
+
+      if (adminRole === 'user' && adminUsername) {
+        try {
+          const { dataService } = await import('./data-service.js');
+          const credentials = await dataService.getCredentials();
+          const myCred = credentials.find(c => c.username === adminUsername);
+
+          if (myCred && myCred.isFrozen) {
+            // Set global frozen flag
+            window.isAccountFrozen = true;
+
+            // Keep Save button disabled for frozen accounts
+            if (saveBtn) {
+              saveBtn.disabled = true;
+              saveBtn.style.backgroundColor = '#9ca3af'; // Gray
+              saveBtn.style.cursor = 'not-allowed';
+              saveBtn.title = "Account is frozen (Read-Only). Cannot save changes.";
+              saveBtn.innerHTML = '❄️ Frozen (Read-Only)';
+
+              // CRITICAL: Use MutationObserver to prevent ANY code from re-enabling the button
+              const observer = new MutationObserver(() => {
+                if (!saveBtn.disabled || saveBtn.innerHTML !== '❄️ Frozen (Read-Only)') {
+                  saveBtn.disabled = true;
+                  saveBtn.style.backgroundColor = '#9ca3af';
+                  saveBtn.style.cursor = 'not-allowed';
+                  saveBtn.title = "Account is frozen (Read-Only). Cannot save changes.";
+                  saveBtn.innerHTML = '❄️ Frozen (Read-Only)';
+                }
+              });
+
+              observer.observe(saveBtn, {
+                attributes: true,
+                attributeFilter: ['disabled'],
+                childList: true,
+                characterData: true,
+                subtree: true
+              });
+
+              // Store observer to prevent garbage collection
+              window.frozenButtonObserver = observer;
+            }
+
+            // Disable all form inputs
+            const formInputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
+            formInputs.forEach(input => {
+              input.disabled = true;
+              input.style.cursor = 'not-allowed';
+              input.style.opacity = '0.6';
+            });
+
+            // Show frozen notice
+            const formTitle = document.getElementById('formTitle');
+            if (formTitle && !formTitle.innerHTML.includes('Read-Only')) {
+              formTitle.innerHTML += ' <span style="color: #3b82f6; font-size: 0.9em;">❄️ (Read-Only - Account Frozen)</span>';
+            }
+          } else {
+            // Account is NOT frozen - enable Save button
+            window.isAccountFrozen = false;
+            if (saveBtn) {
+              saveBtn.disabled = false;
+              saveBtn.style.backgroundColor = '';
+              saveBtn.style.cursor = '';
+              saveBtn.title = '';
+              saveBtn.innerHTML = '💾 Save User';
+            }
+          }
+        } catch (err) {
+          console.error("Frozen check on page load failed:", err);
+          // On error, keep button disabled for safety
+          window.isAccountFrozen = true;
+          if (saveBtn) {
+            saveBtn.innerHTML = '⚠️ Error - Contact Admin';
+          }
+        }
+      } else {
+        // Main admin or no auth - enable Save button
+        window.isAccountFrozen = false;
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.style.backgroundColor = '';
+          saveBtn.style.cursor = '';
+          saveBtn.title = '';
+          saveBtn.innerHTML = '💾 Save User';
+        }
+      }
+
       // Only generate if it's a new user (no username in URL)
       if (!username) {
         const uniqueCode = await generateUniqueUserCode();
         document.getElementById('userCode').value = uniqueCode;
+      } else {
+        loadUser();
       }
     });
 
@@ -741,6 +854,76 @@
       if (!username) return;
 
       try {
+        // 1. Try Loading from Firebase via DataService
+        try {
+          const { dataService } = await import('./data-service.js');
+          // We need scope. Try to guess or find.
+          // If we are coming from dashboard, we might know scope.
+          // But this page might be opened directly.
+          // We can try to find user by searching all scopes (Admin) or just check local index to find scope.
+
+          // Let's use the local Index to find the "scope/file" first, then fetch from Firebase using that scope.
+          const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
+          let scope = null;
+          if (indexRes.ok) {
+            const index = await indexRes.json();
+            // index values are like "personal/personal.json" -> scope "personal"
+            if (index[userCode]) {
+              const path = index[userCode];
+              scope = path.split('/')[0].replace('.json', '');
+            } else {
+              // Fallback: search values?
+            }
+          }
+
+          if (scope) {
+            // If we found scope, try Firebase
+            const fbUser = await dataService.getUser(scope, username); // Try username as ID first
+            if (fbUser) {
+              console.log("✅ Loaded from Firebase");
+              populateForm(fbUser);
+              window.currentUserScope = scope; // Store for update
+              window.currentUserDocId = username;
+              return;
+            }
+            // Try userCode as ID
+            const fbUserCode = await dataService.getUser(scope, userCode);
+            if (fbUserCode) {
+              console.log("✅ Loaded from Firebase (by code)");
+              populateForm(fbUserCode);
+              window.currentUserScope = scope;
+              window.currentUserDocId = userCode;
+              return;
+            }
+          }
+          // If not found in index or Firebase by specific scope, try Global Firebase Search
+          if (!window.currentUserScope) {
+            console.log("🔍 Attempting Global Firebase Search...");
+            try {
+              const allFbUsers = await dataService.getUsers(null); // Fetch all users from all scopes
+              const foundFbUser = allFbUsers.find(u =>
+                (u.username === username) || (userCode && u.userCode === userCode)
+              );
+
+              if (foundFbUser) {
+                console.log("✅ Found user via Global Firebase Search:", foundFbUser);
+                populateForm(foundFbUser);
+
+                // Set necessary window variables
+                window.currentUserScope = foundFbUser.dataFile; // getUsers injects 'dataFile' (scope)
+                window.currentUserDocId = foundFbUser.username; // Default ID
+                return;
+              }
+            } catch (globalErr) {
+              console.warn("⚠️ Global Firebase Search failed:", globalErr);
+            }
+          }
+
+        } catch (fbErr) {
+          console.warn("⚠️ Firebase load failed:", fbErr);
+        }
+
+        // 2. Fallback to Local Load (Original Logic)
         let filesToSearch = [];
         const indexUrl = DATA_FILES_CONFIG.indexFile || './data/index.json';
 
@@ -787,6 +970,13 @@
                 console.log(`✅ Found user in ${file}`);
                 // Store found file for display
                 window.currentDataFile = `data/${file}`;
+
+                // Determine scope for potential Firebase update later
+                let scope = file.split('/')[0].replace('.json', '');
+                window.currentUserScope = scope;
+                window.currentUserDocId = user.username || user.userCode;
+
+                populateForm(user);
                 break; // Stop searching once user is found
               }
             }
@@ -796,74 +986,165 @@
           }
         }
 
-        if (!user) return;
-
-        document.getElementById('formTitle').innerText = "✏️ Edit User";
-        document.getElementById('username').value = user.username;
-        document.getElementById('username').disabled = true;
-        document.getElementById('fullname').value = user.fullname;
-
-        // Use existing code or generate new unique one if missing
-        if (user.userCode) {
-          document.getElementById('userCode').value = user.userCode;
-        } else {
-          const uniqueCode = await generateUniqueUserCode();
-          document.getElementById('userCode').value = uniqueCode;
-        }
-
-        // Load description if it exists
-        if (user.description) {
-          document.getElementById('description').value = user.description;
-        }
-
-        // Load public description if it exists
-        if (user.publicDescription) {
-          document.getElementById('publicDescription').value = user.publicDescription;
-        }
-
-        // Load all platform values
-        allPlatforms.forEach(platform => {
-          const input = document.getElementById(platform);
-          if (input && user[platform]) {
-            input.value = user[platform];
-          }
-        });
-
-        // Load certificates if they exist
-        if (user.certificates) {
-          loadCertificates(user.certificates);
-        }
-
-        // Load Google Forms if they exist
-        if (user.googleForms) {
-          loadGoogleForms(user.googleForms);
-        }
-
-        // Load custom links for all categories
-        const categories = [
-          'professional', 'design', 'social', 'video', 'music', 'developer',
-          'messaging', 'gaming', 'creator', 'ecommerce', 'photography', 'blogging',
-          'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing', 'appDownloads',
-          'booking', 'food', 'transportation', 'travel', 'health', 'ott', 'books', 'contact'
-        ];
-
-        categories.forEach(category => {
-          const customKey = `${category}Custom`;
-          if (user[customKey]) {
-            loadCustomLinks(category, user[customKey]);
-          }
-        });
       } catch (err) {
-        console.error("Error loading user:", err);
+        console.error('Error loading user:', err);
       }
     }
 
-    document.getElementById('backBtn').onclick = () => {
-      window.location.href = "index.html";
-    };
+    // Restore Back to Dashboard Button
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) {
+      backBtn.onclick = () => {
+        window.location.href = "index.html";
+      };
+    }
 
-    document.getElementById('userForm').onsubmit = async (e) => {
+    // Helper to populate form
+    // Helper to populate form
+    function populateForm(user) {
+      document.getElementById('formTitle').innerText = '✏️ Edit User: ' + user.fullname;
+      document.getElementById('username').value = user.username || '';
+      document.getElementById('username').disabled = true; // Disable username editing
+
+      document.getElementById('fullname').value = user.fullname || '';
+      document.getElementById('userCode').value = user.userCode || '';
+      document.getElementById('publicDescription').value = user.publicDescription || '';
+      document.getElementById('description').value = user.description || '';
+
+      // Populate standard fields
+      Object.keys(platformGroups).forEach(group => {
+        platformGroups[group].forEach(platform => {
+          if (user[platform]) {
+            const input = document.getElementById(platform);
+            if (input) input.value = user[platform];
+          }
+        });
+      });
+
+      // Load certificates
+      if (user.certificates) {
+        loadCertificates(user.certificates);
+      }
+
+      // Load Google Forms
+      if (user.googleForms) {
+        loadGoogleForms(user.googleForms);
+      }
+
+      // Load custom links
+      const categories = [
+        'professional', 'design', 'social', 'video', 'music', 'developer',
+        'messaging', 'gaming', 'creator', 'ecommerce', 'photography', 'blogging',
+        'miscSocial', 'productivity', 'payment', 'business', 'education', 'pricing', 'appDownloads',
+        'booking', 'food', 'transportation', 'travel', 'health', 'ott', 'books', 'contact'
+      ];
+
+      categories.forEach(category => {
+        const customKey = `${category}Custom`;
+        if (user[customKey]) {
+          loadCustomLinks(category, user[customKey]);
+        }
+      });
+    }
+
+    // Handle Form Submit (Create / Update / Generate JSON)
+    document.getElementById('userForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // --- AUTHENTICATION CHECK (Primary) ---
+      const adminAuthenticated = sessionStorage.getItem('adminAuthenticated');
+      const adminUsername = sessionStorage.getItem('adminUsername');
+      const adminRole = sessionStorage.getItem('adminRole');
+
+      // Block unauthenticated submissions
+      if (!adminAuthenticated || !adminUsername || !adminRole) {
+        alert('⚠️ Authentication Required\n\nYou must be logged in to save user profiles.\n\nRedirecting to login page...');
+        window.location.href = 'admin.html';
+        return;
+      }
+
+      // Block admin accounts (main_admin and super_admin) from creating/editing profiles
+      if (adminRole === 'main_admin' || adminRole === 'super_admin') {
+        alert('⚠️ Access Denied\n\nAdmin accounts cannot create or edit user profiles.\n\nAdmin accounts are for managing credentials only.\n\nRedirecting to dashboard...');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // --- FROZEN ACCOUNT CHECK (Backup - button should already be disabled) ---
+      const params = new URLSearchParams(window.location.search);
+      const isEditing = params.has('user');
+
+      // Backup check: If somehow the frozen account bypassed the disabled button
+      if (adminRole === 'user' && adminUsername) {
+        try {
+          const { dataService } = await import('./data-service.js');
+          const credentials = await dataService.getCredentials();
+          const myCred = credentials.find(c => c.username === adminUsername);
+
+          if (myCred && myCred.isFrozen) {
+            // Silent block - no alert needed since button should be disabled
+            window.location.href = "index.html";
+            return;
+          }
+        } catch (err) {
+          console.error("Frozen check failed:", err);
+        }
+      }
+
+      // --- LIMIT CHECK FOR NEW USERS ---
+      // Only check limit if:
+      // 1. We are CREATING a new user (not editing)
+      // 2. The logged-in person is a 'user' (Client User), not a Main Admin
+      if (!isEditing && adminRole === 'user' && adminUsername) {
+        try {
+          const { dataService } = await import('./data-service.js');
+
+          // 1. Get My Account Rules (Limit)
+          // We need to find the credential doc for the logged-in admin
+          // Since we don't have a direct 'getCredential' by ID, we fetch all (optimized if possible, but fine for now)
+          // Or utilize the fact that we might have stored it? No, safer to fetch fresh.
+          const credentials = await dataService.getCredentials();
+          const myCred = credentials.find(c => c.username === adminUsername);
+
+          if (myCred && myCred.isUnlimited === false) {
+            const maxUsers = myCred.maxUsers || 100;
+
+            // 2. Count My Current Profiles
+            // My profiles are in the file defined in myCred.dataFile (e.g., 'clients')
+            // Or we can rely on sessionStorage 'adminDataFile'
+            const dataFile = sessionStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
+            const scope = dataFile.replace('.json', '').replace('data/', '');
+
+            // Fetch users in my scope
+            const myUsers = await dataService.getUsers(scope);
+
+            // Filter? dataService.getUsers returns ALL in that scope.
+            // If I share the scope with others? (Usually 1 file per client or shared 'clients.json'?)
+            // If shared 'clients.json', do I own ALL of them?
+            // Main Admin sees them all.
+            // Client User sees... what?
+            // Client User usually sees ALL users in their assigned dataFile. 
+            // So if dataFile is unique to them, count is length.
+            // If dataFile is shared, we might need to filter by 'owner'? (Not implemented yet).
+            // Assuming 1 DataFile = 1 Client User's Sandbox for now based on 'Total Users' logic in script.js
+
+            const currentCount = myUsers ? myUsers.length : 0;
+
+            if (currentCount >= maxUsers) {
+              alert(`⚠️ User Limit Reached (${currentCount}/${maxUsers}).\n\nYou cannot create more profiles. Please contact admin.`);
+
+              // Redirect back to dashboard
+              window.location.href = "index.html";
+              return;
+            }
+          }
+        } catch (err) {
+          console.error("Limit check failed:", err);
+          // Fallback: allow or block? Block to be safe? Or allow if error?
+          // Allow for now to avoid locking out due to network error, but log it.
+        }
+      }
+      // --- END LIMIT CHECK ---
 
       const usernameInput = document.getElementById('username').value;
       const normalizedUsername = usernameInput.trim().replace(/\s+/g, '-');
@@ -876,7 +1157,7 @@
         description: document.getElementById('description').value.trim()
       };
 
-      // Add comment headers for organization
+      // Add comment headers for consistency and organization
       data._comment_professional = "=== PROFESSIONAL & BUSINESS NETWORKS ===";
       platformGroups.professional.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
 
@@ -955,7 +1236,7 @@
       data._comment_books = "=== BOOKS & READING ===";
       platformGroups.books.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
 
-      // Collect certificates (only from certificates container, not custom links)
+      // Collect certificates
       const certificates = [];
       const certificatesContainer = document.getElementById('certificates-container');
       if (certificatesContainer) {
@@ -989,7 +1270,7 @@
         });
       }
 
-      // Collect custom links for each category
+      // Collect custom links
       const categories = [
         'professional', 'design', 'social', 'video', 'music', 'developer',
         'messaging', 'gaming', 'creator', 'ecommerce', 'photography', 'blogging',
@@ -1018,104 +1299,104 @@
         }
       });
 
-      // Always include certificate comment section for consistency
+      // Add Arrays to Data
       data._comment_certificates = "=== CERTIFICATES & CREDENTIALS ===";
-      if (certificates.length > 0) {
-        data.certificates = certificates;
-      }
+      if (certificates.length > 0) data.certificates = certificates;
 
-      // Always include Google Forms comment section for consistency
       data._comment_googleforms = "=== GOOGLE FORMS ===";
-      if (googleForms.length > 0) {
-        data.googleForms = googleForms;
-      }
+      if (googleForms.length > 0) data.googleForms = googleForms;
 
       data._comment_contact = "=== CONTACT INFORMATION ===";
       platformGroups.contact.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
 
-      // Check if user wants to include all fields or only filled ones
+      // 4. CLEAN DATA (Optional, based on checkbox)
       const includeAllFields = document.getElementById('includeAllFields').checked;
-
       let finalData = data;
+
       if (!includeAllFields) {
-        // Filter out empty fields and comment sections
         finalData = {};
+        // Always keep core identity fields
+        ['username', 'fullname', 'userCode'].forEach(k => finalData[k] = data[k]);
 
-        // Always keep username, fullname, and userCode
-        finalData.username = data.username;
-        finalData.fullname = data.fullname;
-        finalData.userCode = data.userCode;
-
-        // Separate regular fields and custom fields
-        const regularFields = {};
-        const customFields = {};
-
-        // Add only non-empty platform fields
+        // Copy others only if meaningful
         Object.keys(data).forEach(key => {
-          if (key.startsWith('_comment_')) {
-            // Skip comment sections when not including all fields
-            return;
-          }
+          if (key.startsWith('_comment_')) return; // Skip comments
+          if (['username', 'fullname', 'userCode'].includes(key)) return;
 
-          const value = data[key];
-
-          // Skip already added core fields
-          if (['username', 'fullname', 'userCode'].includes(key)) {
-            return;
-          }
-
-          // Separate custom fields from regular fields
-          if (key.endsWith('Custom')) {
-            // Include custom arrays with items
-            if (Array.isArray(value) && value.length > 0) {
-              customFields[key] = value;
-            }
-          } else {
-            // Include if it's an array with items (certificates)
-            if (Array.isArray(value) && value.length > 0) {
-              regularFields[key] = value;
-            }
-            // Include if it's a non-empty string
-            else if (typeof value === 'string' && value.trim() !== '') {
-              regularFields[key] = value;
-            }
-          }
+          const val = data[key];
+          if (Array.isArray(val) && val.length > 0) finalData[key] = val;
+          else if (typeof val === 'string' && val.trim() !== '') finalData[key] = val;
         });
-
-        // Add regular fields first, then custom fields
-        Object.assign(finalData, regularFields, customFields);
       }
 
-      // Format JSON with proper line breaks and spacing for better readability
+      // 5. SAVE TO FIREBASE OR SHOW JSON
+      const saveBtn = document.querySelector('button[type="submit"]');
+      const originalBtnText = saveBtn.innerHTML;
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '⏳ Saving...';
+
+      try {
+        const { dataService } = await import('./data-service.js');
+
+        let scope = window.currentUserScope;
+        let docId = window.currentUserDocId;
+
+        // If no scope (New User), try to determine from session
+        if (!scope) {
+          const sessionFile = sessionStorage.getItem('adminDataFile');
+          if (sessionFile) {
+            // e.g. "data/clients.json" or just "clients"
+            scope = sessionFile.replace('data/', '').replace('.json', '');
+          } else {
+            // Fallback default
+            scope = 'clients';
+          }
+          docId = finalData.username; // New user uses username as ID
+        }
+
+        await dataService.updateUser(scope, docId || finalData.username, finalData);
+
+        saveBtn.innerHTML = '✅ Saved!';
+        saveBtn.style.backgroundColor = '#4CAF50'; // Success Green
+
+        setTimeout(() => {
+          saveBtn.innerHTML = originalBtnText;
+          saveBtn.style.backgroundColor = ''; // Revert color
+          saveBtn.disabled = false;
+        }, 2000);
+
+      } catch (e) {
+        console.error("Save failed:", e);
+        saveBtn.innerHTML = '❌ Save Failed';
+        saveBtn.style.backgroundColor = '#f44336'; // Error Red
+
+        setTimeout(() => {
+          saveBtn.innerHTML = originalBtnText;
+          saveBtn.style.backgroundColor = '';
+          saveBtn.disabled = false;
+        }, 3000);
+
+        // Show JSON backup automatically on error
+        document.getElementById('output').style.display = 'block';
+        document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Show JSON Output (Backup)
       const jsonOutput = JSON.stringify(finalData, null, 2)
-        .replace(/,\n  "_comment_/g, ',\n\n  "_comment_')  // Add extra line break before comment sections
-        .replace(/,\n  "username"/g, ',\n\n  "username"')  // Add extra line break before username
-        .replace(/,\n  "fullname"/g, ',\n  "fullname"')   // Keep normal spacing for fullname
-        .replace(/,\n  "userCode"/g, ',\n  "userCode"')   // Keep normal spacing for userCode
-        .replace(/,\n  "(\w+Custom)":/g, ',\n\n  "$1":');   // Add line break before custom sections
+        .replace(/,\n  "_comment_/g, ',\n\n  "_comment_')
+        .replace(/,\n  "username"/g, ',\n\n  "username"')
+        .replace(/,\n  "fullname"/g, ',\n  "fullname"')
+        .replace(/,\n  "userCode"/g, ',\n  "userCode"')
+        .replace(/,\n  "(\w+Custom)":/g, ',\n\n  "$1":');
 
       document.getElementById('jsonOutput').value = jsonOutput;
 
-      // Update target file name
-      let targetFile = 'data/clients.json'; // Default
-
-      if (window.currentDataFile) {
-        // User is being edited - use the file they came from
-        targetFile = window.currentDataFile;
-      } else {
-        // New user - check if logged in user has a specific dataFile
-        const dataFile = sessionStorage.getItem('adminDataFile');
-        if (dataFile) {
-          targetFile = dataFile.startsWith('data/') ? dataFile : `data/${dataFile}`;
-        }
-      }
-
-      document.getElementById('targetDataFile').innerText = targetFile;
+      let targetInfo = window.currentDataFile || sessionStorage.getItem('adminDataFile') || 'data/clients.json';
+      document.getElementById('targetDataFile').innerText = targetInfo;
 
       document.getElementById('output').style.display = 'block';
-
       document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
-    };
+    });
 
     document.getElementById('copyBtn').onclick = () => {
       const textarea = document.getElementById('jsonOutput');

@@ -55,6 +55,18 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 - **Custom Certificates**: Add unlimited certificates with custom titles
 - **Forms**: Add unlimited forms (Google Forms, surveys, questionnaires) with custom titles
 
+### Cloud Integration
+- **Firebase Cloud Firestore**: Secure cloud-based data storage
+- **Real-time Sync**: Automatic synchronization across devices
+- **Scalable Infrastructure**: Enterprise-grade cloud database
+
+### Admin Features
+- **User Profile Limits**: Set maximum profiles per account with unlimited option
+- **Account Freezing**: Temporarily freeze accounts with clear status display
+- **Role-Based Access**: Admin and regular user roles with different permissions
+- **Multi-User Login**: Multiple admin accounts with customizable data access scope
+- **Account Management**: Create, update, freeze, and delete login accounts
+
 ### Advanced Features
 - **Multiple UPI IDs**: Support for multiple payment IDs per platform
 - **Multiple Phone Numbers**: Add multiple contact numbers
