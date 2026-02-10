@@ -112,6 +112,19 @@
     </div>
   </div>
 
+  <!-- Details & Licenses Overlay -->
+  <div id="detailsOverlay" class="upi-overlay">
+    <div class="upi-overlay-content">
+      <div class="upi-overlay-header">
+        <h3 id="detailsOverlayTitle">Details</h3>
+        <button class="upi-close-btn" onclick="closeDetailsOverlay()">&times;</button>
+      </div>
+      <div class="upi-options" id="detailsOptions">
+        <!-- Details will be populated here -->
+      </div>
+    </div>
+  </div>
+
   <!-- QR Code Display Overlay -->
   <div id="qrCodeOverlay" class="upi-overlay">
     <div class="upi-overlay-content" style="max-width: 700px;">
@@ -270,12 +283,12 @@
 
       // Payment & Donation Platforms
       paypal: { icon: 'paypal', label: 'PayPal', color: '#0070BA' },
+      cashapp: { icon: 'cashapp', label: 'Cash App', color: '#00D632' },
+      razorpay: { icon: 'razorpay', label: 'Razorpay', color: '#0C2451' },
       gpay: { icon: 'gpay', label: 'Google Pay', color: '#4285F4', isUPI: true },
       phonepe: { icon: 'phonepe', label: 'PhonePe', color: '#5F259F', isUPI: true },
       paytm: { icon: 'paytm', label: 'PayTM', color: '#00BAF2', isUPI: true },
       upi: { icon: 'upi', label: 'UPI', color: '#00BAF2', isUPI: true },
-      cashapp: { icon: 'cashapp', label: 'Cash App', color: '#00D632' },
-      razorpay: { icon: 'razorpay', label: 'Razorpay', color: '#0C2451' },
       cred: { icon: 'cred', label: 'CRED', color: '#000000', isUPI: true },
       mobikwik: { icon: 'mobikwik', label: 'MobiKwik', color: '#D91E36', isUPI: true },
       freecharge: { icon: 'freecharge', label: 'Freecharge', color: '#F7C50E', isUPI: true },
@@ -303,7 +316,7 @@
       physicswallah: { icon: 'physicswallah', label: 'PhysicsWallah', color: '#FF6B35' },
 
       // App Downloads
-      playstore: { icon: 'playstore', label: 'Google Play Store', color: '#00D632' },
+      playstore: { icon: 'playstore', label: 'Play Store', color: '#00D632' },
       appstore: { icon: 'appstore', label: 'App Store', color: '#0066CC' },
 
       // Business Services & Pricing
@@ -606,7 +619,7 @@
           '✍️ Blogging & Writing': ['medium', 'wordpress', 'blogger'],
           '🌐 Other Social': ['pinterest', 'reddit', 'snapchat', 'tumblr', 'bereal', 'clubhouse', 'nextdoor', 'strava', 'sharechat', 'moj', 'josh', 'koo', 'mxtakatak', 'vk', 'ok', 'kakaotalk', 'quora'],
           '🔧 Productivity & Tools': ['linktree', 'notion', 'calendly'],
-          '💳 Payment & Donation': ['paypal', 'gpay', 'phonepe', 'paytm', 'upi', 'cashapp', 'razorpay', 'cred', 'mobikwik', 'freecharge', 'bhim', 'amazonpay', 'navi', 'jupiter', 'jiofinance'],
+          '💳 Payment & Donation': ['paypal', 'cashapp', 'razorpay', 'gpay', 'phonepe', 'paytm', 'upi', 'cred', 'mobikwik', 'freecharge', 'bhim', 'amazonpay', 'navi', 'jupiter', 'jiofinance'],
           '🎓 Education & Learning': ['coursera', 'udemy', 'skillshare', 'khanacademy', 'byjus', 'unacademy', 'vedantu', 'upgrad', 'physicswallah'],
           '📱 App Downloads': ['playstore', 'appstore'],
           '💼 Business Services & Pricing': ['pricelist'],
@@ -643,6 +656,56 @@
             `;
             linksDiv.appendChild(certSection);
             linkCount += user.certificates.length;
+          }
+
+          // Details & Licenses Section
+          // Ensure we don't duplicate logic if re-running
+          if (categoryName === '📞 Contact' && user.customDetails && Array.isArray(user.customDetails) && user.customDetails.length > 0) {
+
+            // 1. Group by Label
+            const groupedDetails = {};
+            user.customDetails.forEach(detail => {
+              const label = detail.label.trim();
+              if (!groupedDetails[label]) {
+                groupedDetails[label] = [];
+              }
+              groupedDetails[label].push(detail.value);
+            });
+
+            // 2. Create Section
+            const detailsSection = document.createElement('div');
+            detailsSection.className = 'category-section';
+
+            let detailsHtml = `
+              <h3 class="category-title">🪪 Details & Licenses</h3>
+              <div class="category-links">
+            `;
+
+            // 3. Create Buttons
+            Object.keys(groupedDetails).forEach(label => {
+              const values = groupedDetails[label];
+              // Join values with a special separator to pass to the function, or better, pass as JSON string if possible, 
+              // but simple delimiter is safer for inline onclick. We'll use a globally accessible array or encoded string.
+              // Actually, simply joining with existing overlay logic pattern (pipe |) might work if values don't contain pipes.
+              // To be safe, let's use encodeURIComponent for values.
+
+              const valuesString = values.map(v => encodeURIComponent(v)).join('|');
+
+              detailsHtml += `
+                <div class="social-link detail-link" onclick="showDetailsOverlay('${encodeURIComponent(label)}', '${valuesString}')" title="Click to view ${label}">
+                  <img src="./assets/icons/license.svg" alt="License" 
+                       onerror="this.src='./assets/icons/default.svg'" 
+                       style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
+                  <span class="link-label">${label}</span>
+                  <span class="upi-count-top-right">${values.length}</span>
+                </div>
+              `;
+              linkCount++;
+            });
+
+            detailsHtml += `</div>`;
+            detailsSection.innerHTML = detailsHtml;
+            linksDiv.appendChild(detailsSection);
           }
 
           platforms.forEach(platform => {
@@ -834,6 +897,7 @@
             'paymentdonation': 'payment',
             'businessprofessionaltools': 'business',
             'educationlearning': 'education',
+            'appdownloads': 'appDownloads',
             'businessservicespricing': 'pricing',
             'bookingactions': 'booking',
             'fooddining': 'food',
@@ -1257,6 +1321,74 @@
     document.getElementById('qrCodeOverlay').addEventListener('click', function (e) {
       if (e.target === this) {
         closeQRCodeOverlay();
+      }
+    });
+
+    // Show Details Overlay
+    function showDetailsOverlay(encodedLabel, valuesString) {
+      const label = decodeURIComponent(encodedLabel);
+      const values = valuesString.split('|').map(v => decodeURIComponent(v)); // Decode values
+      const overlay = document.getElementById('detailsOverlay');
+      const title = document.getElementById('detailsOverlayTitle');
+      const options = document.getElementById('detailsOptions');
+
+      title.textContent = label;
+      options.innerHTML = '';
+
+      values.forEach(value => {
+        const option = document.createElement('div');
+        option.className = 'upi-option clickable-row'; // Reuse clickable styling
+        option.title = "Click to copy";
+
+        option.innerHTML = `
+          <div class="upi-option-content" style="width: 100%;">
+            <span class="upi-id" style="font-family: 'Courier New', monospace; font-size: 1em;">${value}</span>
+          </div>
+        `;
+
+        option.onclick = () => {
+          navigator.clipboard.writeText(value).then(() => {
+            // Show toast
+            const toast = document.createElement('div');
+            toast.className = 'upi-toast';
+            toast.innerHTML = `✅ Copied!<br><strong>${value}</strong>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+
+            closeDetailsOverlay();
+          }).catch(err => {
+            console.error('Failed to copy keys', err);
+            // Fallback
+            const textArea = document.createElement('textarea');
+            textArea.value = value;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            const toast = document.createElement('div');
+            toast.className = 'upi-toast';
+            toast.innerHTML = `✅ Copied!<br><strong>${value}</strong>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+
+            closeDetailsOverlay();
+          });
+        };
+        options.appendChild(option);
+      });
+
+      overlay.style.display = 'flex';
+    }
+
+    function closeDetailsOverlay() {
+      document.getElementById('detailsOverlay').style.display = 'none';
+    }
+
+    // Close details overlay when clicking outside
+    document.getElementById('detailsOverlay').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeDetailsOverlay();
       }
     });
 

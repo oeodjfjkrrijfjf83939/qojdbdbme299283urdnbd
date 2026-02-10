@@ -305,15 +305,18 @@
       <div class="form-section payment">
         <h3>💳 Payment & Donation Platforms <span class="platform-count">15</span></h3>
         <small>Payment links and UPI IDs. For multiple UPI IDs, separate with commas (e.g., id1@bank, id2@bank)</small>
+
         <input type="url" id="paypal" placeholder="PayPal - https://paypal.me/username">
+        <input type="url" id="cashapp" placeholder="Cash App - https://cash.app/$username">
+        <input type="url" id="razorpay" placeholder="Razorpay - https://razorpay.me/@username">
 
         <div class="upi-input-group">
-          <input type="text" id="gpay" placeholder="Google Pay UPI ID(s) - username@okaxis, username@paytm">
+          <input type="text" id="gpay" placeholder="Google Pay UPI ID(s) - username@okaxis">
           <button type="button" class="add-upi-btn" data-target="gpay" title="Add another UPI ID">+</button>
         </div>
 
         <div class="upi-input-group">
-          <input type="text" id="phonepe" placeholder="PhonePe UPI ID(s) - username@ybl, username@upi">
+          <input type="text" id="phonepe" placeholder="PhonePe UPI ID(s) - username@ybl">
           <button type="button" class="add-upi-btn" data-target="phonepe" title="Add another UPI ID">+</button>
         </div>
 
@@ -323,20 +326,49 @@
         </div>
 
         <div class="upi-input-group">
-          <input type="text" id="upi" placeholder="UPI ID(s) - username@bankname, username@paytm">
+          <input type="text" id="upi" placeholder="UPI ID(s) - username@upi">
           <button type="button" class="add-upi-btn" data-target="upi" title="Add another UPI ID">+</button>
         </div>
 
-        <input type="url" id="cashapp" placeholder="Cash App - https://cash.app/$username">
-        <input type="url" id="razorpay" placeholder="Razorpay - https://razorpay.me/@username">
-        <input type="url" id="cred" placeholder="CRED - https://cred.club/username">
-        <input type="url" id="mobikwik" placeholder="MobiKwik - https://mobikwik.com/username">
-        <input type="url" id="freecharge" placeholder="Freecharge - https://freecharge.in/username">
-        <input type="url" id="bhim" placeholder="BHIM - UPI ID or link">
-        <input type="url" id="amazonpay" placeholder="Amazon Pay - https://amazon.in/pay/username">
-        <input type="url" id="navi" placeholder="Navi - https://navi.com/username">
-        <input type="url" id="jupiter" placeholder="Jupiter - https://jupiter.money/username">
-        <input type="url" id="jiofinance" placeholder="JioFinance - https://jiofinance.in/username">
+        <div class="upi-input-group">
+          <input type="text" id="cred" placeholder="CRED UPI ID(s) - username@cred">
+          <button type="button" class="add-upi-btn" data-target="cred" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="mobikwik" placeholder="MobiKwik UPI ID(s) - username@ikwik">
+          <button type="button" class="add-upi-btn" data-target="mobikwik" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="freecharge" placeholder="Freecharge UPI ID(s) - username@freecharge">
+          <button type="button" class="add-upi-btn" data-target="freecharge" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="bhim" placeholder="BHIM UPI ID(s) - username@upi">
+          <button type="button" class="add-upi-btn" data-target="bhim" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="amazonpay" placeholder="Amazon Pay UPI ID(s) - username@amazon">
+          <button type="button" class="add-upi-btn" data-target="amazonpay" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="navi" placeholder="Navi UPI ID(s) - username@navi">
+          <button type="button" class="add-upi-btn" data-target="navi" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="jupiter" placeholder="Jupiter UPI ID(s) - username@jupiter">
+          <button type="button" class="add-upi-btn" data-target="jupiter" title="Add another UPI ID">+</button>
+        </div>
+
+        <div class="upi-input-group">
+          <input type="text" id="jiofinance" placeholder="JioFinance UPI ID(s) - username@jio">
+          <button type="button" class="add-upi-btn" data-target="jiofinance" title="Add another UPI ID">+</button>
+        </div>
 
         <div id="payment-custom-container" class="custom-links-container"></div>
         <button type="button" class="add-certificate-btn" onclick="addCustomLink('payment', '💳 Payment')">
@@ -397,8 +429,8 @@
         <h3>📱 App Downloads <span class="platform-count">2</span></h3>
         <small>Links to download your mobile application</small>
         <input type="url" id="playstore"
-          placeholder="Google Play Store - https://play.google.com/store/apps/details?id=com.example.app">
-        <input type="url" id="appstore" placeholder="Apple App Store - https://apps.apple.com/app/id123456789">
+          placeholder="Play Store - https://play.google.com/store/apps/details?id=com.example.app">
+        <input type="url" id="appstore" placeholder="App Store - https://apps.apple.com/app/id123456789">
 
         <div id="appDownloads-custom-container" class="custom-links-container"></div>
         <button type="button" class="add-certificate-btn" onclick="addCustomLink('appDownloads', '📱 App Downloads')">
@@ -551,6 +583,21 @@
 
         <button type="button" class="add-certificate-btn" onclick="addCertificateEntry()">
           ➕ Add Certificate
+        </button>
+      </div>
+
+      <!-- Details & Licenses (Custom Key-Value Pairs) -->
+      <div class="form-section details">
+        <h3>🪪 Details & Licenses <span class="platform-count" id="details-count">0</span></h3>
+        <small>Add custom details like GST No, License No, Registration ID, etc. Items with the same Label will be
+          grouped together on your profile.</small>
+
+        <div id="details-container">
+          <!-- Detail entries will be added here dynamically -->
+        </div>
+
+        <button type="button" class="add-certificate-btn" onclick="addDetailEntry()">
+          ➕ Add Detail / License
         </button>
       </div>
 
@@ -1045,6 +1092,11 @@
           loadCustomLinks(category, user[customKey]);
         }
       });
+
+      // Load Details & Licenses
+      if (user.customDetails) {
+        loadDetails(user.customDetails);
+      }
     }
 
     // Handle Form Submit (Create / Update / Generate JSON)
@@ -1296,18 +1348,40 @@
 
         if (customLinks.length > 0) {
           data[`${category}Custom`] = customLinks;
+        } else {
+          data[`${category}Custom`] = []; // Explicitly set empty array if no links
         }
       });
 
       // Add Arrays to Data
       data._comment_certificates = "=== CERTIFICATES & CREDENTIALS ===";
-      if (certificates.length > 0) data.certificates = certificates;
+      data.certificates = certificates.length > 0 ? certificates : [];
 
       data._comment_googleforms = "=== GOOGLE FORMS ===";
-      if (googleForms.length > 0) data.googleForms = googleForms;
+      data.googleForms = googleForms.length > 0 ? googleForms : [];
 
       data._comment_contact = "=== CONTACT INFORMATION ===";
       platformGroups.contact.forEach(p => data[p] = document.getElementById(p)?.value.trim() || "");
+
+      // Collect Details & Licenses
+      const customDetails = [];
+      const detailsContainer = document.getElementById('details-container');
+      if (detailsContainer) {
+        detailsContainer.querySelectorAll('.detail-entry').forEach(entry => {
+          const labelInput = entry.querySelector('.detail-label');
+          const valueInput = entry.querySelector('.detail-value');
+
+          if (labelInput && valueInput && labelInput.value.trim() && valueInput.value.trim()) {
+            customDetails.push({
+              label: labelInput.value.trim(),
+              value: valueInput.value.trim()
+            });
+          }
+        });
+      }
+
+      data._comment_details = "=== DETAILS & LICENSES ===";
+      data.customDetails = customDetails.length > 0 ? customDetails : [];
 
       // 4. CLEAN DATA (Optional, based on checkbox)
       const includeAllFields = document.getElementById('includeAllFields').checked;
@@ -1324,8 +1398,18 @@
           if (['username', 'fullname', 'userCode'].includes(key)) return;
 
           const val = data[key];
-          if (Array.isArray(val) && val.length > 0) finalData[key] = val;
-          else if (typeof val === 'string' && val.trim() !== '') finalData[key] = val;
+
+          // CRITICAL FIX: Explicitly Include Empty Arrays for dynamic lists to ensure they are CLEARED in Firebase
+          // (Firebase 'merge: true' would otherwise keep the old data if we omit the key)
+          if (key === 'certificates' || key === 'googleForms' || key === 'customDetails' || key.endsWith('Custom')) {
+            if (Array.isArray(val)) {
+              finalData[key] = val; // Include even if empty []
+            }
+          } else {
+            // For other fields, keep the "clean" logic (omit if empty)
+            if (Array.isArray(val) && val.length > 0) finalData[key] = val;
+            else if (typeof val === 'string' && val.trim() !== '') finalData[key] = val;
+          }
         });
       }
 
@@ -1537,12 +1621,17 @@
     function loadCertificates(certificates) {
       if (!certificates || !Array.isArray(certificates)) return;
 
+      const container = document.getElementById('certificates-container');
+      container.innerHTML = '';
+      certificateCounter = 0;
+
       certificates.forEach(cert => {
         addCertificateEntry();
         const lastId = certificateCounter;
         document.getElementById(`cert-title-${lastId}`).value = cert.title || '';
         document.getElementById(`cert-url-${lastId}`).value = cert.url || '';
       });
+      updateCertificateCount();
     }
 
     // Google Forms Management Functions
@@ -1600,12 +1689,17 @@
     function loadGoogleForms(googleForms) {
       if (!googleForms || !Array.isArray(googleForms)) return;
 
+      const container = document.getElementById('googleforms-container');
+      container.innerHTML = '';
+      googleFormCounter = 0;
+
       googleForms.forEach(form => {
         addGoogleFormEntry();
         const lastId = googleFormCounter;
         document.getElementById(`googleform-title-${lastId}`).value = form.title || '';
         document.getElementById(`googleform-url-${lastId}`).value = form.url || '';
       });
+      updateGoogleFormCount();
     }
 
     // Custom Links Management Functions
@@ -1661,6 +1755,10 @@
     function loadCustomLinks(category, customLinks) {
       if (!customLinks || !Array.isArray(customLinks) || customLinks.length === 0) return;
 
+      const container = document.getElementById(`${category}-custom-container`);
+      container.innerHTML = '';
+      if (customLinkCounters[category]) customLinkCounters[category] = 0;
+
       customLinks.forEach(link => {
         addCustomLink(category, '');
         const container = document.getElementById(`${category}-custom-container`);
@@ -1673,6 +1771,76 @@
         }
       });
     }
+
+    // Details & Licenses Management Functions
+    let detailCounter = 0;
+
+    function addDetailEntry() {
+      detailCounter++;
+      const container = document.getElementById('details-container');
+
+      const detailEntry = document.createElement('div');
+      detailEntry.className = 'detail-entry certificate-entry'; // Reuse certificate styling
+      detailEntry.id = `detail-entry-${detailCounter}`;
+      detailEntry.innerHTML = `
+        <div class="cert-inputs">
+          <input type="text" 
+                 class="detail-label cert-title" 
+                 id="detail-label-${detailCounter}" 
+                 placeholder="Label (e.g., GST No, FSSAI, License No)"
+                 list="detail-label-suggestions"
+                 required>
+          <input type="text" 
+                 class="detail-value cert-url" 
+                 id="detail-value-${detailCounter}" 
+                 placeholder="Value (e.g., 22AAAAA0000A1Z5)"
+                 required>
+          <button type="button" 
+                  class="remove-cert-btn" 
+                  onclick="removeDetailEntry(${detailCounter})"
+                  title="Remove this detail">
+            ✖
+          </button>
+        </div>
+      `;
+
+      container.appendChild(detailEntry);
+      updateDetailCount();
+
+      // Focus on the label input
+      document.getElementById(`detail-label-${detailCounter}`).focus();
+    }
+
+    function removeDetailEntry(id) {
+      const entry = document.getElementById(`detail-entry-${id}`);
+      if (entry) {
+        entry.remove();
+        updateDetailCount();
+      }
+    }
+
+    function updateDetailCount() {
+      const count = document.querySelectorAll('.detail-entry').length;
+      document.getElementById('details-count').textContent = count;
+    }
+
+    // Load existing details when editing
+    function loadDetails(details) {
+      if (!details || !Array.isArray(details)) return;
+
+      const container = document.getElementById('details-container');
+      container.innerHTML = '';
+      detailCounter = 0;
+
+      details.forEach(detail => {
+        addDetailEntry();
+        const lastId = detailCounter;
+        document.getElementById(`detail-label-${lastId}`).value = detail.label || '';
+        document.getElementById(`detail-value-${lastId}`).value = detail.value || '';
+      });
+      updateDetailCount();
+    }
+
   </script>
 </body>
 
