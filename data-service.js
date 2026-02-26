@@ -204,6 +204,44 @@ class DataService {
         return false;
     }
 
+    // Delete all user profiles for a scope (dataFile) and the scope doc itself
+    async deleteScope(scope) {
+        if (!this.useFirebase || !scope) return false;
+        try {
+            // 1. Get all user docs under profiles/{scope}/users
+            const usersCol = collection(db, "profiles", scope, "users");
+            const snapshot = await getDocs(usersCol);
+
+            // 2. Delete in batches of 500 (Firestore limit)
+            const batchSize = 500;
+            let batch = writeBatch(db);
+            let count = 0;
+
+            for (const userDoc of snapshot.docs) {
+                batch.delete(userDoc.ref);
+                count++;
+                if (count % batchSize === 0) {
+                    await batch.commit();
+                    batch = writeBatch(db);
+                }
+            }
+            if (count % batchSize !== 0) {
+                await batch.commit();
+            }
+
+            console.log(`🗑️ Firebase: Deleted ${count} user(s) from scope "${scope}"`);
+
+            // 3. Delete the parent scope doc (profiles/{scope})
+            await deleteDoc(doc(db, "profiles", scope));
+            console.log(`🗑️ Firebase: Deleted scope document "profiles/${scope}"`);
+
+            return true;
+        } catch (error) {
+            console.error("❌ Firebase: Delete scope failed:", error);
+            throw error;
+        }
+    }
+
     // --- Sync (Admin Only) ---
 
     async syncToFirebase() {

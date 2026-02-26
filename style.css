@@ -169,6 +169,28 @@ header p {
   /* Darker red */
 }
 
+/* Capsule Edit Button */
+.btn-capsule-edit {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-capsule-edit:hover {
+  background-color: #4f46e5;
+  transform: scale(1.1);
+}
+
+
 /* Frozen Status Badge */
 .status-badge.frozen {
   background-color: #3b82f6;

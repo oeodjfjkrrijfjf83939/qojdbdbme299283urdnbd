@@ -2671,6 +2671,17 @@ async function displayLoginAccountsTable(accountsToShow = null) {
         <td class="centered-cell">
           ${isMainAdmin ? '-' :
           `
+            <button class="btn-capsule-edit" 
+                    title="Edit Account"
+                    onclick="openEditLoginModal('${account.username}')">
+              ✏️
+            </button>
+            `
+        }
+        </td>
+        <td class="centered-cell">
+          ${isMainAdmin ? '-' :
+          `
             <label class="toggle-switch" title="${!account.isActive ? 'Account Deactivated' : (account.isFrozen ? 'Unfreeze' : 'Freeze')}">
               <input type="checkbox" ${account.isFrozen ? 'checked' : ''} 
                      ${!account.isActive ? 'disabled' : ''}
@@ -2700,7 +2711,73 @@ async function displayLoginAccountsTable(accountsToShow = null) {
   }
 }
 
-// Get client user counts for each data file
+// --- Edit Login Account Modal ---
+
+function openEditLoginModal(username) {
+  // Find the account from the global list
+  const account = allAdminAccountsGlobal.find(a => a.username === username);
+  if (!account) {
+    alert('Account not found. Please refresh the page.');
+    return;
+  }
+
+  // Populate modal fields
+  document.getElementById('editLoginUsername').value = account.username;
+  document.getElementById('editLoginUsernameDisplay').value = account.username;
+  document.getElementById('editLoginPassword').value = account.password || '';
+  document.getElementById('editLoginDescription').value = account.description || '';
+  document.getElementById('editLoginDataFile').value = account.dataFile || '';
+
+
+  document.getElementById('editLoginModal').classList.remove('hidden');
+}
+
+function closeEditLoginModal() {
+  document.getElementById('editLoginModal').classList.add('hidden');
+  document.getElementById('editLoginForm').reset();
+}
+
+async function saveEditLoginAccount(event) {
+  event.preventDefault();
+
+  const username = document.getElementById('editLoginUsername').value;
+  const newPassword = document.getElementById('editLoginPassword').value.trim();
+  const description = document.getElementById('editLoginDescription').value.trim();
+  const dataFile = document.getElementById('editLoginDataFile').value.trim();
+
+  // Preserve existing isUnlimited / maxUsers (managed directly from the table)
+  const existingAccount = allAdminAccountsGlobal.find(a => a.username === username);
+  const isUnlimited = existingAccount ? existingAccount.isUnlimited !== false : true;
+  const maxUsers = existingAccount ? (existingAccount.maxUsers || 100) : 100;
+
+  const updates = {
+    description,
+    dataFile,
+    isUnlimited,
+    maxUsers: isUnlimited ? null : maxUsers
+  };
+
+  if (newPassword) {
+    updates.password = newPassword;
+  }
+
+  try {
+    const { dataService } = await import('./data-service.js');
+    const success = await dataService.updateCredential(username, updates);
+
+    if (success) {
+      alert(`Account "${username}" updated successfully!`);
+      closeEditLoginModal();
+      displayLoginAccountsTable();
+    } else {
+      alert(`Failed to update account "${username}". Please try again.`);
+    }
+  } catch (e) {
+    console.error('Error updating account:', e);
+    alert('Error updating account: ' + e.message);
+  }
+}
+
 async function getClientUserCounts(users = []) {
   const counts = {};
 
@@ -2853,67 +2930,129 @@ async function toggleAccountFreeze(username, isFrozen) {
   }
 }
 
-// Delete Account
-async function deleteAccount(btn, username) {
-  // Show confirmation dialog immediately
-  const confirmed = confirm(
-    `⚠️ DELETE ACCOUNT: "${username}"\n\n` +
-    `WARNING: This action is PERMANENT and IRREVERSIBLE!\n\n` +
-    `If you delete this account:\n` +
-    `• The login credentials will be permanently deleted\n` +
-    `• All user profiles associated with this account will be permanently deleted\n` +
-    `• All data will be lost forever\n` +
-    `• There is NO way to recover this data\n\n` +
-    `Are you absolutely sure you want to delete this account?\n\n` +
-    `Click "OK" to DELETE PERMANENTLY\n` +
-    `Click "Cancel" to keep the account`
-  );
+// Delete Account — Step 1: show warning modal
+function deleteAccount(btn, username) {
+  const modal = document.getElementById('deleteConfirmModal');
+  const nameEl = document.getElementById('deleteConfirmUsername');
+  const confirmBtn = document.getElementById('deleteConfirmBtn');
 
-  if (!confirmed) {
-    // User clicked Cancel - do nothing
-    return;
-  }
+  nameEl.textContent = `"${username}"`;
+  modal.classList.remove('hidden');
 
-  // User clicked OK - proceed with deletion
-  const originalContent = btn.innerHTML;
-  btn.innerHTML = '⏳';
-  btn.disabled = true;
+  // Clone to clear old listeners
+  const newConfirmBtn = confirmBtn.cloneNode(true);
+  confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
-  try {
-    const { dataService } = await import('./data-service.js');
-    const success = await dataService.deleteCredential(username);
+  // Step 1 → Step 2: open the final confirm modal
+  newConfirmBtn.addEventListener('click', () => {
+    closeDeleteConfirmModal();
+    openFinalDeleteModal(btn, username);
+  });
+}
 
-    if (success) {
-      // Success - refresh the table
-      displayLoginAccountsTable();
-      alert(`✅ Account "${username}" has been permanently deleted.`);
-    } else {
-      // Local fallback (Session only)
-      let credentials = [];
-      const override = localStorage.getItem('adminCredentialsOverride');
-      if (override) {
-        credentials = JSON.parse(override);
-      } else {
-        const response = await fetch('./credentials/login_credentials.json');
-        if (response.ok) credentials = await response.json();
+// Delete Account — Step 2: require typing the username
+function openFinalDeleteModal(btn, username) {
+  const modal = document.getElementById('deleteFinalModal');
+  const hint = document.getElementById('deleteFinalUsernameHint');
+  const input = document.getElementById('deleteFinalInput');
+  const finalBtn = document.getElementById('deleteFinalBtn');
+
+  hint.textContent = username;
+  input.value = '';
+  finalBtn.disabled = true;
+  finalBtn.style.background = '#9ca3af';
+  finalBtn.style.cursor = 'not-allowed';
+  modal.classList.remove('hidden');
+  setTimeout(() => input.focus(), 100);
+
+  // Store username for the input validator
+  modal.dataset.username = username;
+
+  // Clone to clear old listeners
+  const newFinalBtn = finalBtn.cloneNode(true);
+  finalBtn.parentNode.replaceChild(newFinalBtn, finalBtn);
+
+  newFinalBtn.addEventListener('click', async () => {
+    closeFinalDeleteModal();
+
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '⏳';
+    btn.disabled = true;
+
+    try {
+      const { dataService } = await import('./data-service.js');
+
+      // Find the account's dataFile to wipe user profiles too
+      const account = allAdminAccountsGlobal.find(a => a.username === username);
+      const dataFile = account ? account.dataFile : null;
+
+      // 1. Delete all user profiles under this scope (profiles/{dataFile}/users)
+      if (dataFile) {
+        try {
+          await dataService.deleteScope(dataFile);
+          console.log(`🗑️ Scope "${dataFile}" and all its user profiles deleted.`);
+        } catch (scopeErr) {
+          console.warn(`⚠️ Could not delete scope "${dataFile}":`, scopeErr);
+        }
       }
-      const newCredentials = credentials.filter(c => c.username !== username);
-      if (newCredentials.length < credentials.length) {
-        localStorage.setItem('adminCredentialsOverride', JSON.stringify(newCredentials));
+
+      // 2. Delete the credential
+      const success = await dataService.deleteCredential(username);
+
+      if (success) {
         displayLoginAccountsTable();
-        alert(`✅ Account "${username}" deleted (Local Session).`);
+        alert(`✅ Account "${username}" and all associated user profiles have been permanently deleted.`);
       } else {
-        alert("❌ Delete failed. Please try again.");
-        btn.innerHTML = originalContent;
-        btn.disabled = false;
+        // Local fallback
+        let credentials = [];
+        const override = localStorage.getItem('adminCredentialsOverride');
+        if (override) {
+          credentials = JSON.parse(override);
+        } else {
+          const response = await fetch('./credentials/login_credentials.json');
+          if (response.ok) credentials = await response.json();
+        }
+        const newCredentials = credentials.filter(c => c.username !== username);
+        if (newCredentials.length < credentials.length) {
+          localStorage.setItem('adminCredentialsOverride', JSON.stringify(newCredentials));
+          displayLoginAccountsTable();
+          alert(`✅ Account "${username}" deleted (Local Session).`);
+        } else {
+          alert("❌ Delete failed. Please try again.");
+          btn.innerHTML = originalContent;
+          btn.disabled = false;
+        }
       }
+    } catch (e) {
+      console.error("Delete failed", e);
+      alert("❌ Delete failed due to an error. Please try again.");
+      btn.innerHTML = originalContent;
+      btn.disabled = false;
     }
-  } catch (e) {
-    console.error("Delete failed", e);
-    alert("❌ Delete failed due to an error. Please try again.");
-    btn.innerHTML = originalContent;
-    btn.disabled = false;
-  }
+  });
+}
+
+// Enable/disable the final delete button based on typed username
+function checkDeleteFinalInput() {
+  const modal = document.getElementById('deleteFinalModal');
+  const input = document.getElementById('deleteFinalInput');
+  const finalBtn = document.getElementById('deleteFinalBtn');
+  const expected = modal.dataset.username || '';
+
+  const match = input.value.trim() === expected;
+  finalBtn.disabled = !match;
+  finalBtn.style.background = match ? '#dc2626' : '#9ca3af';
+  finalBtn.style.cursor = match ? 'pointer' : 'not-allowed';
+  input.style.borderColor = input.value.length === 0 ? '#e2e8f0' : (match ? '#16a34a' : '#dc2626');
+}
+
+function closeDeleteConfirmModal() {
+  document.getElementById('deleteConfirmModal').classList.add('hidden');
+}
+
+function closeFinalDeleteModal() {
+  document.getElementById('deleteFinalModal').classList.add('hidden');
+  document.getElementById('deleteFinalInput').value = '';
 }
 
 // Toggle Limit Mode (Infinity vs Limited)
