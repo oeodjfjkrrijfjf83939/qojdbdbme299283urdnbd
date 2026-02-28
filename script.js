@@ -6,6 +6,13 @@ const CONFIG = {
   // When deploying, change to: 'https://yourusername.github.io/multi-qr-app/'
 };
 
+// ============================================================
+// DEFAULT LIMIT CAP — Maximum number of users a new account can have.
+// Change this value to update the default limit for all new accounts.
+// This applies when creating new accounts and when toggling off unlimited mode.
+// ============================================================
+const DEFAULT_MAX_USERS = 10;
+
 // QR Customization Settings
 let qrCustomization = {
   backgroundColor: '#ffffff',
@@ -114,6 +121,10 @@ let allAdminAccountsGlobal = [];
 
 // Global variable to track password visibility state
 let passwordsVisible = false; // Default to hidden
+
+// Global variable to track admin accounts sort mode
+let adminSortMode = 'oldest'; // 'alphabetical', 'newest', 'oldest'
+let userSortMode = 'oldest'; // 'alphabetical', 'newest', 'oldest' — sort mode for regular user dashboard
 
 // Toggle password visibility
 function togglePasswordVisibility() {
@@ -255,10 +266,11 @@ function showUserUI() {
     addUserBtn.style.display = 'inline-flex';
   }
 
-  // Show user UI elements
   document.getElementById('searchContainer').style.display = 'block';
   document.getElementById('userStatsContainer').style.display = 'block';
   document.getElementById('userList').style.display = 'grid';
+  const userFilterBar = document.getElementById('userFilterBar');
+  if (userFilterBar) userFilterBar.style.display = 'flex';
 
   // Update header
   document.getElementById('headerDescription').textContent = 'Manage digital business cards with QR codes';
@@ -554,7 +566,7 @@ function updateUserStatistics(users) {
   });
 
   if (window.currentUser && window.currentUser.role === 'user' && window.currentUser.isUnlimited === false) {
-    const limit = window.currentUser.maxUsers || 100;
+    const limit = window.currentUser.maxUsers || DEFAULT_MAX_USERS;
     const count = users ? users.length : 0;
     document.getElementById('totalUsers').textContent = `${count} / ${limit}`;
 
@@ -609,7 +621,26 @@ function displayUsers(users) {
 
   list.innerHTML = "";
 
-  users.forEach(u => {
+  // Apply sorting based on userSortMode
+  const sortedUsers = [...users];
+  if (userSortMode === 'newest') {
+    sortedUsers.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
+  } else if (userSortMode === 'oldest') {
+    sortedUsers.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateA - dateB;
+    });
+  } else {
+    // alphabetical by fullname
+    sortedUsers.sort((a, b) => (a.fullname || '').localeCompare(b.fullname || ''));
+  }
+
+  sortedUsers.forEach(u => {
     const div = document.createElement('div');
     div.classList.add('user-card');
 
@@ -2588,13 +2619,25 @@ async function displayLoginAccountsTable(accountsToShow = null) {
     // Pass global users to get accurate count without fetching
     const clientUserStats = await getClientUserCounts(typeof allUsersGlobal !== 'undefined' ? allUsersGlobal : []);
 
-    // Sort accounts: Main/Super Admins first
+    // Sort accounts: Main/Super Admins first, then by selected sort mode
     allAccounts.sort((a, b) => {
       const isMainA = a.role === 'main_admin' || a.role === 'super_admin';
       const isMainB = b.role === 'main_admin' || b.role === 'super_admin';
       if (isMainA && !isMainB) return -1;
       if (!isMainA && isMainB) return 1;
-      return 0;
+      // If both are admins or both are non-admins, apply secondary sort
+      if (adminSortMode === 'newest') {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA; // Newest first
+      } else if (adminSortMode === 'oldest') {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateA - dateB; // Oldest first
+      } else {
+        // Alphabetical (A-Z)
+        return (a.username || '').localeCompare(b.username || '');
+      }
     });
 
     allAccounts.forEach(account => {
@@ -2652,7 +2695,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
           ${isMainAdmin ? '-' :
           (account.isUnlimited !== false ?
             '<span class="limit-text">∞</span>' :
-            `<input type="number" class="limit-input" value="${account.maxUsers || 100}" 
+            `<input type="number" class="limit-input" value="${account.maxUsers || DEFAULT_MAX_USERS}" 
                           min="1" onchange="updateLimitValue('${account.username}', this.value)">`
           )
         }
@@ -2728,6 +2771,19 @@ function openEditLoginModal(username) {
   document.getElementById('editLoginDescription').value = account.description || '';
   document.getElementById('editLoginDataFile').value = account.dataFile || '';
 
+  // Populate createdAt field
+  const createdAtInput = document.getElementById('editLoginCreatedAt');
+  if (createdAtInput && account.createdAt) {
+    // Convert ISO string to datetime-local format (YYYY-MM-DDTHH:mm)
+    const dt = new Date(account.createdAt);
+    if (!isNaN(dt.getTime())) {
+      const localISO = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      createdAtInput.value = localISO;
+    } else {
+      // Fallback for date-only strings like "2024-01-01"
+      createdAtInput.value = account.createdAt + 'T00:00';
+    }
+  }
 
   document.getElementById('editLoginModal').classList.remove('hidden');
 }
@@ -2748,13 +2804,21 @@ async function saveEditLoginAccount(event) {
   // Preserve existing isUnlimited / maxUsers (managed directly from the table)
   const existingAccount = allAdminAccountsGlobal.find(a => a.username === username);
   const isUnlimited = existingAccount ? existingAccount.isUnlimited !== false : true;
-  const maxUsers = existingAccount ? (existingAccount.maxUsers || 100) : 100;
+  const maxUsers = existingAccount ? (existingAccount.maxUsers || DEFAULT_MAX_USERS) : DEFAULT_MAX_USERS;
+
+  // Get createdAt value
+  const createdAtInput = document.getElementById('editLoginCreatedAt');
+  let createdAtValue = existingAccount ? existingAccount.createdAt : null;
+  if (createdAtInput && createdAtInput.value) {
+    createdAtValue = new Date(createdAtInput.value).toISOString();
+  }
 
   const updates = {
     description,
     dataFile,
     isUnlimited,
-    maxUsers: isUnlimited ? null : maxUsers
+    maxUsers: isUnlimited ? null : maxUsers,
+    createdAt: createdAtValue
   };
 
   if (newPassword) {
@@ -3061,7 +3125,7 @@ async function toggleLimitMode(username, isUnlimited) {
     const { dataService } = await import('./data-service.js');
     const updateData = { isUnlimited: isUnlimited };
     if (!isUnlimited) {
-      updateData.maxUsers = 100; // Default when switching off infinity
+      updateData.maxUsers = DEFAULT_MAX_USERS; // Default when switching off unlimited mode
     }
 
     await dataService.updateCredential(username, updateData);
@@ -3239,6 +3303,18 @@ function showAddLoginModal() {
     // Remove Next Button if exists
     const nextBtn = document.getElementById('btn-next-step');
     if (nextBtn) nextBtn.remove();
+
+    // Hide Ok button (only shown after credentials are generated)
+    const okBtn = document.getElementById('addLoginOkBtn');
+    if (okBtn) okBtn.style.display = 'none';
+
+    // Auto-populate Created At with current datetime
+    const createdAtField = document.getElementById('newCreatedAt');
+    if (createdAtField) {
+      const now = new Date();
+      const localISO = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      createdAtField.value = localISO;
+    }
   }
 }
 
@@ -3303,11 +3379,11 @@ async function handleAddLoginForm(e) {
       username: username,
       password: password,
       role: 'user',
-      createdAt: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString(),
       isActive: true,
       isFrozen: false,
       isUnlimited: false, // Default to Limited as requested
-      maxUsers: 100,      // Default 100
+      maxUsers: DEFAULT_MAX_USERS, // Uses the default limit cap defined at the top of this file
       dataFile: processedDataFile,
       description: description || `User account for ${processedDataFile}`
     };
@@ -3349,6 +3425,10 @@ async function handleAddLoginForm(e) {
     submitBtn.disabled = true;
   }
 
+  // Show the Ok button now that credentials have been created
+  const okBtn = document.getElementById('addLoginOkBtn');
+  if (okBtn) okBtn.style.display = '';
+
   // Add Next Button
   const actionsDiv = document.querySelector('#addLoginForm .modal-actions');
   if (actionsDiv && !document.getElementById('btn-next-step')) {
@@ -3357,7 +3437,6 @@ async function handleAddLoginForm(e) {
     nextBtn.type = 'button';
     nextBtn.className = 'btn-primary';
     nextBtn.innerText = 'Next';
-    nextBtn.style.marginLeft = '10px';
     nextBtn.onclick = () => {
       showCredentialsDisplay(username, password, processedDataFile, 'user', description);
     };
@@ -3375,7 +3454,7 @@ function showCredentialsDisplay(username, password, dataFile, role, userDescript
     username: username,
     password: password,
     role: role,
-    createdAt: new Date().toISOString().split('T')[0],
+    createdAt: new Date().toISOString(),
     isActive: true,
     dataFile: dataFile,
     description: userDescription || `User account for ${dataFile}`
@@ -3435,19 +3514,33 @@ async function validateUsername() {
   }
 
   try {
-    const response = await fetch('./credentials/login_credentials.json');
-    if (response.ok) {
-      const credentials = await response.json();
-      const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
+    // Use dataService (Firebase) for accurate real-time validation
+    const { dataService } = await import('./data-service.js');
+    const credentials = await dataService.getCredentials();
+    const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
 
-      if (existingUser) {
-        showFieldError(field, 'Username already exists');
-      } else {
-        showFieldSuccess(field, 'Username available');
-      }
+    if (existingUser) {
+      showFieldError(field, 'Username already exists');
+    } else {
+      showFieldSuccess(field, 'Username available');
     }
   } catch (error) {
     console.error('Error validating username:', error);
+    // Fallback to local JSON
+    try {
+      const response = await fetch('./credentials/login_credentials.json');
+      if (response.ok) {
+        const credentials = await response.json();
+        const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
+        if (existingUser) {
+          showFieldError(field, 'Username already exists');
+        } else {
+          showFieldSuccess(field, 'Username available');
+        }
+      }
+    } catch (e) {
+      console.warn('Local username validation also failed:', e);
+    }
   }
 }
 
@@ -3482,25 +3575,40 @@ async function validateDataFile() {
     return;
   }
 
-  // Check data file uniqueness
+  // Check data file uniqueness using dataService (Firebase)
   try {
-    const response = await fetch('./credentials/login_credentials.json');
-    if (response.ok) {
-      const credentials = await response.json();
-      const processedDataFile = dataFile;
-      const existingDataFile = credentials.find(cred =>
-        cred.dataFile && cred.dataFile.toLowerCase() === processedDataFile.toLowerCase()
-      );
+    const { dataService } = await import('./data-service.js');
+    const credentials = await dataService.getCredentials();
+    const processedDataFile = dataFile;
+    const existingDataFile = credentials.find(cred =>
+      cred.dataFile && cred.dataFile.toLowerCase() === processedDataFile.toLowerCase()
+    );
 
-      if (existingDataFile) {
-        showFieldError(field, 'Data file name already exists');
-      } else {
-        showFieldSuccess(field, 'Data file name is available');
-      }
+    if (existingDataFile) {
+      showFieldError(field, 'Data file name already exists');
+    } else {
+      showFieldSuccess(field, 'Data file name is available');
     }
   } catch (error) {
     console.error('Error validating data file:', error);
-    showFieldSuccess(field, 'Data file name is valid');
+    // Fallback to local JSON
+    try {
+      const response = await fetch('./credentials/login_credentials.json');
+      if (response.ok) {
+        const credentials = await response.json();
+        const existingDataFile = credentials.find(cred =>
+          cred.dataFile && cred.dataFile.toLowerCase() === dataFile.toLowerCase()
+        );
+        if (existingDataFile) {
+          showFieldError(field, 'Data file name already exists');
+        } else {
+          showFieldSuccess(field, 'Data file name is available');
+        }
+      }
+    } catch (e) {
+      console.warn('Local data file validation also failed:', e);
+      showFieldSuccess(field, 'Data file name is valid');
+    }
   }
 }
 
@@ -3589,6 +3697,26 @@ document.addEventListener('DOMContentLoaded', function () {
     adminSearchBtn.addEventListener('click', () => {
       const searchTerm = adminSearchInput ? adminSearchInput.value : '';
       searchAdminAccounts(searchTerm);
+    });
+  }
+
+  // Admin sort dropdown
+  const adminSortSelect = document.getElementById('adminSortSelect');
+  if (adminSortSelect) {
+    adminSortSelect.addEventListener('change', (e) => {
+      adminSortMode = e.target.value;
+      displayLoginAccountsTable();
+    });
+  }
+
+  // User sort dropdown (regular user dashboard)
+  const userSortSelect = document.getElementById('userSortSelect');
+  if (userSortSelect) {
+    userSortSelect.addEventListener('change', (e) => {
+      userSortMode = e.target.value;
+      if (allUsersGlobal && allUsersGlobal.length > 0) {
+        displayUsers(allUsersGlobal);
+      }
     });
   }
 

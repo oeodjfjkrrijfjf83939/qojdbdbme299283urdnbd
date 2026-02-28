@@ -4,12 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit User - MultiLynk QR Manager</title>
+  <title>MultiLynk QR</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="config.js"></script>
+
+  <link rel="icon" type="image/svg+xml" href="assets/icons/MultiLynkQR-Logo.svg">
 </head>
 
 <body>
@@ -44,6 +46,11 @@
         <input type="text" id="userCode" placeholder="User Code (auto-generated)" readonly class="readonly-input">
         <small class="form-note">🔒 User Code is auto-generated and ensures uniqueness - This is what makes each user
           unique!</small>
+
+        <label for="profileCreatedAt" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">🕒
+          Created At</label>
+        <input type="datetime-local" id="profileCreatedAt" disabled class="readonly-input">
+        <small class="form-note">Auto-generated timestamp. This can be edited after profile creation.</small>
 
         <label for="description" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📝
           Internal Description (Admin Only)</label>
@@ -901,6 +908,11 @@
       if (!username) {
         const uniqueCode = await generateUniqueUserCode();
         document.getElementById('userCode').value = uniqueCode;
+
+        // Auto-populate Created At for new users
+        const now = new Date();
+        const localISO = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+        document.getElementById('profileCreatedAt').value = localISO;
       } else {
         loadUser();
       }
@@ -1068,6 +1080,20 @@
 
       document.getElementById('fullname').value = user.fullname || '';
       document.getElementById('userCode').value = user.userCode || '';
+
+      // Populate Created At (editable for existing users)
+      const createdAtField = document.getElementById('profileCreatedAt');
+      createdAtField.disabled = false;
+      createdAtField.classList.remove('readonly-input');
+
+      if (user.createdAt && user.createdAt !== 'N/A') {
+        const dt = new Date(user.createdAt);
+        const localISO = new Date(dt.getTime() - (dt.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+        createdAtField.value = localISO;
+      } else {
+        createdAtField.value = '';
+      }
+
       document.getElementById('publicDescription').value = user.publicDescription || '';
       document.getElementById('description').value = user.description || '';
 
@@ -1214,11 +1240,27 @@
       const usernameInput = document.getElementById('username').value;
       const normalizedUsername = usernameInput.trim().replace(/\s+/g, '-');
 
+      // Determine createdAt
+      const createdAtField = document.getElementById('profileCreatedAt');
+      let profileCreatedAt;
+      if (isEditing) {
+        // Use the edited value, converting back to UTC ISO string
+        if (createdAtField.value) {
+          profileCreatedAt = new Date(createdAtField.value).toISOString();
+        } else {
+          profileCreatedAt = new Date().toISOString(); // fallback
+        }
+      } else {
+        // Auto-generate for new profiles
+        profileCreatedAt = new Date().toISOString();
+      }
+
       const data = {
         username: normalizedUsername,
         fullname: document.getElementById('fullname').value.trim(),
         publicDescription: document.getElementById('publicDescription').value.trim(),
         userCode: document.getElementById('userCode').value.trim(),
+        createdAt: profileCreatedAt,
         description: document.getElementById('description').value.trim()
       };
 

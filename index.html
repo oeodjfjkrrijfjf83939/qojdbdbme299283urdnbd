@@ -4,12 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MultiLynk QR Manager - Digital QR Codes</title>
+  <title>MultiLynk QR - Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="config.js"></script>
+
+  <link rel="icon" type="image/svg+xml" href="assets/icons/MultiLynkQR-Logo.svg">
 </head>
 
 <body>
@@ -48,6 +50,17 @@
       <p class="total-users-label">📊 Total Users: <span id="totalUsers">0</span></p>
     </div>
 
+    <!-- User Sort Filter -->
+    <div id="userFilterBar" class="admin-filter-bar" style="display: none;">
+      <div class="filter-group">
+        <label for="userSortSelect">🔽 Sort by:</label>
+        <select id="userSortSelect">
+          <option value="alphabetical">Alphabetical (A-Z)</option>
+          <option value="newest">Newest First</option>
+          <option value="oldest" selected>Oldest First</option>
+        </select>
+      </div>
+    </div>
     <!-- Admin Search Container (for admin users) -->
     <div id="adminSearchContainer" class="search-container" style="display: none;">
       <div class="search-box">
@@ -97,6 +110,16 @@
     <!-- Login Accounts Table (for admin users) -->
     <div id="adminTableContainer" class="admin-table-container" style="display: none;">
       <h2>👤 Login Accounts Overview</h2>
+      <div class="admin-filter-bar">
+        <div class="filter-group">
+          <label for="adminSortSelect">🔽 Sort by:</label>
+          <select id="adminSortSelect">
+            <option value="alphabetical">Alphabetical (A-Z)</option>
+            <option value="newest">Newest First</option>
+            <option value="oldest" selected>Oldest First</option>
+          </select>
+        </div>
+      </div>
       <table id="adminAccountsTable" class="admin-users-table">
         <thead>
           <tr>
@@ -370,8 +393,16 @@
           <input type="text" id="newDescription" placeholder="Enter description (optional)">
         </div>
 
+        <div class="form-group">
+          <label for="newCreatedAt">Created At</label>
+          <input type="datetime-local" id="newCreatedAt" disabled
+            style="background:#f1f5f9; color:#64748b; cursor:not-allowed;">
+          <small class="form-help">Auto-generated timestamp. This will be saved with the account.</small>
+        </div>
+
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="closeAddLoginModal()">Cancel</button>
+          <button type="button" id="addLoginOkBtn" class="btn-secondary" onclick="closeAddLoginModal()"
+            style="display:none;">Ok</button>
           <button type="submit" class="btn-primary">Generate Credentials</button>
         </div>
       </form>
@@ -434,6 +465,12 @@
           <small class="form-help">Enter the exact filename or folder path.</small>
         </div>
 
+        <div class="form-group">
+          <label for="editLoginCreatedAt">Created At</label>
+          <input type="datetime-local" id="editLoginCreatedAt">
+          <small class="form-help">Date and time when this account was created.</small>
+        </div>
+
         <div class="modal-actions">
           <button type="button" class="btn-secondary" onclick="closeEditLoginModal()">Cancel</button>
           <button type="submit" class="btn-primary">💾 Save Changes</button>
@@ -459,9 +496,11 @@
         </p>
       </div>
       <div class="modal-actions" style="padding:1.5rem; gap:.75rem;">
-        <button type="button" class="btn-primary" onclick="closeDeleteConfirmModal()" style="flex:1; justify-content: center;">Cancel</button>
+        <button type="button" class="btn-primary" onclick="closeDeleteConfirmModal()"
+          style="flex:1; justify-content: center;">Cancel</button>
         <button type="button" id="deleteConfirmBtn" class="btn-secondary"
-          style="flex:1; background:#dc2626; color:#fff; border-color:#dc2626; justify-content: center;">Delete Permanently</button>
+          style="flex:1; background:#dc2626; color:#fff; border-color:#dc2626; justify-content: center;">Delete
+          Permanently</button>
       </div>
     </div>
   </div>
