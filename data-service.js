@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch, collectionGroup } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch, collectionGroup, query, where } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 class DataService {
     constructor() {
@@ -123,14 +123,26 @@ class DataService {
     }
 
     // Delete User
-    async deleteUser(scope, docId) {
-        if (this.useFirebase && scope && docId) {
+    async deleteUser(scope, username, userCode) {
+        if (this.useFirebase && scope && username && userCode) {
             try {
-                // Delete: profiles/{scope}/users/{docId}
-                const docRef = doc(db, "profiles", scope, "users", docId);
-                await deleteDoc(docRef);
-                console.log(`🗑️ User ${docId} deleted from Firebase`);
-                return true;
+                // Find the exact document to delete using both username and userCode to prevent incorrect deletion of new profiles
+                const usersRef = collection(db, "profiles", scope, "users");
+                const q = query(usersRef, where("username", "==", username), where("userCode", "==", userCode));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    const deletePromises = [];
+                    querySnapshot.forEach((docSnap) => {
+                        deletePromises.push(deleteDoc(docSnap.ref));
+                    });
+                    await Promise.all(deletePromises);
+                    console.log(`🗑️ User ${username} (${userCode}) deleted from Firebase`);
+                    return true;
+                } else {
+                    console.warn(`❌ No matching user found to delete: ${username} (${userCode}). Was it already deleted?`);
+                    return false;
+                }
             } catch (error) {
                 console.error("❌ Failed to delete user:", error);
                 throw error;

@@ -484,7 +484,8 @@
                 let scope = dataFile.split('/')[0].replace('.json', '');
                 const { dataService } = await import('./data-service.js');
                 const fbUser = await dataService.getUser(scope, username);
-                if (fbUser) {
+                // STRICT: verify userCode matches the URL parameter
+                if (fbUser && fbUser.userCode === userCode) {
                   user = fbUser;
                   console.log(`✅ Loaded user from Firebase scope: ${scope}`);
                 }
@@ -514,8 +515,9 @@
           try {
             const { dataService } = await import('./data-service.js');
             const allFbUsers = await dataService.getUsers(null);
+            // STRICT: both username AND userCode must match
             user = allFbUsers.find(u =>
-              (u.username === username) || (userCode && u.userCode === userCode)
+              u.username === username && u.userCode === userCode
             );
             if (user) console.log("✅ Found user via Global Firebase Search");
           } catch (globalErr) {

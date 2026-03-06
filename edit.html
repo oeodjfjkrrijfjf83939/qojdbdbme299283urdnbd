@@ -30,9 +30,22 @@
       <!-- Basic Info -->
       <div class="form-section basic-info">
         <h3>📝 Basic Information <span class="platform-count">Required</span></h3>
+
+        <label for="username" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">👤
+          Username</label>
         <input type="text" id="username" placeholder="Username (e.g., john-doe)" required>
         <small class="form-hint">💡 Multiple users can have the same username - User Code makes each one unique</small>
-        <input type="text" id="fullname" placeholder="Full Name" required>
+        <div id="usernameWarningBox"
+          style="display:none; background: linear-gradient(135deg, #ff6b35 0%, #f7c59f 100%); border: 2px solid #ff6b35; border-radius: 10px; padding: 10px 14px; margin-top: 8px; margin-bottom: 4px; color: #7c2d12;">
+          <strong>⚠️ Username changed</strong>
+          <div style="font-size: 0.88em; margin-top: 4px;">A <u>new profile</u> will be created with the new username.
+            The old profile will still exist — it is your responsibility to keep it or delete it manually from the
+            dashboard. Make sure to redistribute your new QR code after saving.</div>
+        </div>
+
+        <label for="fullname" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">🏷️
+          Display Name</label>
+        <input type="text" id="fullname" placeholder="Full Name (e.g., John Doe)" required>
 
         <label for="publicDescription"
           style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📄
@@ -43,9 +56,24 @@
         <small class="form-hint">💡 This description will appear on your profile page. Leave blank to show your username
           instead.</small>
 
-        <input type="text" id="userCode" placeholder="User Code (auto-generated)" readonly class="readonly-input">
-        <small class="form-note">🔒 User Code is auto-generated and ensures uniqueness - This is what makes each user
-          unique!</small>
+        <input type="text" id="userCode" placeholder="User Code (auto-generated)">
+        <small class="form-note">🔒 User Code ensures uniqueness - This is what makes each user unique!</small>
+        <div id="userCodeWarningBox"
+          style="display:none; background: linear-gradient(135deg, #ff6b35 0%, #f7c59f 100%); border: 2px solid #ff6b35; border-radius: 10px; padding: 10px 14px; margin-top: 8px; margin-bottom: 4px; color: #7c2d12;">
+          <strong>⚠️ User Code changed</strong>
+          <div style="font-size: 0.88em; margin-top: 4px;">A <u>new profile</u> will be created with the new usercode.
+            The old profile will still exist — it is your responsibility to keep it or delete it manually from the
+            dashboard. Make sure to redistribute your new QR code after saving.</div>
+        </div>
+
+        <div id="autoDeleteProfileContainer"
+          style="display:none; margin-top: 15px; background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 12px 14px; color: #664d03;">
+          <label
+            style="font-size: 0.95em; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+            <input type="checkbox" id="autoDeleteOldProfile" style="width: 16px; height: 16px;"> 🗑️ Delete old profile
+            automatically after saving
+          </label>
+        </div>
 
         <label for="profileCreatedAt" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">🕒
           Created At</label>
@@ -914,6 +942,9 @@
         const localISO = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
         document.getElementById('profileCreatedAt').value = localISO;
       } else {
+        // Store originals so save handler can detect identity changes
+        window.originalUsername = params.get('user') || '';
+        window.originalUserCode = params.get('code') || '';
         loadUser();
       }
     });
@@ -951,7 +982,8 @@
           if (scope) {
             // If we found scope, try Firebase
             const fbUser = await dataService.getUser(scope, username); // Try username as ID first
-            if (fbUser) {
+            // STRICT: verify userCode matches the URL parameter
+            if (fbUser && fbUser.userCode === userCode) {
               console.log("✅ Loaded from Firebase");
               populateForm(fbUser);
               window.currentUserScope = scope; // Store for update
@@ -960,7 +992,7 @@
             }
             // Try userCode as ID
             const fbUserCode = await dataService.getUser(scope, userCode);
-            if (fbUserCode) {
+            if (fbUserCode && fbUserCode.username === username) {
               console.log("✅ Loaded from Firebase (by code)");
               populateForm(fbUserCode);
               window.currentUserScope = scope;
@@ -973,8 +1005,9 @@
             console.log("🔍 Attempting Global Firebase Search...");
             try {
               const allFbUsers = await dataService.getUsers(null); // Fetch all users from all scopes
+              // STRICT: both username AND userCode must match
               const foundFbUser = allFbUsers.find(u =>
-                (u.username === username) || (userCode && u.userCode === userCode)
+                u.username === username && u.userCode === userCode
               );
 
               if (foundFbUser) {
@@ -1076,10 +1109,47 @@
     function populateForm(user) {
       document.getElementById('formTitle').innerText = '✏️ Edit User: ' + user.fullname;
       document.getElementById('username').value = user.username || '';
-      document.getElementById('username').disabled = true; // Disable username editing
+      document.getElementById('username').disabled = false; // Username is editable
 
       document.getElementById('fullname').value = user.fullname || '';
       document.getElementById('userCode').value = user.userCode || '';
+
+      // Store original values to detect changes and show separate warnings
+      const origUsername = user.username || '';
+      const origUserCode = user.userCode || '';
+
+      function checkAutoDeleteVisibility() {
+        const curUsername = document.getElementById('username').value.trim();
+        const curUserCode = document.getElementById('userCode').value.trim();
+        const container = document.getElementById('autoDeleteProfileContainer');
+        if (container) {
+          if (curUsername !== origUsername || curUserCode !== origUserCode) {
+            container.style.display = 'block';
+          } else {
+            container.style.display = 'none';
+            // Uncheck if it gets hidden
+            const cb = document.getElementById('autoDeleteOldProfile');
+            if (cb) cb.checked = false;
+          }
+        }
+      }
+
+      function checkUsernameWarning() {
+        const curUsername = document.getElementById('username').value.trim();
+        const box = document.getElementById('usernameWarningBox');
+        if (box) box.style.display = curUsername !== origUsername ? 'block' : 'none';
+        checkAutoDeleteVisibility();
+      }
+
+      function checkUserCodeWarning() {
+        const curUserCode = document.getElementById('userCode').value.trim();
+        const box = document.getElementById('userCodeWarningBox');
+        if (box) box.style.display = curUserCode !== origUserCode ? 'block' : 'none';
+        checkAutoDeleteVisibility();
+      }
+
+      document.getElementById('username').addEventListener('input', checkUsernameWarning);
+      document.getElementById('userCode').addEventListener('input', checkUserCodeWarning);
 
       // Populate Created At (editable for existing users)
       const createdAtField = document.getElementById('profileCreatedAt');
@@ -1487,30 +1557,67 @@
         if (!scope) {
           const sessionFile = sessionStorage.getItem('adminDataFile');
           if (sessionFile) {
-            // e.g. "data/clients.json" or just "clients"
             scope = sessionFile.replace('data/', '').replace('.json', '');
           } else {
-            // Fallback default
             scope = 'clients';
           }
           docId = finalData.username; // New user uses username as ID
         }
 
-        await dataService.updateUser(scope, docId || finalData.username, finalData);
+        // If userCode changed, create a NEW document by using the new userCode as the docId.
+        // If not changed, update the existing document in place.
+        const origUserCode = window.originalUserCode || '';
+        let targetDocId = docId || finalData.username;
+
+        // Ensure 'isEditing' is accessible here
+        const params = new URLSearchParams(window.location.search);
+        const isEditingMode = params.has('user');
+
+        const origUsername = window.originalUsername || '';
+        if (isEditingMode) {
+          if (finalData.userCode !== origUserCode) {
+            targetDocId = finalData.userCode; // Creates a new profile document
+          } else if (finalData.username !== origUsername) {
+            targetDocId = finalData.username; // Creates a new profile document
+          }
+        }
+
+        await dataService.updateUser(scope, targetDocId, finalData);
+
+        // Auto-delete old profile feature
+        if (isEditingMode) {
+          const autoDeleteCheckbox = document.getElementById('autoDeleteOldProfile');
+
+          if (autoDeleteCheckbox && autoDeleteCheckbox.checked) {
+            if (finalData.username !== origUsername || finalData.userCode !== origUserCode) {
+              console.log("Auto-deleting old profile as requested...");
+              await dataService.deleteUser(scope, origUsername, origUserCode);
+            }
+          }
+        }
 
         saveBtn.innerHTML = '✅ Saved!';
-        saveBtn.style.backgroundColor = '#4CAF50'; // Success Green
+        saveBtn.style.backgroundColor = '#4CAF50';
+
+        // If identity (username or userCode) changed, update the URL in the browser
+        if (isEditingMode && (finalData.username !== origUsername || finalData.userCode !== origUserCode)) {
+          window.originalUsername = finalData.username;
+          window.originalUserCode = finalData.userCode;
+          const newUrl = `edit.html?user=${encodeURIComponent(finalData.username)}&code=${encodeURIComponent(finalData.userCode)}`;
+          window.history.replaceState(null, '', newUrl);
+          window.currentUserDocId = finalData.username;
+        }
 
         setTimeout(() => {
           saveBtn.innerHTML = originalBtnText;
-          saveBtn.style.backgroundColor = ''; // Revert color
+          saveBtn.style.backgroundColor = '';
           saveBtn.disabled = false;
         }, 2000);
 
       } catch (e) {
         console.error("Save failed:", e);
         saveBtn.innerHTML = '❌ Save Failed';
-        saveBtn.style.backgroundColor = '#f44336'; // Error Red
+        saveBtn.style.backgroundColor = '#f44336';
 
         setTimeout(() => {
           saveBtn.innerHTML = originalBtnText;

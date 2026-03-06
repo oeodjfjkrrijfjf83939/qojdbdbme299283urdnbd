@@ -752,6 +752,7 @@ function displayUsers(users) {
       <div class="user-info">
         <h3>${u.fullname}</h3>
         <p class="username">@${u.username}</p>
+        <p class="user-code" style="font-size: 12px; color: #888; margin: 2px 0 6px 0;">🔑 ${u.userCode || 'N/A'}</p>
         <div class="user-links">
           ${platformBadges}
           ${moreBadge}
@@ -3781,7 +3782,7 @@ window.deleteUser = async function (btn, username, userCode, scope) {
         console.warn("Scope (dataFile) missing for delete.");
       }
 
-      const success = await dataService.deleteUser(scope, username);
+      const success = await dataService.deleteUser(scope, username, userCode);
       if (success) {
         // Success - Reload list
         // No alert needed, the row disappearing is feedback enough.
