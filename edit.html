@@ -4,9 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <title>MultiLynk QR</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -984,6 +981,15 @@
 
           if (scope) {
             // If we found scope, try Firebase
+            const fbUserCombo = await dataService.getUser(scope, username + '_' + userCode);
+            if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
+              console.log("✅ Loaded from Firebase (by combo ID)");
+              populateForm(fbUserCombo);
+              window.currentUserScope = scope;
+              window.currentUserDocId = username + '_' + userCode;
+              return;
+            }
+
             const fbUser = await dataService.getUser(scope, username); // Try username as ID first
             // STRICT: verify userCode matches the URL parameter
             if (fbUser && fbUser.userCode === userCode) {
@@ -1564,26 +1570,20 @@
           } else {
             scope = 'clients';
           }
-          docId = finalData.username; // New user uses username as ID
         }
 
-        // If userCode changed, create a NEW document by using the new userCode as the docId.
-        // If not changed, update the existing document in place.
-        const origUserCode = window.originalUserCode || '';
-        let targetDocId = docId || finalData.username;
+        // --- CRITICAL FIX: Ensure Document ID uniqueness in Firebase ---
+        // Firebase Document ID must be unique. Because multiple users can have the same username 
+        // string (differentiated by userCode), the DocID MUST be a combination of both.
+        // We use the same format used by the Sync button: {username}_{userCode}
+        let targetDocId = finalData.username + '_' + finalData.userCode;
 
         // Ensure 'isEditing' is accessible here
         const params = new URLSearchParams(window.location.search);
         const isEditingMode = params.has('user');
 
         const origUsername = window.originalUsername || '';
-        if (isEditingMode) {
-          if (finalData.userCode !== origUserCode) {
-            targetDocId = finalData.userCode; // Creates a new profile document
-          } else if (finalData.username !== origUsername) {
-            targetDocId = finalData.username; // Creates a new profile document
-          }
-        }
+        const origUserCode = window.originalUserCode || '';
 
         await dataService.updateUser(scope, targetDocId, finalData);
 

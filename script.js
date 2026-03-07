@@ -54,8 +54,7 @@ const QR_PADDING_CONFIG = {
 async function loadUsersForQR(username, userCode) {
   try {
     let filesToSearch = [];
-    const cacheBuster = `?_t=${Math.floor(Date.now() / 300000)}`; // 5 minute cache
-    const indexUrl = (DATA_FILES_CONFIG.indexFile || './data/index.json') + cacheBuster;
+    const indexUrl = DATA_FILES_CONFIG.indexFile || './data/index.json';
 
     try {
       const indexRes = await fetch(indexUrl);
@@ -87,7 +86,7 @@ async function loadUsersForQR(username, userCode) {
         // Actually, index values are like "a/b/file.json", so prepending ./data/ is correct.
         // Fallback files are "file.json", so prepending ./data/ is also correct.
 
-        const res = await fetch(`./data/${file}${cacheBuster}`);
+        const res = await fetch(`./data/${file}`);
         if (res.ok) {
           const users = await res.json();
           // Find the specific user
@@ -338,14 +337,14 @@ async function loadUsers() {
       if (!loadedFromFirebase) {
         console.log('📂 Loading users from local files (Fallback)');
         try {
-          const indexRes = await fetch('./data/index.json?_t=' + Date.now());
+          const indexRes = await fetch('./data/index.json');
           if (!indexRes.ok) throw new Error('Index file not found');
           const index = await indexRes.json();
           const dataFiles = [...new Set(Object.values(index))];
 
           for (const file of dataFiles) {
             try {
-              const res = await fetch(`./data/${file}?_t=${Date.now()}`);
+              const res = await fetch(`./data/${file}`);
               if (res.ok) allUsers.push(...(await res.json()));
             } catch (err) { console.warn(`Failed to load ${file}`, err); }
           }
@@ -386,13 +385,13 @@ async function loadUsers() {
       if (!loadedFromFirebase) {
         console.log('📂 Loading users from local files (Fallback)');
         try {
-          const indexRes = await fetch((DATA_FILES_CONFIG.indexFile || './data/index.json') + '?_t=' + Date.now());
+          const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
           if (indexRes.ok) {
             const index = await indexRes.json();
             const dataFiles = [...new Set(Object.values(index))];
             for (const file of dataFiles) {
               try {
-                const res = await fetch(`./data/${file}?_t=${Date.now()}`);
+                const res = await fetch(`./data/${file}`);
                 if (res.ok) allUsers.push(...(await res.json()));
               } catch (err) { console.warn(`Failed to load ${file}`, err); }
             }
@@ -434,7 +433,7 @@ async function loadUsers() {
       if (!loadedFromFirebase) {
         console.log('📂 Loading users from local files (Fallback)');
         try {
-          const indexRes = await fetch((DATA_FILES_CONFIG.indexFile || './data/index.json') + '?_t=' + Date.now());
+          const indexRes = await fetch(DATA_FILES_CONFIG.indexFile || './data/index.json');
           if (!indexRes.ok) throw new Error('Failed to load master index');
           const index = await indexRes.json();
           const allKnownFiles = [...new Set(Object.values(index))];

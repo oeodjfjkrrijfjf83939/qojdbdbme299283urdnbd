@@ -4,9 +4,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <title>MultiLynk QR</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -475,7 +472,7 @@
 
         // 1. Try to find scope via Index
         try {
-          const indexRes = await fetch('./data/index.json?_t=' + Date.now());
+          const indexRes = await fetch('./data/index.json');
           if (indexRes.ok) {
             const index = await indexRes.json();
             const dataFile = index[userCode];
@@ -486,22 +483,33 @@
               try {
                 let scope = dataFile.split('/')[0].replace('.json', '');
                 const { dataService } = await import('./data-service.js');
-                const fbUser = await dataService.getUser(scope, username);
-                // STRICT: verify userCode matches the URL parameter
-                if (fbUser && fbUser.userCode === userCode) {
-                  user = fbUser;
-                  console.log(`✅ Loaded user from Firebase scope: ${scope}`);
+
+                // Try combo ID first to prevent iteration fallback
+                const fbUserCombo = await dataService.getUser(scope, username + '_' + userCode);
+                if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
+                  user = fbUserCombo;
+                  console.log(`✅ Loaded user from Firebase scope: ${scope} (combo ID)`);
+                } else {
+                  const fbUser = await dataService.getUser(scope, username);
+                  // STRICT: verify userCode matches the URL parameter
+                  if (fbUser && fbUser.userCode === userCode) {
+                    user = fbUser;
+                    console.log(`✅ Loaded user from Firebase scope: ${scope}`);
+                  }
                 }
               } catch (fbErr) {
                 console.warn("⚠️ Firebase load attempt failed, falling back to local scoped:", fbErr);
               }
 
-              // Fallback to specific local file
+              // Fallback to specific local file (ONLY if Firebase is disconnected/offline/disabled)
               if (!user) {
-                const res = await fetch(`./data/${dataFile}?_t=${Date.now()}`);
-                if (res.ok) {
-                  const users = await res.json();
-                  user = users.find(u => u.username === username && u.userCode === userCode);
+                const { dataService } = await import('./data-service.js');
+                if (!dataService.useFirebase) {
+                  const res = await fetch(`./data/${dataFile}`);
+                  if (res.ok) {
+                    const users = await res.json();
+                    user = users.find(u => u.username === username && u.userCode === userCode);
+                  }
                 }
               }
             } else {
@@ -517,12 +525,14 @@
           console.log("🔍 Attempting Global Firebase Search...");
           try {
             const { dataService } = await import('./data-service.js');
-            const allFbUsers = await dataService.getUsers(null);
-            // STRICT: both username AND userCode must match
-            user = allFbUsers.find(u =>
-              u.username === username && u.userCode === userCode
-            );
-            if (user) console.log("✅ Found user via Global Firebase Search");
+            if (dataService.useFirebase) {
+              const allFbUsers = await dataService.getUsers(null);
+              // STRICT: both username AND userCode must match
+              user = allFbUsers.find(u =>
+                u.username === username && u.userCode === userCode
+              );
+              if (user) console.log("✅ Found user via Global Firebase Search");
+            }
           } catch (globalErr) {
             console.warn("⚠️ Global Firebase Search failed:", globalErr);
           }
@@ -530,23 +540,26 @@
 
         // 3. Last Resort: Sequential Local Search
         if (!user) {
-          console.log("📂 Starting sequential local file search...");
-          const dataFiles = DATA_FILES_CONFIG.files || DATA_FILES_CONFIG.fallbackFiles || ['data/personal/personal.json', 'data/clients/clients.json', 'data/demo/demo.json'];
+          const { dataService } = await import('./data-service.js');
+          if (!dataService.useFirebase) {
+            console.log("📂 Starting sequential local file search...");
+            const dataFiles = DATA_FILES_CONFIG.files || DATA_FILES_CONFIG.fallbackFiles || ['data/personal/personal.json', 'data/clients/clients.json', 'data/demo/demo.json'];
 
-          for (const file of dataFiles) {
-            try {
-              // Ensure path has data/ prefix if needed
-              const filePath = file.startsWith('data/') || file.startsWith('./data/') ? file : `./data/${file}`;
-              const res = await fetch(filePath + '?_t=' + Date.now());
-              if (res.ok) {
-                const users = await res.json();
-                user = users.find(u => u.username === username && u.userCode === userCode);
-                if (user) {
-                  console.log(`✅ Found user in ${filePath} (fallback)`);
-                  break;
+            for (const file of dataFiles) {
+              try {
+                // Ensure path has data/ prefix if needed
+                const filePath = file.startsWith('data/') || file.startsWith('./data/') ? file : `./data/${file}`;
+                const res = await fetch(filePath);
+                if (res.ok) {
+                  const users = await res.json();
+                  user = users.find(u => u.username === username && u.userCode === userCode);
+                  if (user) {
+                    console.log(`✅ Found user in ${filePath} (fallback)`);
+                    break;
+                  }
                 }
-              }
-            } catch (fileErr) { /* ignore */ }
+              } catch (fileErr) { /* ignore */ }
+            }
           }
         }
 
