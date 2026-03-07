@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>MultiLynk QR</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -472,7 +475,7 @@
 
         // 1. Try to find scope via Index
         try {
-          const indexRes = await fetch('./data/index.json');
+          const indexRes = await fetch('./data/index.json?_t=' + Date.now());
           if (indexRes.ok) {
             const index = await indexRes.json();
             const dataFile = index[userCode];
@@ -495,7 +498,7 @@
 
               // Fallback to specific local file
               if (!user) {
-                const res = await fetch(`./data/${dataFile}`);
+                const res = await fetch(`./data/${dataFile}?_t=${Date.now()}`);
                 if (res.ok) {
                   const users = await res.json();
                   user = users.find(u => u.username === username && u.userCode === userCode);
@@ -534,7 +537,7 @@
             try {
               // Ensure path has data/ prefix if needed
               const filePath = file.startsWith('data/') || file.startsWith('./data/') ? file : `./data/${file}`;
-              const res = await fetch(filePath);
+              const res = await fetch(filePath + '?_t=' + Date.now());
               if (res.ok) {
                 const users = await res.json();
                 user = users.find(u => u.username === username && u.userCode === userCode);
