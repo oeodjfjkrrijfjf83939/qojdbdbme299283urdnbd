@@ -2564,8 +2564,20 @@ async function displayAdminStatistics(users) {
   // 2. Login Accounts Count
   if (totalAccountsElement) {
     try {
-      const { dataService } = await import('./data-service.js');
-      const credentials = await dataService.getCredentials();
+      let credentials = [];
+      if (typeof allAdminAccountsGlobal !== 'undefined' && allAdminAccountsGlobal.length > 0) {
+        credentials = allAdminAccountsGlobal;
+      } else {
+        const { dataService } = await import('./data-service.js');
+        credentials = await dataService.getCredentials();
+      }
+
+      // Check for override if local testing, matching table logic
+      const override = localStorage.getItem('adminCredentialsOverride');
+      if (override && (typeof allAdminAccountsGlobal === 'undefined' || allAdminAccountsGlobal.length === 0)) {
+        credentials = JSON.parse(override);
+      }
+
       // Exclude admins
       const count = credentials.filter(cred => cred.role !== 'main_admin' && cred.role !== 'super_admin').length;
       totalAccountsElement.textContent = count;
@@ -2594,7 +2606,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
         allAccounts = await dataService.getCredentials();
       } catch (e) {
         console.warn("Display: Using local credentials fetch fallback");
-        const response = await fetch('./credentials/login_credentials.json');
+        const response = await fetch('./credentials/login_credentials.json?t=' + new Date().getTime());
         if (response.ok) allAccounts = await response.json();
       }
 
@@ -2749,6 +2761,11 @@ async function displayLoginAccountsTable(accountsToShow = null) {
       `;
       tbody.appendChild(row);
     });
+
+    // Automatically update statistics whenever the table refreshes successfully
+    if (typeof displayAdminStatistics === 'function') {
+      displayAdminStatistics(typeof allUsersGlobal !== 'undefined' ? allUsersGlobal : []);
+    }
   } catch (error) {
     console.error('Error loading login accounts:', error);
     tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Error loading login accounts</td></tr>';
@@ -3319,12 +3336,16 @@ function showAddLoginModal() {
   }
 }
 
-function closeAddLoginModal() {
+async function closeAddLoginModal() {
   const modal = document.getElementById('addLoginModal');
   if (modal) {
     modal.classList.add('hidden');
     // Clear any validation errors
     clearAllFieldErrors();
+    // Auto-refresh the dashboard table when modal closes (after user hits Ok or Done)
+    if (typeof displayLoginAccountsTable === 'function') {
+      await displayLoginAccountsTable();
+    }
   }
 }
 
@@ -3529,7 +3550,7 @@ async function validateUsername() {
     console.error('Error validating username:', error);
     // Fallback to local JSON
     try {
-      const response = await fetch('./credentials/login_credentials.json');
+      const response = await fetch('./credentials/login_credentials.json?t=' + new Date().getTime());
       if (response.ok) {
         const credentials = await response.json();
         const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
@@ -3594,7 +3615,7 @@ async function validateDataFile() {
     console.error('Error validating data file:', error);
     // Fallback to local JSON
     try {
-      const response = await fetch('./credentials/login_credentials.json');
+      const response = await fetch('./credentials/login_credentials.json?t=' + new Date().getTime());
       if (response.ok) {
         const credentials = await response.json();
         const existingDataFile = credentials.find(cred =>

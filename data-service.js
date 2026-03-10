@@ -29,7 +29,7 @@ class DataService {
 
         // Fallback to local
         try {
-            const response = await fetch('./credentials/login_credentials.json');
+            const response = await fetch('./credentials/login_credentials.json?t=' + new Date().getTime());
             if (response.ok) {
                 credentials = await response.json();
                 console.log("✅ Loaded credentials from local file");

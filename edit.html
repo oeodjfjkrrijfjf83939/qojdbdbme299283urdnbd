@@ -846,12 +846,25 @@
 
       // Global flag to track frozen status
       window.isAccountFrozen = false;
+      window.isAtProfileLimit = false;
 
       if (adminRole === 'user' && adminUsername) {
         try {
           const { dataService } = await import('./data-service.js');
           const credentials = await dataService.getCredentials();
           const myCred = credentials.find(c => c.username === adminUsername);
+
+          // Calculate profile limit status early
+          if (myCred && myCred.isUnlimited === false) {
+            const maxUsers = myCred.maxUsers || 100;
+            const dataFile = sessionStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
+            const scope = dataFile.replace('.json', '').replace('data/', '');
+            const myUsers = await dataService.getUsers(scope);
+            const currentCount = myUsers ? myUsers.length : 0;
+            if (currentCount >= maxUsers) {
+              window.isAtProfileLimit = true;
+            }
+          }
 
           if (myCred && myCred.isFrozen) {
             // Set global frozen flag
@@ -1118,7 +1131,7 @@
     function populateForm(user) {
       document.getElementById('formTitle').innerText = '✏️ Edit User: ' + user.fullname;
       document.getElementById('username').value = user.username || '';
-      document.getElementById('username').disabled = false; // Username is editable
+      document.getElementById('username').disabled = window.isAccountFrozen; // Username is editable unless frozen
 
       document.getElementById('fullname').value = user.fullname || '';
       document.getElementById('userCode').value = user.userCode || '';
@@ -1131,15 +1144,45 @@
         const curUsername = document.getElementById('username').value.trim();
         const curUserCode = document.getElementById('userCode').value.trim();
         const container = document.getElementById('autoDeleteProfileContainer');
+        const cb = document.getElementById('autoDeleteOldProfile');
+
         if (container) {
           if (curUsername !== origUsername || curUserCode !== origUserCode) {
             container.style.display = 'block';
+            if (window.isAtProfileLimit && cb && !cb.hasAttribute('data-auto-checked-once')) {
+              cb.checked = true; // Auto-check it initially
+              cb.setAttribute('data-auto-checked-once', 'true');
+            }
           } else {
             container.style.display = 'none';
             // Uncheck if it gets hidden
-            const cb = document.getElementById('autoDeleteOldProfile');
-            if (cb) cb.checked = false;
+            if (cb) {
+              cb.checked = false;
+              cb.removeAttribute('data-auto-checked-once');
+            }
           }
+        }
+        validateSaveButton(); // Update save button state
+      }
+
+      function validateSaveButton() {
+        if (window.isAccountFrozen) return; // Frozen handles its own button state
+        const curUsername = document.getElementById('username').value.trim();
+        const curUserCode = document.getElementById('userCode').value.trim();
+        const isIdentityChanged = (curUsername !== origUsername || curUserCode !== origUserCode);
+        const cb = document.getElementById('autoDeleteOldProfile');
+        const saveBtn = document.getElementById('saveUserBtn');
+
+        if (window.isAtProfileLimit && isIdentityChanged && cb && !cb.checked) {
+          saveBtn.disabled = true;
+          saveBtn.style.backgroundColor = '#9ca3af';
+          saveBtn.style.cursor = 'not-allowed';
+          saveBtn.title = "Profile limit reached. You must delete the old profile to save changes to username or user code.";
+        } else {
+          saveBtn.disabled = false;
+          saveBtn.style.backgroundColor = '';
+          saveBtn.style.cursor = '';
+          saveBtn.title = '';
         }
       }
 
@@ -1160,10 +1203,17 @@
       document.getElementById('username').addEventListener('input', checkUsernameWarning);
       document.getElementById('userCode').addEventListener('input', checkUserCodeWarning);
 
+      const autoDeleteCb = document.getElementById('autoDeleteOldProfile');
+      if (autoDeleteCb) {
+        autoDeleteCb.addEventListener('change', validateSaveButton);
+      }
+
       // Populate Created At (editable for existing users)
       const createdAtField = document.getElementById('profileCreatedAt');
-      createdAtField.disabled = false;
-      createdAtField.classList.remove('readonly-input');
+      createdAtField.disabled = window.isAccountFrozen;
+      if (!window.isAccountFrozen) {
+        createdAtField.classList.remove('readonly-input');
+      }
 
       if (user.createdAt && user.createdAt !== 'N/A') {
         const dt = new Date(user.createdAt);
@@ -1215,6 +1265,25 @@
       if (user.customDetails) {
         loadDetails(user.customDetails);
       }
+
+      // If frozen, ensure all dynamically loaded inputs are disabled
+      if (window.isAccountFrozen) {
+        setTimeout(() => {
+          const allInputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
+          allInputs.forEach(input => {
+            input.disabled = true;
+            input.style.cursor = 'not-allowed';
+            input.style.opacity = '0.6';
+          });
+
+          const allButtons = document.querySelectorAll('#userForm button:not(#backBtn)');
+          allButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.style.cursor = 'not-allowed';
+            btn.style.opacity = '0.6';
+          });
+        }, 100);
+      }
     }
 
     // Handle Form Submit (Create / Update / Generate JSON)
@@ -1261,18 +1330,28 @@
         }
       }
 
-      // --- LIMIT CHECK FOR NEW USERS ---
+      // --- LIMIT CHECK FOR NEW USERS & IDENTITY CHANGES ---
+      const usernameInputRaw = document.getElementById('username').value;
+      const normalizedUsernameRaw = usernameInputRaw.trim().replace(/\s+/g, '-');
+      const userCodeInputRaw = document.getElementById('userCode').value.trim();
+
+      const origUsernameRaw = window.originalUsername || '';
+      const origUserCodeRaw = window.originalUserCode || '';
+
+      const isIdentityChangedSub = (normalizedUsernameRaw !== origUsernameRaw || userCodeInputRaw !== origUserCodeRaw);
+      const autoDeleteCheckbox = document.getElementById('autoDeleteOldProfile');
+      const isAutoDeleteChecked = autoDeleteCheckbox && autoDeleteCheckbox.checked;
+
       // Only check limit if:
-      // 1. We are CREATING a new user (not editing)
-      // 2. The logged-in person is a 'user' (Client User), not a Main Admin
-      if (!isEditing && adminRole === 'user' && adminUsername) {
+      // 1. We are CREATING a completely new user (not editing)
+      // 2. OR We are EDITING but changing username/usercode AND NOT auto-deleting the old profile
+      const requiresNewProfile = (!isEditing) || (isEditing && isIdentityChangedSub && !isAutoDeleteChecked);
+
+      if (requiresNewProfile && adminRole === 'user' && adminUsername) {
         try {
           const { dataService } = await import('./data-service.js');
 
           // 1. Get My Account Rules (Limit)
-          // We need to find the credential doc for the logged-in admin
-          // Since we don't have a direct 'getCredential' by ID, we fetch all (optimized if possible, but fine for now)
-          // Or utilize the fact that we might have stored it? No, safer to fetch fresh.
           const credentials = await dataService.getCredentials();
           const myCred = credentials.find(c => c.username === adminUsername);
 
@@ -1280,38 +1359,32 @@
             const maxUsers = myCred.maxUsers || 100;
 
             // 2. Count My Current Profiles
-            // My profiles are in the file defined in myCred.dataFile (e.g., 'clients')
-            // Or we can rely on sessionStorage 'adminDataFile'
             const dataFile = sessionStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
             const scope = dataFile.replace('.json', '').replace('data/', '');
 
             // Fetch users in my scope
             const myUsers = await dataService.getUsers(scope);
-
-            // Filter? dataService.getUsers returns ALL in that scope.
-            // If I share the scope with others? (Usually 1 file per client or shared 'clients.json'?)
-            // If shared 'clients.json', do I own ALL of them?
-            // Main Admin sees them all.
-            // Client User sees... what?
-            // Client User usually sees ALL users in their assigned dataFile. 
-            // So if dataFile is unique to them, count is length.
-            // If dataFile is shared, we might need to filter by 'owner'? (Not implemented yet).
-            // Assuming 1 DataFile = 1 Client User's Sandbox for now based on 'Total Users' logic in script.js
-
             const currentCount = myUsers ? myUsers.length : 0;
 
             if (currentCount >= maxUsers) {
-              alert(`⚠️ User Limit Reached (${currentCount}/${maxUsers}).\n\nYou cannot create more profiles. Please contact admin.`);
-
-              // Redirect back to dashboard
-              window.location.href = "index.html";
-              return;
+              if (isEditing) {
+                alert(`⚠️ User Limit Reached (${currentCount}/${maxUsers}).\n\nYou cannot create more profiles. Please check "Delete old profile automatically after saving" to proceed with username/usercode change.`);
+                const saveBtnRef = document.getElementById('saveUserBtn');
+                if (saveBtnRef) {
+                  saveBtnRef.disabled = false;
+                  saveBtnRef.innerHTML = '💾 Save User';
+                }
+                return;
+              } else {
+                alert(`⚠️ User Limit Reached (${currentCount}/${maxUsers}).\n\nYou cannot create more profiles. Please contact admin.`);
+                // Redirect back to dashboard
+                window.location.href = "index.html";
+                return;
+              }
             }
           }
         } catch (err) {
           console.error("Limit check failed:", err);
-          // Fallback: allow or block? Block to be safe? Or allow if error?
-          // Allow for now to avoid locking out due to network error, but log it.
         }
       }
       // --- END LIMIT CHECK ---
