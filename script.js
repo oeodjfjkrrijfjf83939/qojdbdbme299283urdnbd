@@ -13,6 +13,11 @@ const CONFIG = {
 // ============================================================
 const DEFAULT_MAX_USERS = 10;
 
+// ============================================================
+// UI VISIBILITY
+// ============================================================
+let SHOW_DATA_ACCESS_SCOPE_UI = false;
+
 // QR Customization Settings
 let qrCustomization = {
   backgroundColor: '#ffffff',
@@ -2809,6 +2814,8 @@ function openEditLoginModal(username) {
 function closeEditLoginModal() {
   document.getElementById('editLoginModal').classList.add('hidden');
   document.getElementById('editLoginForm').reset();
+  const dataFileField = document.getElementById('editLoginDataFile');
+  if (dataFileField) clearFieldError(dataFileField);
 }
 
 async function saveEditLoginAccount(event) {
@@ -2818,6 +2825,24 @@ async function saveEditLoginAccount(event) {
   const newPassword = document.getElementById('editLoginPassword').value.trim();
   const description = document.getElementById('editLoginDescription').value.trim();
   const dataFile = document.getElementById('editLoginDataFile').value.trim();
+  const dataFileField = document.getElementById('editLoginDataFile');
+
+  if (dataFileField && dataFileField.parentElement.querySelector('.field-error')) {
+    alert('Please choose a valid & available data file name.');
+    return;
+  }
+
+  try {
+    const { dataService } = await import('./data-service.js');
+    const credentials = await dataService.getCredentials();
+    const existing = credentials.find(cred => 
+      cred.dataFile && cred.dataFile.toLowerCase() === dataFile.toLowerCase() && cred.username.toLowerCase() !== username.toLowerCase()
+    );
+    if (existing) {
+      alert('Data file name is already used by another account.');
+      return;
+    }
+  } catch(e) { }
 
   // Preserve existing isUnlimited / maxUsers (managed directly from the table)
   const existingAccount = allAdminAccountsGlobal.find(a => a.username === username);
@@ -3303,6 +3328,13 @@ function showAddLoginModal() {
     modal.classList.remove('hidden');
     // Reset form
     document.getElementById('addLoginForm').reset();
+    
+    // Reset touched state for data file auto-generation
+    const dataFileField = document.getElementById('newDataFile');
+    if (dataFileField) {
+      dataFileField.dataset.touched = 'false';
+      clearFieldError(dataFileField);
+    }
     document.getElementById('credentialsDisplay').classList.add('hidden');
     document.getElementById('addLoginForm').classList.remove('hidden');
     // Focus on username field
@@ -3482,6 +3514,10 @@ function showCredentialsDisplay(username, password, dataFile, role, userDescript
     description: userDescription || `User account for ${dataFile}`
   };
 
+  if (!SHOW_DATA_ACCESS_SCOPE_UI) {
+    delete jsonData.dataFile;
+  }
+
   // Format JSON with proper indentation
   const jsonString = JSON.stringify(jsonData, null, 4);
   document.getElementById('jsonCredentials').textContent = jsonString;
@@ -3529,39 +3565,61 @@ function copyJsonCredentials() {
 async function validateUsername() {
   const username = document.getElementById('newUsername').value.trim();
   const field = document.getElementById('newUsername');
+  const dataFileField = document.getElementById('newDataFile');
 
   if (username.length === 0) {
     clearFieldError(field);
+    if (dataFileField && dataFileField.dataset.touched !== 'true') {
+      dataFileField.value = '';
+      clearFieldError(dataFileField);
+    }
     return;
   }
 
+  let credentials = [];
   try {
     // Use dataService (Firebase) for accurate real-time validation
     const { dataService } = await import('./data-service.js');
-    const credentials = await dataService.getCredentials();
-    const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
-
-    if (existingUser) {
-      showFieldError(field, 'Username already exists');
-    } else {
-      showFieldSuccess(field, 'Username available');
-    }
+    credentials = await dataService.getCredentials();
   } catch (error) {
     console.error('Error validating username:', error);
     // Fallback to local JSON
     try {
       const response = await fetch('./credentials/login_credentials.json?t=' + new Date().getTime());
       if (response.ok) {
-        const credentials = await response.json();
-        const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
-        if (existingUser) {
-          showFieldError(field, 'Username already exists');
-        } else {
-          showFieldSuccess(field, 'Username available');
-        }
+        credentials = await response.json();
       }
     } catch (e) {
       console.warn('Local username validation also failed:', e);
+    }
+  }
+
+  const existingUser = credentials.find(cred => cred.username.toLowerCase() === username.toLowerCase());
+
+  if (existingUser) {
+    showFieldError(field, 'Username already exists');
+  } else {
+    showFieldSuccess(field, 'Username available');
+  }
+
+  // Auto-generate Datafile Name if not touched by admin
+  if (dataFileField && dataFileField.dataset.touched !== 'true') {
+    let baseFileName = username.toLowerCase().replace(/[^a-z0-9_\-]/g, "");
+    if (!baseFileName) baseFileName = "user";
+
+    let candidate = baseFileName;
+    let existingDataFile = credentials.find(cred => cred.dataFile && cred.dataFile.toLowerCase() === candidate.toLowerCase());
+    
+    while (existingDataFile) {
+      const randomStr = Math.random().toString(36).substring(2, 6);
+      candidate = `${baseFileName}-${randomStr}`;
+      existingDataFile = credentials.find(cred => cred.dataFile && cred.dataFile.toLowerCase() === candidate.toLowerCase());
+    }
+    
+    // Only update if still untouched
+    if (dataFileField.dataset.touched !== 'true') {
+      dataFileField.value = candidate;
+      showFieldSuccess(dataFileField, 'Data file name is available');
     }
   }
 }
@@ -3629,6 +3687,58 @@ async function validateDataFile() {
       }
     } catch (e) {
       console.warn('Local data file validation also failed:', e);
+      showFieldSuccess(field, 'Data file name is valid');
+    }
+  }
+}
+
+async function validateEditLoginDataFile() {
+  const dataFile = document.getElementById('editLoginDataFile').value.trim();
+  const field = document.getElementById('editLoginDataFile');
+  const currentUsername = document.getElementById('editLoginUsername').value;
+
+  if (dataFile.length === 0) {
+    clearFieldError(field);
+    return;
+  }
+
+  // Basic validation for data file name - Allow slashes for folders
+  if (!/^[a-zA-Z0-9_\-./\\]+$/.test(dataFile)) {
+    showFieldError(field, 'Data file name can only contain letters, numbers, hyphens, underscores, dots, and slashes');
+    return;
+  }
+
+  // Check data file uniqueness using dataService (Firebase)
+  try {
+    const { dataService } = await import('./data-service.js');
+    const credentials = await dataService.getCredentials();
+    const existingDataFile = credentials.find(cred =>
+      cred.dataFile && cred.dataFile.toLowerCase() === dataFile.toLowerCase() && cred.username.toLowerCase() !== currentUsername.toLowerCase()
+    );
+
+    if (existingDataFile) {
+      showFieldError(field, 'Data file name already exists');
+    } else {
+      showFieldSuccess(field, 'Data file name is available');
+    }
+  } catch (error) {
+    console.error('Error validating edit data file:', error);
+    // Fallback to local JSON
+    try {
+      const response = await fetch('./credentials/login_credentials.json?t=' + new Date().getTime());
+      if (response.ok) {
+        const credentials = await response.json();
+        const existingDataFile = credentials.find(cred =>
+          cred.dataFile && cred.dataFile.toLowerCase() === dataFile.toLowerCase() && cred.username.toLowerCase() !== currentUsername.toLowerCase()
+        );
+        if (existingDataFile) {
+          showFieldError(field, 'Data file name already exists');
+        } else {
+          showFieldSuccess(field, 'Data file name is available');
+        }
+      }
+    } catch (e) {
+      console.warn('Local edit data file validation also failed:', e);
       showFieldSuccess(field, 'Data file name is valid');
     }
   }
@@ -3767,13 +3877,43 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   if (newDataFile) {
-    newDataFile.addEventListener('input', validateDataFile);
+    newDataFile.addEventListener('input', (e) => {
+      newDataFile.dataset.touched = 'true';
+      validateDataFile();
+    });
+  }
+
+  const editLoginDataFile = document.getElementById('editLoginDataFile');
+  if (editLoginDataFile) {
+    editLoginDataFile.addEventListener('input', validateEditLoginDataFile);
   }
 
   // Password toggle functionality
   const passwordToggleBtn = document.getElementById('passwordToggleBtn');
   if (passwordToggleBtn) {
     passwordToggleBtn.addEventListener('click', togglePasswordVisibility);
+  }
+
+  // Hide Data Access Scope UI element if disabled
+  if (!SHOW_DATA_ACCESS_SCOPE_UI) {
+    const newDataFileGroup = document.getElementById('newDataFile')?.closest('.form-group');
+    if (newDataFileGroup) newDataFileGroup.style.display = 'none';
+
+    const editDataFileGroup = document.getElementById('editLoginDataFile')?.closest('.form-group');
+    if (editDataFileGroup) editDataFileGroup.style.display = 'none';
+
+    const newDataFileInput = document.getElementById('newDataFile');
+    if (newDataFileInput) newDataFileInput.required = false;
+
+    // Hide Data File column from table
+    const style = document.createElement('style');
+    style.innerHTML = `
+      #adminAccountsTable th:nth-child(3),
+      #adminAccountsTable td:nth-child(3) {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
   }
 });
 
