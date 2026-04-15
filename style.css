@@ -372,6 +372,7 @@ button[type="submit"] {
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+  justify-content: center;
 }
 
 .btn-primary {
