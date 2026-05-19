@@ -113,6 +113,7 @@ class DataService {
                 const docRef = doc(db, "profiles", scope, "users", docId);
                 await setDoc(docRef, userData, { merge: true });
                 console.log(`✅ User ${docId} updated in Firebase`);
+                await this.updateProfileCountInFirestore(scope);
                 return true;
             } catch (error) {
                 console.error("❌ Failed to update user:", error);
@@ -138,6 +139,7 @@ class DataService {
                     });
                     await Promise.all(deletePromises);
                     console.log(`🗑️ User ${username} (${userCode}) deleted from Firebase`);
+                    await this.updateProfileCountInFirestore(scope);
                     return true;
                 } else {
                     console.warn(`❌ No matching user found to delete: ${username} (${userCode}). Was it already deleted?`);
@@ -170,6 +172,9 @@ class DataService {
                 const docRef = doc(db, "credentials", credentialData.username);
                 await setDoc(docRef, credentialData);
                 console.log(`✅ Firebase: Added credential for ${credentialData.username}`);
+                if (credentialData.dataFile) {
+                    await this.updateProfileCountInFirestore(credentialData.dataFile);
+                }
                 return true;
             } catch (error) {
                 console.error("❌ Firebase: Add credential failed:", error);
@@ -189,6 +194,14 @@ class DataService {
                 const docRef = doc(db, "credentials", username);
                 await setDoc(docRef, updateData, { merge: true });
                 console.log(`✅ Firebase: Updated credential for ${username}`);
+                if (updateData.dataFile) {
+                    await this.updateProfileCountInFirestore(updateData.dataFile);
+                } else {
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists() && docSnap.data().dataFile) {
+                        await this.updateProfileCountInFirestore(docSnap.data().dataFile);
+                    }
+                }
                 return true;
             } catch (error) {
                 console.error("❌ Firebase: Update credential failed:", error);
@@ -214,6 +227,44 @@ class DataService {
         }
         console.warn("⚠️ Local: Cannot delete credential from static JSON file.");
         return false;
+    }
+
+    // Helper to calculate and update real-time user profile count in credentials in Firestore
+    async updateProfileCountInFirestore(scope) {
+        if (!this.useFirebase || !scope) return;
+        try {
+            const usersCol = collection(db, "profiles", scope, "users");
+            const usersSnapshot = await getDocs(usersCol);
+            const count = usersSnapshot.size;
+
+            const credsCol = collection(db, "credentials");
+            const q = query(credsCol, where("dataFile", "==", scope));
+            const credsSnapshot = await getDocs(q);
+
+            for (const credDoc of credsSnapshot.docs) {
+                await setDoc(credDoc.ref, { profileCount: count }, { merge: true });
+                console.log(`📊 Firebase: Updated profileCount to ${count} for credential "${credDoc.id}"`);
+            }
+        } catch (error) {
+            console.error("❌ Firebase: Update profile count failed:", error);
+        }
+    }
+
+    // Sync all profile counts for all credentials
+    async syncAllProfileCounts() {
+        if (!this.useFirebase) return;
+        try {
+            const querySnapshot = await getDocs(collection(db, "credentials"));
+            for (const docSnap of querySnapshot.docs) {
+                const cred = docSnap.data();
+                if (cred.dataFile) {
+                    await this.updateProfileCountInFirestore(cred.dataFile);
+                }
+            }
+            console.log("✅ All credential profile counts backfilled successfully");
+        } catch (error) {
+            console.error("❌ Backfilling profile counts failed:", error);
+        }
     }
 
     // Delete all user profiles for a scope (dataFile) and the scope doc itself
@@ -246,6 +297,9 @@ class DataService {
             // 3. Delete the parent scope doc (profiles/{scope})
             await deleteDoc(doc(db, "profiles", scope));
             console.log(`🗑️ Firebase: Deleted scope document "profiles/${scope}"`);
+
+            // Update profileCount for this scope in Firestore
+            await this.updateProfileCountInFirestore(scope);
 
             return true;
         } catch (error) {
@@ -293,6 +347,7 @@ class DataService {
 
                 let addedCount = 0;
                 let skippedCount = 0;
+                const uniqueScopes = new Set();
 
                 for (const file of files) {
                     try {
@@ -307,6 +362,7 @@ class DataService {
                             if (scope.endsWith('.json')) {
                                 scope = scope.replace('.json', ''); // Fallback for root files
                             }
+                            uniqueScopes.add(scope);
 
                             console.log(`📂 Processing ${file} -> Scope: ${scope}`);
 
@@ -344,6 +400,14 @@ class DataService {
                         console.error("Failed to load file for sync: " + file, err);
                     }
                 }
+
+                // Update profileCount in Firestore for all processed unique scopes
+                for (const scope of uniqueScopes) {
+                    await this.updateProfileCountInFirestore(scope);
+                }
+
+                // Also run a full scan of all credentials in Firestore to make sure everything is completely up-to-date
+                await this.syncAllProfileCounts();
 
                 console.log(`✅ Profiles Sync: Added ${addedCount}, Skipped ${skippedCount}`);
                 alert(`Sync Complete!\n\nCredentials: Added key updates.\nProfiles: Added ${addedCount} new, Skipped ${skippedCount} existing.\nStructure: profiles/{scope}/users`);

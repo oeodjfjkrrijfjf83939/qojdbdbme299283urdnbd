@@ -417,6 +417,9 @@ button[type="submit"] {
   border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .user-card::before {
@@ -470,11 +473,19 @@ button[type="submit"] {
   margin-top: 0.5rem;
 }
 
+.user-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .user-links {
   display: flex;
   gap: 0.5rem;
   margin: 1rem 0;
   flex-wrap: wrap;
+  align-content: flex-start;
+  flex-grow: 1;
 }
 
 .link-badge {

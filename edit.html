@@ -56,7 +56,7 @@
         <small class="form-hint">💡 This description will appear on your profile page. Leave blank to show your username
           instead.</small>
 
-        <input type="text" id="userCode" placeholder="User Code (auto-generated)">
+        <input type="text" id="userCode" placeholder="User Code (auto-generated)" disabled class="readonly-input">
         <small class="form-note">🔒 User Code ensures uniqueness - This is what makes each user unique!</small>
         <div id="userCodeWarningBox"
           style="display:none; background: linear-gradient(135deg, #ff6b35 0%, #f7c59f 100%); border: 2px solid #ff6b35; border-radius: 10px; padding: 10px 14px; margin-top: 8px; margin-bottom: 4px; color: #7c2d12;">
@@ -192,7 +192,7 @@
         <small>Instant messaging and communication apps</small>
         <div class="upi-input-group">
           <input type="text" id="whatsapp"
-            placeholder="WhatsApp - https://wa.me/phonenumber, https://wa.me/phonenumber2">
+            placeholder="WhatsApp - https://wa.me/phonenumber">
           <button type="button" class="add-upi-btn" data-target="whatsapp"
             title="Add another WhatsApp number">+</button>
         </div>
@@ -1208,6 +1208,13 @@
         autoDeleteCb.addEventListener('change', validateSaveButton);
       }
 
+      // Enable User Code (editable for existing users)
+      const userCodeField = document.getElementById('userCode');
+      userCodeField.disabled = window.isAccountFrozen;
+      if (!window.isAccountFrozen) {
+        userCodeField.classList.remove('readonly-input');
+      }
+
       // Populate Created At (editable for existing users)
       const createdAtField = document.getElementById('profileCreatedAt');
       createdAtField.disabled = window.isAccountFrozen;
@@ -1787,9 +1794,6 @@
             if (!currentValue.endsWith(',')) {
               input.value = currentValue + ', ';
             }
-          } else {
-            // If empty, add placeholder text
-            input.placeholder = input.placeholder.replace('UPI ID(s)', 'UPI ID');
           }
 
           input.focus();

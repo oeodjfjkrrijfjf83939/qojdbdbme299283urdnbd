@@ -734,18 +734,73 @@ function displayUsers(users) {
       linkCount += u.certificates.length;
     }
 
-    // Get first few active platforms for display badges
-    const activePlatforms = [];
-    if (u.linkedin) activePlatforms.push('LinkedIn');
-    if (u.github) activePlatforms.push('GitHub');
-    if (u.instagram) activePlatforms.push('Instagram');
-    if (u.twitter) activePlatforms.push('Twitter');
-    if (u.behance) activePlatforms.push('Behance');
+    // Get first few active platforms for display badges dynamically
+    const platformNames = {
+      linkedin: 'LinkedIn', xing: 'Xing', angellist: 'AngelList', meetup: 'Meetup', opportunity: 'Opportunity',
+      behance: 'Behance', dribbble: 'Dribbble', figma: 'Figma', portfolio: 'Portfolio', artstation: 'ArtStation', zerply: 'Zerply',
+      instagram: 'Instagram', twitter: 'Twitter', facebook: 'Facebook', threads: 'Threads', mastodon: 'Mastodon', bluesky: 'BlueSky',
+      youtube: 'YouTube', tiktok: 'TikTok', vimeo: 'Vimeo', twitch: 'Twitch', rumble: 'Rumble', dailymotion: 'Dailymotion',
+      spotify: 'Spotify', soundcloud: 'SoundCloud', applemusic: 'Apple Music', bandcamp: 'Bandcamp',
+      github: 'GitHub', gitlab: 'GitLab', bitbucket: 'BitBucket', stackoverflow: 'StackOverflow', devto: 'Dev.to', codepen: 'CodePen',
+      whatsapp: 'WhatsApp', telegram: 'Telegram', discord: 'Discord', signal: 'Signal', skype: 'Skype', slack: 'Slack', wechat: 'WeChat', line: 'Line', viber: 'Viber', messenger: 'Messenger',
+      steam: 'Steam', xbox: 'Xbox', playstation: 'PlayStation', nintendo: 'Nintendo', dream11: 'Dream11', mpl: 'MPL', winzo: 'WinZO',
+      patreon: 'Patreon', kofi: 'Ko-fi', buymeacoffee: 'Buy Me A Coffee', substack: 'Substack',
+      etsy: 'Etsy', amazon: 'Amazon', shopify: 'Shopify', flipkart: 'Flipkart', myntra: 'Myntra', meesho: 'Meesho', nykaa: 'Nykaa', bigbasket: 'BigBasket', blinkit: 'Blinkit', zepto: 'Zepto',
+      flickr: 'Flickr', '500px': '500px', unsplash: 'Unsplash',
+      medium: 'Medium', wordpress: 'WordPress', blogger: 'Blogger',
+      pinterest: 'Pinterest', reddit: 'Reddit', snapchat: 'Snapchat', tumblr: 'Tumblr', bereal: 'BeReal', clubhouse: 'Clubhouse', nextdoor: 'Nextdoor', strava: 'Strava',
+      sharechat: 'ShareChat', moj: 'Moj', josh: 'Josh', koo: 'Koo', mxtakatak: 'MxTakaTak', vk: 'VK', ok: 'OK', kakaotalk: 'KakaoTalk', quora: 'Quora',
+      linktree: 'Linktree', notion: 'Notion', calendly: 'Calendly',
+      paypal: 'PayPal', gpay: 'Google Pay', phonepe: 'PhonePe', paytm: 'PayTM', upi: 'UPI', cashapp: 'CashApp', razorpay: 'Razorpay', cred: 'CRED', mobikwik: 'MobiKwik',
+      freecharge: 'Freecharge', bhim: 'BHIM', amazonpay: 'Amazon Pay', navi: 'Navi', jupiter: 'Jupiter', jiofinance: 'JioFinance',
+      crunchbase: 'Crunchbase', glassdoor: 'Glassdoor', indeed: 'Indeed', naukri: 'Naukri',
+      coursera: 'Coursera', udemy: 'Udemy', skillshare: 'Skillshare', khanacademy: 'Khan Academy', byjus: 'BYJU\'S', unacademy: 'Unacademy', vedantu: 'Vedantu', upgrad: 'upGrad', physicswallah: 'Physics Wallah',
+      playstore: 'Play Store', appstore: 'App Store',
+      swiggy: 'Swiggy', zomato: 'Zomato', dineout: 'Dineout', eatsure: 'EatSure', magicpin: 'Magicpin', jiomart: 'JioMart', swiggyinstamart: 'Swiggy Instamart', dunzo: 'Dunzo',
+      ola: 'Ola', uber: 'Uber', rapido: 'Rapido', porter: 'Porter',
+      makemytrip: 'MakeMyTrip', goibibo: 'Goibibo', oyo: 'OYO', cleartrip: 'ClearTrip', ixigo: 'ixigo',
+      practo: 'Practo', onemg: '1mg', pharmeasy: 'PharmEasy', cultfit: 'Cult.fit',
+      goodreads: 'Goodreads',
+      jiocinema: 'JioCinema', hotstar: 'Hotstar', netflix: 'Netflix', primevideo: 'Prime Video', sonyliv: 'SonyLIV', zee5: 'ZEE5', mxplayer: 'MX Player', imdb: 'IMDb',
+      email: 'Email', phone: 'Phone', website: 'Website', menucard: 'Menu Card', location: 'Location', googleReview: 'Google Review'
+    };
 
-    const platformBadges = activePlatforms.slice(0, 3).map(p =>
+    const activePlatforms = [];
+    const popularityOrderedKeys = [
+      'instagram', 'whatsapp', 'phone', 'email', 'website', 'linkedin', 'youtube', 'facebook', 'twitter', 'github',
+      'googleReview', 'location', 'menucard', 'telegram', 'spotify', 'behance', 'dribbble', 'medium', 'pinterest', 'snapchat'
+    ];
+    
+    // First gather active platforms from popularity list
+    popularityOrderedKeys.forEach(key => {
+      if (u[key] && typeof u[key] === 'string' && u[key].trim()) {
+        activePlatforms.push(platformNames[key] || key);
+      }
+    });
+
+    // Then check all other keys from user document
+    const excludedKeys = ['fullname', 'username', 'userCode', 'createdAt', 'description', 'design', 'customTheme', 'profileImage', 'dataFile', 'isFrozen', 'profileCount', 'certificates', 'publicDescription'];
+    Object.keys(u).forEach(key => {
+      if (!key.startsWith('_') && !excludedKeys.includes(key) && !popularityOrderedKeys.includes(key)) {
+        if (u[key] && typeof u[key] === 'string' && u[key].trim()) {
+          const displayName = platformNames[key] || (key.charAt(0).toUpperCase() + key.slice(1));
+          activePlatforms.push(displayName);
+        }
+      }
+    });
+
+    // Add certificates label if present
+    if (u.certificates && Array.isArray(u.certificates) && u.certificates.length > 0) {
+      activePlatforms.push('Certificates');
+    }
+
+    const displayLimit = 6; // Show up to 6 active platforms to fill the cards beautifully
+    const platformBadges = activePlatforms.slice(0, displayLimit).map(p =>
       `<span class="link-badge">${p}</span>`
     ).join('');
-    const moreBadge = linkCount > 3 ? `<span class="link-badge">+${linkCount - 3} more</span>` : '';
+    
+    const moreCount = activePlatforms.length - displayLimit;
+    const moreBadge = moreCount > 0 ? `<span class="link-badge">+${moreCount} more</span>` : '';
 
     // Check if account is frozen to disable Edit button
     const isFrozen = window.currentUser && window.currentUser.isFrozen;
@@ -3169,6 +3224,8 @@ async function toggleLimitMode(username, isUnlimited) {
     const updateData = { isUnlimited: isUnlimited };
     if (!isUnlimited) {
       updateData.maxUsers = DEFAULT_MAX_USERS; // Default when switching off unlimited mode
+    } else {
+      updateData.maxUsers = null; // Clear maxUsers when switching on unlimited mode
     }
 
     await dataService.updateCredential(username, updateData);
