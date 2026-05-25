@@ -2,9 +2,32 @@
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MultiLynk QR</title>
+  <meta name="description"
+    content="Create smart digital QR Code that combines all your links into a single scannable QR code. Manage, customize, and share with one scan." />
+  <meta name="keywords"
+    content="MultiLynk QR, multi-lynk QR code, digital qr code, digital business QR code, QR generator, QR code generator, link in bio, social sharing, QR code" />
+
+  <meta property="og:title" content="MultiLynk QR" />
+  <meta property="og:description"
+    content="Create smart digital QR Code that combines all your links into a single scannable QR code. Manage, customize, and share with one scan." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://multilynkqr.com/" />
+  <!-- Replace the image URL below with a 1200x630 preview image of your site -->
+  <meta property="og:image" content="https://multilynkqr.com/assets/MultiLynkQR-Logo.svg" />
+
+  <!-- Twitter Card metadata -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MultiLynk QR" />
+  <meta name="twitter:description"
+    content="Create smart digital QR Code that combines all your links into a single scannable QR code. Manage, customize, and share with one scan." />
+  <meta name="twitter:image" content="https://multilynkqr.com/assets/MultiLynkQR-Logo.svg" />
+
   <script>
     // Immediate redirect check for logged-in users before rendering page
-    (function() {
+    (function () {
       const isAuthenticated = localStorage.getItem('adminAuthenticated');
       const loginTime = localStorage.getItem('adminLoginTime');
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours
@@ -17,22 +40,15 @@
       }
     })();
   </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MultiLynk QR</title>
-  <meta name="description" content="Create smart digital QR Code that combines all your links into a single scannable QR code. Manage, customize, and share with one scan." />
-  <meta name="keywords" content="MultiLynk QR, multi-lynk QR code, digital qr code, digital business QR code, QR generator, QR code generator, link in bio, social sharing, QR code" />  
-  
-  <meta property="og:title" content="MultiLynk QR" />
-  <meta property="og:description" content="Create smart digital QR Code that combines all your links into a single scannable QR code. Manage, customize, and share with one scan." />
-  <meta property="og:type" content="website" />
-  
+
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-  
-  <link rel="icon" type="image/svg+xml" href="assets/icons/MultiLynkQR-Logo.svg">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="assets/MultiLynkQR-Logo.png">
 
   <style>
     /* Premium Landing Page Specific Styles */
@@ -48,7 +64,7 @@
     }
 
     body::before {
-      background: 
+      background:
         radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
         radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%);
     }
@@ -109,7 +125,8 @@
 
     @media (max-width: 768px) {
       .nav-links {
-        display: none; /* simple burger menu could be here, but direct login is highly mobile optimized */
+        display: none;
+        /* simple burger menu could be here, but direct login is highly mobile optimized */
       }
     }
 
@@ -123,7 +140,7 @@
 
     .nav-link:hover {
       color: #ffffff;
-      text-shadow: 0 0 10px rgba(255,255,255,0.2);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
     .navbar-actions {
@@ -178,9 +195,11 @@
       0% {
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       }
+
       70% {
         box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
       }
+
       100% {
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
       }
@@ -297,7 +316,7 @@
       background: rgba(255, 255, 255, 0.04);
       border-color: rgba(99, 102, 241, 0.25);
       transform: translateY(-5px);
-      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
     }
 
     .card-num {
@@ -414,9 +433,12 @@
     }
 
     @keyframes floatQR {
-      0%, 100% {
+
+      0%,
+      100% {
         transform: translateY(0px) rotate(0deg);
       }
+
       50% {
         transform: translateY(-15px) rotate(2deg);
       }
@@ -432,7 +454,9 @@
     }
 
     /* Core QR elements mock */
-    .qr-preview-dots::before, .qr-preview-dots::after, .qr-corner-element {
+    .qr-preview-dots::before,
+    .qr-preview-dots::after,
+    .qr-corner-element {
       content: '';
       position: absolute;
       width: 48px;
@@ -441,9 +465,20 @@
       background: #ffffff;
     }
 
-    .qr-preview-dots::before { top: 0; left: 0; }
-    .qr-preview-dots::after { top: 0; right: 0; }
-    .qr-corner-element { bottom: 0; left: 0; }
+    .qr-preview-dots::before {
+      top: 0;
+      left: 0;
+    }
+
+    .qr-preview-dots::after {
+      top: 0;
+      right: 0;
+    }
+
+    .qr-corner-element {
+      bottom: 0;
+      left: 0;
+    }
 
     .qr-center-logo {
       position: absolute;
@@ -454,7 +489,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -607,7 +642,7 @@
       .hero {
         padding: 3rem 0 2rem 0;
       }
-      
+
       .hero-badge {
         font-size: 0.75rem;
         padding: 0.4rem 1rem;
@@ -712,8 +747,8 @@
         padding: 1rem;
       }
 
-      .qr-preview-dots::before, 
-      .qr-preview-dots::after, 
+      .qr-preview-dots::before,
+      .qr-preview-dots::after,
       .qr-corner-element {
         width: 36px;
         height: 36px;
@@ -794,7 +829,8 @@
 
       /* Style the Login button to look like a premium primary button on mobile */
       .navbar-actions .btn-primary {
-        display: inline-flex !important; /* Ensure it is visible */
+        display: inline-flex !important;
+        /* Ensure it is visible */
         padding: 0.5rem 1.25rem !important;
         font-size: 0.85rem !important;
         border-radius: 9999px !important;
@@ -807,7 +843,8 @@
 
     @media (max-width: 480px) {
       .footer-content {
-        grid-template-columns: 1fr; /* Stack columns on extremely narrow screens */
+        grid-template-columns: 1fr;
+        /* Stack columns on extremely narrow screens */
         gap: 2rem;
       }
     }
@@ -820,10 +857,10 @@
   <nav class="navbar">
     <div class="navbar-container">
       <a href="index.html" class="brand">
-        <img src="assets/icons/MultiLynkQR-Logo.svg" alt="MultiLynk Logo" />
+        <img src="assets/MultiLynkQR-Logo.png" alt="MultiLynk Logo" />
         <span>MultiLynk QR</span>
       </a>
-      
+
       <div class="nav-links">
         <a href="#how-it-works" class="nav-link">How It Works</a>
         <a href="#benefits" class="nav-link">Why MultiLynk</a>
@@ -832,8 +869,9 @@
       </div>
 
       <div class="navbar-actions">
-        <a href="login.html" class="btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.9rem; border-radius: 9999px; font-family: var(--font-outfit);">
-        Login
+        <a href="login.html" class="btn-primary"
+          style="padding: 0.6rem 1.5rem; font-size: 0.9rem; border-radius: 9999px; font-family: var(--font-outfit);">
+          Login
         </a>
       </div>
     </div>
@@ -841,15 +879,17 @@
 
   <!-- Landing Homepage Content Wrapper -->
   <div class="landing-wrapper">
-    
+
     <!-- Hero Block -->
     <section class="hero">
       <div class="hero-badge">
         <span class="pulse"></span> 175+ Platforms Supported
       </div>
       <h1>One Smart QR Code.<br>Consolidate Everything.</h1>
-      <p class="subtitle">Elevate your digital card experience. Create custom digital business cards that combine social media, UPI payment details, credential certificates, custom maps and contact info into a single gorgeous scannable QR code.</p>
-      
+      <p class="subtitle">Elevate your digital card experience. Create custom digital business cards that combine social
+        media, UPI payment details, credential certificates, custom maps and contact info into a single gorgeous
+        scannable QR code.</p>
+
       <div class="hero-ctas">
         <a href="login.html" class="btn-primary">
           🚀 Get Started Now
@@ -864,32 +904,37 @@
     <section id="how-it-works" class="how-it-works">
       <div class="section-header">
         <h2>How It Works</h2>
-        <p>A streamlined, frictionless process built specifically to satisfy modern professionals, builders, and customer services.</p>
+        <p>A streamlined, frictionless process built specifically to satisfy modern professionals, builders, and
+          customer services.</p>
       </div>
 
       <div class="glass-grid">
         <div class="glass-card">
           <div class="card-num">01</div>
           <h3>Public Creation</h3>
-          <p>Any client or user can securely structure their customized profile data in a simple public form using our responsive builder, without needing complex accounts or sign-ups.</p>
+          <p>Any client or user can securely structure their customized profile data in a simple public form using our
+            responsive builder, without needing complex accounts or sign-ups.</p>
         </div>
 
         <div class="glass-card">
           <div class="card-num">02</div>
           <h3>Collect Custom Details</h3>
-          <p>Link anything! Whether it is a global social link (LinkedIn, GitHub), an Indian specific platform (UPI, Paytm, Swiggy), custom certificates, forms, or maps location details.</p>
+          <p>Link anything! Whether it is a global social link (LinkedIn, GitHub), an Indian specific platform (UPI,
+            Paytm, Swiggy), custom certificates, forms, or maps location details.</p>
         </div>
 
         <div class="glass-card">
           <div class="card-num">03</div>
           <h3>Apply QR Theming</h3>
-          <p>Admins can apply exquisite styles to each generated QR. Choose between 13+ unique shapes (glitch, fluid, hexagons) and seamless multi-color global gradients.</p>
+          <p>Admins can apply exquisite styles to each generated QR. Choose between 13+ unique shapes (glitch, fluid,
+            hexagons) and seamless multi-color global gradients.</p>
         </div>
 
         <div class="glass-card">
           <div class="card-num">04</div>
           <h3>Scan & Share</h3>
-          <p>Download the high-quality QR vector (SVG or PNG) and place it on your physical cards, leaflets, or tables. Your customer scans once, and accesses everything immediately!</p>
+          <p>Download the high-quality QR vector (SVG or PNG) and place it on your physical cards, leaflets, or tables.
+            Your customer scans once, and accesses everything immediately!</p>
         </div>
       </div>
     </section>
@@ -905,30 +950,34 @@
         <div class="benefit-item">
           <div class="benefit-icon">☁️</div>
           <h4>Cloud Synchronization</h4>
-          <p>Fully backed by Firebase Cloud Firestore. Profiles synchronize instantly and securely across multiple devices and administrative accounts.</p>
+          <p>Fully backed by Firebase Cloud Firestore. Profiles synchronize instantly and securely across multiple
+            devices and administrative accounts.</p>
         </div>
 
         <div class="benefit-item">
           <div class="benefit-icon">🇮🇳</div>
           <h4>Global & Indian Platforms</h4>
-          <p>Inherent support for global professional portals (LinkedIn, GitHub) and highly optimized support for regional Indian payment and food delivery nodes (PhonePe, Paytm, Swiggy, Zomato).</p>
+          <p>Inherent support for global professional portals (LinkedIn, GitHub) and highly optimized support for
+            regional Indian payment and food delivery nodes (PhonePe, Paytm, Swiggy, Zomato).</p>
         </div>
 
         <div class="benefit-item">
           <div class="benefit-icon">🎨</div>
           <h4>High Custom QR Styling</h4>
-          <p>Customization controls to upload center logos, adjust background opacities, select leaf/glitch matrices, and run radial/diagonal dual gradients across QR layers.</p>
+          <p>Customization controls to upload center logos, adjust background opacities, select leaf/glitch matrices,
+            and run radial/diagonal dual gradients across QR layers.</p>
         </div>
 
         <div class="benefit-item">
           <div class="benefit-icon">🔐</div>
           <h4>Role-Based Protection</h4>
-          <p>Main admins can freeze profiles, set user caps, assign granular access scopes to clients, and manage multiple sub-admin accounts securely.</p>
+          <p>Main admins can freeze profiles, set user caps, assign granular access scopes to clients, and manage
+            multiple sub-admin accounts securely.</p>
         </div>
       </div>
     </section>
 
-     <!-- About Us Section -->
+    <!-- About Us Section -->
     <section id="about-us" class="about">
       <div class="section-header">
         <h2>About MultiLynk QR</h2>
@@ -936,8 +985,13 @@
       </div>
       <div class="about-section">
         <div class="about-content">
-          <p>MultiLynk QR represents a state-of-the-art step forward in digital business cards. It is designed to combine the flexibility of modern link managers with the security of role-based cloud databases. Instead of forcing clients to memorize countless social coordinates, MultiLynk packages their entire digital authority in a simple scannable visual token.</p>
-          <p>Whether you represent an enterprise client needing strict user limits, a small local merchant handling multiple payment options, or a professional presenting credentials, MultiLynk QR scales perfectly to fit your demands.</p>
+          <p>MultiLynk QR represents a state-of-the-art step forward in digital business cards. It is designed to
+            combine the flexibility of modern link managers with the security of role-based cloud databases. Instead of
+            forcing clients to memorize countless social coordinates, MultiLynk packages their entire digital authority
+            in a simple scannable visual token.</p>
+          <p>Whether you represent an enterprise client needing strict user limits, a small local merchant handling
+            multiple payment options, or a professional presenting credentials, MultiLynk QR scales perfectly to fit
+            your demands.</p>
           <div class="about-developer">
             <span class="dev-role">Developer</span>
             <span>Mohammed Rehan Alam</span>
@@ -950,7 +1004,7 @@
         </div>
       </div>
     </section>
-    
+
   </div>
 
   <!-- Premium Footer -->
@@ -958,10 +1012,11 @@
     <div class="footer-content">
       <div class="footer-brand">
         <a href="index.html" class="brand">
-          <img src="assets/icons/MultiLynkQR-Logo.svg" alt="MultiLynk Logo" />
+          <img src="assets/MultiLynkQR-Logo.png" alt="MultiLynk Logo" />
           <span>MultiLynk QR</span>
         </a>
-        <p>Premium, smart digital profiles consolidated into a single scannable QR Code. Crafted to serve modern business card solutions globally.</p>
+        <p>Premium, smart digital profiles consolidated into a single scannable QR Code. Crafted to serve modern
+          business card solutions globally.</p>
       </div>
 
       <div class="footer-links-col">
