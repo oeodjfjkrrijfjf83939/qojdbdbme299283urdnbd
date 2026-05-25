@@ -2,7 +2,7 @@
 const CONFIG = {
   // For GitHub Pages: https://yourusername.github.io/reponame/
   // For local testing: use window.location.origin + '/'
-  baseUrl: window.location.origin + window.location.pathname.replace('index.html', ''),
+  baseUrl: window.location.origin + window.location.pathname.replace(/(index|dashboard|edit|login|user)\.html$/, ''),
   // When deploying, change to: 'https://yourusername.github.io/multi-qr-app/'
 };
 
@@ -192,7 +192,7 @@ function showAdminUI() {
 
   // Update header
   document.getElementById('headerDescription').textContent = 'Admin Dashboard - Manage digital business cards with QR codes';
-  const adminUsername = sessionStorage.getItem('adminUsername');
+  const adminUsername = localStorage.getItem('adminUsername');
   document.getElementById('userInfo').textContent = `Logged in as: ${adminUsername}`;
 
   // Show Sync Button for Admins
@@ -279,8 +279,8 @@ function showUserUI() {
 
   // Update header
   document.getElementById('headerDescription').textContent = 'Manage digital business cards with QR codes';
-  const userDataFile = sessionStorage.getItem('adminDataFile');
-  const userUsername = sessionStorage.getItem('adminUsername');
+  const userDataFile = localStorage.getItem('adminDataFile');
+  const userUsername = localStorage.getItem('adminUsername');
 
   // let userInfoHtml = `Data File: ${userDataFile} | Logged in as: ${userUsername}`;
   let userInfoHtml = `Logged in as: ${userUsername}`;
@@ -301,9 +301,9 @@ function showUserUI() {
 
 // Load users from multiple JSON files
 async function loadUsers() {
-  const userRole = sessionStorage.getItem('adminRole');
-  const userDataFile = sessionStorage.getItem('adminDataFile');
-  const currentUsername = sessionStorage.getItem('adminUsername');
+  const userRole = localStorage.getItem('adminRole');
+  const userDataFile = localStorage.getItem('adminDataFile');
+  const currentUsername = localStorage.getItem('adminUsername');
 
   // Load current user details to get latest limits/status
   try {
@@ -997,7 +997,6 @@ function downloadQRPNG(username, userCode, size = 512) {
     for (let col = 0; col < moduleCount; col++) {
 
       // Skip modules in logo area
-      // Skip modules in logo area
       if (logoStartPos !== -1) {
         // Smart exclusion: Check shape
         if (qrCustomization.logoCornerRadius > 0.4) {
@@ -1101,9 +1100,8 @@ function downloadQRPNG(username, userCode, size = 512) {
 
         ctx.save();
         ctx.beginPath();
-        // User requested: "make it automatically follow this radius parameter"
-        // referring to cornerRadius = logoSize * 0.2
-        const imgCornerRadius = logoSize * 0.2;
+        // Follow the custom logoCornerRadius for image clipping path instead of hardcoded 20%
+        const imgCornerRadius = logoSize * qrCustomization.logoCornerRadius;
         ctx.roundRect(imgX, imgY, imgSize, imgSize, imgCornerRadius);
         ctx.clip();
 
@@ -1201,9 +1199,46 @@ function downloadQRSVG(username, userCode) {
   const bgColor = hexToRgba(qrCustomization.backgroundColor, qrCustomization.backgroundOpacity / 100);
   svgString += `<rect width="${totalSize}" height="${totalSize}" fill="${bgColor}"/>`;
 
+  // Calculate Logo Area (for exclusion)
+  let logoStartPos = -1;
+  let logoEndPos = -1;
+
+  if (qrCustomization.logoOption === 'image') {
+    const centerStart = Math.floor(moduleCount * (1 - 0.22) / 2);
+    const centerEnd = Math.ceil(moduleCount * (1 + 0.22) / 2);
+    logoStartPos = centerStart;
+    logoEndPos = centerEnd;
+  }
+
   // QR modules with different styles
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
+      
+      // Skip modules in logo area
+      if (logoStartPos !== -1) {
+        // Smart exclusion: Check shape
+        if (qrCustomization.logoCornerRadius > 0.4) {
+          // Circular Exclusion
+          const centerX = moduleCount / 2;
+          const centerY = moduleCount / 2;
+          const modCenterX = col + 0.5;
+          const modCenterY = row + 0.5;
+          const dist = Math.sqrt(Math.pow(modCenterX - centerX, 2) + Math.pow(modCenterY - centerY, 2));
+
+          // Limit radius: logo is 0.22 of full size.
+          const limitRadius = (moduleCount * 0.22) / 2;
+
+          if (dist < limitRadius + 0.5) {
+            continue;
+          }
+        } else {
+          // Square Exclusion
+          if (row >= logoStartPos && row < logoEndPos && col >= logoStartPos && col < logoEndPos) {
+            continue;
+          }
+        }
+      }
+
       if (qr.isDark(row, col)) {
         // Calculate neighbors
         const isDarkSafe = (r, c) => {
@@ -1280,11 +1315,6 @@ function downloadQRSVG(username, userCode) {
             const mx = x + moduleSize / 2;
 
             // Constructing SVG path command equivalent to the canvas bezier curves
-            // M mx, hY+hH*0.2
-            // C mx, hY, x, hY, x, hY+topC
-            // C x, hY+(hH+topC)/2, mx, hY+hH, mx, hY+hH
-            // C mx, hY+hH, x+moduleSize, hY+(hH+topC)/2, x+moduleSize, hY+topC
-            // C x+moduleSize, hY, mx, hY, mx, hY+hH*0.2
             let hd = `M ${mx} ${hY + hH * 0.2}`;
             hd += ` C ${mx} ${hY}, ${x} ${hY}, ${x} ${hY + topC}`;
             hd += ` C ${x} ${hY + (hH + topC) / 2}, ${mx} ${hY + hH}, ${mx} ${hY + hH}`;
@@ -1356,23 +1386,14 @@ function downloadQRSVG(username, userCode) {
             const rR = sRight ? 0 : sRad;
 
             // Construct path manually for control over specific corners
-            // Start top-left
             let sd = `M ${x + lR} ${stripeY}`;
-            // Line to top-right
             sd += ` L ${x + moduleSize - rR} ${stripeY}`;
-            // Arc top-right if needed
             if (rR > 0) sd += ` A ${rR} ${rR} 0 0 1 ${x + moduleSize} ${stripeY + rR}`;
-            // Line down right side (if flat, it's just a point, effectively logic holds)
             sd += ` L ${x + moduleSize} ${stripeY + stripeHeight - rR}`;
-            // Arc bottom-right if needed
             if (rR > 0) sd += ` A ${rR} ${rR} 0 0 1 ${x + moduleSize - rR} ${stripeY + stripeHeight}`;
-            // Line to bottom-left
             sd += ` L ${x + lR} ${stripeY + stripeHeight}`;
-            // Arc bottom-left if needed
             if (lR > 0) sd += ` A ${lR} ${lR} 0 0 1 ${x} ${stripeY + stripeHeight - lR}`;
-            // Line up left side
             sd += ` L ${x} ${stripeY + lR}`;
-            // Arc top-left if needed
             if (lR > 0) sd += ` A ${lR} ${lR} 0 0 1 ${x + lR} ${stripeY}`;
             sd += ` Z`;
 
@@ -1411,86 +1432,39 @@ function downloadQRSVG(username, userCode) {
 
           case 'leaf':
             // Leaf: Top-Right & Bottom-Left sharp, others round
-            // [tl, tr, br, bl] -> [r, 0, r, 0]
             const leafR = moduleSize / 2;
-            // Using path A rx ry x-axis-rotation large-arc-flag sweep-flag x y
-            // tl
             let lPath = `M ${x} ${y + leafR} A ${leafR} ${leafR} 0 0 1 ${x + leafR} ${y}`;
-            // tr (sharp)
             lPath += ` L ${x + moduleSize} ${y}`;
-            // br
             lPath += ` L ${x + moduleSize} ${y + moduleSize - leafR} A ${leafR} ${leafR} 0 0 1 ${x + moduleSize - leafR} ${y + moduleSize}`;
-            // bl (sharp)
             lPath += ` L ${x} ${y + moduleSize} Z`;
 
             svgString += `<path d="${lPath}" fill="${fillColor}" />`;
             break;
 
           case 'boxed':
-            // Boxed: Outer Black, Inner White (Background), Center Black
-            // Note: SVG order is painters algo. We draw Black Outer. Then White Inner. Then Black Center.
-            // Issue: fillColor might be a gradient. If we draw White, we assume white background.
-            // If bg is transparent or different, this fails. 
-            // Better approach: Path with a hole? (Fill rule: evenodd)
-            // Outer rectangle (clockwise) + Inner rectangle (counter-clockwise) = Hole
-
             const bBorder = moduleSize * 0.25;
             const bInner = moduleSize - (bBorder * 2);
             const bDotSize = moduleSize * 0.35;
             const bDotOffset = (moduleSize - bDotSize) / 2;
 
-            // Path construction for frame (Outer square minus inner square)
-            // Outer: M x y h width v height h -width z
-            let bPath = `M ${x} ${y} h ${moduleSize} v ${moduleSize} h -${moduleSize} z`;
-            // Inner (hole): M x+bBorder y+bBorder v bInner h bInner v -bInner z (counter-clockwise relative to outer? No, standard SVG winding rule usually requires reversing direction or using fill-rule="evenodd")
-            // Simplest: just use fill-rule="evenodd" on the path tag if we combine them.
-            // OR: Since we can't easily change fill-rule for just this one if using a shared style...
-            // Let's assume white background for "Inner White" is acceptable OR use a mask.
-            // BUT, wait, for PNG we used destination-out which clears to transparent.
-            // To match that in SVG with simple shapes is hard without masks.
-            // Alternative: Compound Path.
-            // M x y L x+w y L x+w y+h L x y+h Z  M x+b x+b L x+b y+b+i L x+b+i y+b+i L x+b+i y+b Z
-            // Let's try drawing the frame as 4 rectangles if complex path is too risky? No, path is better.
-            // Let's use 2 shapes. 
-            // Shape 1: Frame. 
-            // Shape 2: Center Dot.
-
-            // Frame via Path (Outer - Inner)
-            // Using mask simulation by drawing 4 rects? No, too many elements.
-            // Let's use the 'evenodd' trick. 
-            // Prevent save if Frozen
-            if (window.currentUser && window.currentUser.isFrozen) {
-              alert("⚠️ Account is Frozen (Read-Only). You cannot make changes.");
-              saveBtn.innerHTML = originalBtnText;
-              saveBtn.disabled = false;
-              return;
-            }
-
-            // If no scope (New User), try to determine from sessioneed to add fill-rule="evenodd" to this specific path element.
-
             let framePath = `M ${x} ${y} h ${moduleSize} v ${moduleSize} h -${moduleSize} z`;
-            framePath += ` M ${x + bBorder} ${y + bBorder} v ${bInner} h ${bInner} v -${bInner} z`; // Hole
+            framePath += ` M ${x + bBorder} ${y + bBorder} v ${bInner} h ${bInner} v -${bInner} z`;
 
             svgString += `<path d="${framePath}" fill="${fillColor}" fill-rule="evenodd"/>`;
             svgString += `<rect x="${x + bDotOffset}" y="${y + bDotOffset}" width="${bDotSize}" height="${bDotSize}" fill="${fillColor}" />`;
             break;
 
           case 'target':
-            // Target: Outer Circle, Hole, Inner Dot
             const tRad = moduleSize / 2;
             const tHoleRad = tRad * 0.7;
             const tDotRad = tRad * 0.35;
 
-            // Circle with hole
-            let tPath = `M ${centerX} ${centerY - tRad}`; // Top of outer
+            let tPath = `M ${centerX} ${centerY - tRad}`;
             tPath += ` A ${tRad} ${tRad} 0 1 0 ${centerX} ${centerY + tRad} A ${tRad} ${tRad} 0 1 0 ${centerX} ${centerY - tRad} Z`;
-            // Inner hole (reverse direction for nonzero winding, or just use evenodd)
             tPath += ` M ${centerX} ${centerY - tHoleRad}`;
             tPath += ` A ${tHoleRad} ${tHoleRad} 0 1 1 ${centerX} ${centerY + tHoleRad} A ${tHoleRad} ${tHoleRad} 0 1 1 ${centerX} ${centerY - tHoleRad} Z`;
 
             svgString += `<path d="${tPath}" fill="${fillColor}" fill-rule="evenodd"/>`;
-
-            // Inner Dot
             svgString += `<circle cx="${centerX}" cy="${centerY}" r="${tDotRad}" fill="${fillColor}" />`;
             break;
 
@@ -1506,6 +1480,72 @@ function downloadQRSVG(username, userCode) {
             svgString += `<rect x="${x}" y="${y}" width="${moduleSize}" height="${moduleSize}" fill="${fillColor}"/>`;
         }
       }
+    }
+  }
+
+  // Handle Logo inside the SVG
+  if (qrCustomization.logoOption === 'image') {
+    const logoSize = totalSize * 0.22;
+    const logoX = (totalSize - logoSize) / 2;
+    const logoY = (totalSize - logoSize) / 2;
+
+    // Draw background logic for logo
+    let drawLogoBg = false;
+    let logoBgFill = qrCustomization.backgroundColor;
+
+    if (qrCustomization.logoBgOption === 'custom') {
+      if (qrCustomization.logoBgTransparent) {
+        drawLogoBg = false;
+      } else {
+        drawLogoBg = true;
+        logoBgFill = qrCustomization.logoBgColor;
+      }
+    } else {
+      // Match -> No draw (main BG shows)
+      drawLogoBg = false;
+    }
+
+    if (drawLogoBg) {
+      const cornerRadius = logoSize * qrCustomization.logoCornerRadius;
+      svgString += `<rect x="${logoX}" y="${logoY}" width="${logoSize}" height="${logoSize}" rx="${cornerRadius}" ry="${cornerRadius}" fill="${logoBgFill}"/>`;
+    }
+
+    if (qrCustomization.logoData) {
+      const imgPadding = logoSize * 0.02; // 2% padding
+      const imgSize = logoSize - imgPadding * 2;
+      const imgX = logoX + imgPadding;
+      const imgY = logoY + imgPadding;
+      
+      // Follow the custom logoCornerRadius for image clipping path
+      const imgCornerRadius = logoSize * qrCustomization.logoCornerRadius;
+
+      // Generate a unique ID for the clip path to avoid namespace conflicts
+      const clipId = `logo-clip-${Math.random().toString(36).substr(2, 9)}`;
+
+      // Append clipPath to SVG
+      svgString += `<defs>`;
+      svgString += `<clipPath id="${clipId}">`;
+      svgString += `<rect x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" rx="${imgCornerRadius}" ry="${imgCornerRadius}"/>`;
+      svgString += `</clipPath>`;
+      svgString += `</defs>`;
+
+      // Append image with clip-path
+      svgString += `<image href="${qrCustomization.logoData}" x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" clip-path="url(#${clipId})"/>`;
+    } else {
+      // Draw placeholder
+      if (!drawLogoBg) {
+        const cornerRadius = logoSize * 0.2; // 20% default corner radius
+        svgString += `<rect x="${logoX}" y="${logoY}" width="${logoSize}" height="${logoSize}" rx="${cornerRadius}" ry="${cornerRadius}" fill="#f3f4f6"/>`;
+      }
+
+      const strokeWidth = totalSize * 0.005;
+      const cornerRadius = logoSize * 0.2;
+      svgString += `<rect x="${logoX}" y="${logoY}" width="${logoSize}" height="${logoSize}" rx="${cornerRadius}" ry="${cornerRadius}" fill="none" stroke="#d1d5db" stroke-width="${strokeWidth}"/>`;
+
+      const fontSize = logoSize * 0.25;
+      const centerX = totalSize / 2;
+      const centerY = totalSize / 2;
+      svgString += `<text x="${centerX}" y="${centerY}" fill="#9ca3af" font-size="${fontSize}" font-family="sans-serif" font-weight="bold" text-anchor="middle" dominant-baseline="central">LOGO</text>`;
     }
   }
 
@@ -1592,9 +1632,12 @@ document.getElementById('addUserBtn').onclick = (e) => {
 
 // Logout button
 document.getElementById('logoutBtn').onclick = () => {
-  sessionStorage.removeItem('adminAuthenticated');
-  sessionStorage.removeItem('adminLoginTime');
-  window.location.href = 'admin.html';
+  localStorage.removeItem('adminAuthenticated');
+  localStorage.removeItem('adminLoginTime');
+  localStorage.removeItem('adminUsername');
+  localStorage.removeItem('adminRole');
+  localStorage.removeItem('adminDataFile');
+  window.location.href = 'login.html';
 };
 
 // Close modal
@@ -1612,9 +1655,9 @@ window.onclick = (event) => {
 
 // Check admin authentication
 function checkAdminAuth() {
-  const isAuthenticated = sessionStorage.getItem('adminAuthenticated');
-  const loginTime = sessionStorage.getItem('adminLoginTime');
-  const userRole = sessionStorage.getItem('adminRole');
+  const isAuthenticated = localStorage.getItem('adminAuthenticated');
+  const loginTime = localStorage.getItem('adminLoginTime');
+  const userRole = localStorage.getItem('adminRole');
 
   console.log('checkAdminAuth called:', { isAuthenticated, loginTime, userRole });
 
@@ -1630,7 +1673,7 @@ function checkAdminAuth() {
 
   if (sessionAge > maxSessionAge) {
     console.log('Session expired, clearing and redirecting to login');
-    sessionStorage.clear();
+    localStorage.clear();
     redirectToLogin();
     return false;
   }
@@ -1642,7 +1685,7 @@ function checkAdminAuth() {
 }
 
 function redirectToLogin() {
-  window.location.href = 'admin.html';
+  window.location.href = 'login.html';
 }
 
 // Helper functions for QR customization

@@ -35,7 +35,7 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 ### **Option A: Full Management (Admin)**
 1. **Organize Data**: Place JSON files in `data/` or any subfolder (e.g., `data/clients/2024/`).
 2. **Run Indexing**: Execute `node tools/generate_index.js` to update the system.
-3. **Open `admin.html`** → Enter password → Access dashboard.
+3. **Open `login.html`** → Enter password → Access dashboard.
 4. **Click "👁️ Show Details"** on folder accounts to see file breakdowns.
 5. **Click "📱 Show QR"** to generate QR codes.
 
@@ -93,8 +93,9 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 
 ```
 MultiLynkQRgenerator/
-├── admin.html              # Admin login page
-├── index.html              # Dashboard (protected)
+├── index.html              # Landing homepage
+├── login.html              # Admin login page
+├── dashboard.html          # Dashboard (protected)
 ├── edit.html               # Add/edit users (public)
 ├── user.html               # Public user profiles
 ├── script.js               # Main JavaScript
@@ -133,7 +134,7 @@ Organize your client data into folders for better structure. The system automati
 ## ⚠️ **Important Security Notes**
 
 1. **Update login credentials** in `credentials/login_credentials.json`
-2. **Never share admin.html URL** with end users
+2. **Never share login.html URL** with end users
 3. **Only share QR codes** - they lead to secure user profiles
 4. **Admin session expires** after 24 hours for security
 5. **Multi-user access** - Multiple admin accounts with different permissions

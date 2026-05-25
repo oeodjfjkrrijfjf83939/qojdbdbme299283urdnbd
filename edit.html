@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>MultiLynk QR</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +23,7 @@
       <h1 id="formTitle">✏️ Add New User</h1>
       <p class="subtitle">Fill in the platforms you use - leave others blank</p>
       <div id="adminLinks" class="admin-links hidden">
-        <a href="index.html" class="btn-secondary">
+        <a href="dashboard.html" class="btn-secondary">
           <span>🏠</span> Back to Dashboard
         </a>
       </div>
@@ -824,23 +827,23 @@
       const username = params.get('user');
 
       // CRITICAL: Check if user is authenticated FIRST
-      const adminUsername = sessionStorage.getItem('adminUsername');
-      const adminRole = sessionStorage.getItem('adminRole');
-      const adminAuthenticated = sessionStorage.getItem('adminAuthenticated');
+      const adminUsername = localStorage.getItem('adminUsername');
+      const adminRole = localStorage.getItem('adminRole');
+      const adminAuthenticated = localStorage.getItem('adminAuthenticated');
       const saveBtn = document.getElementById('saveUserBtn');
 
       // Block unauthenticated access
       if (!adminAuthenticated || !adminUsername || !adminRole) {
         // No authentication - redirect to login
         alert('⚠️ Authentication Required\n\nYou must be logged in to create or edit user profiles.\n\nRedirecting to login page...');
-        window.location.href = 'admin.html';
+        window.location.href = 'login.html';
         return;
       }
 
       // Block admin accounts (main_admin and super_admin) from creating/editing profiles
       if (adminRole === 'main_admin' || adminRole === 'super_admin') {
         alert('⚠️ Access Denied\n\nAdmin accounts cannot create or edit user profiles.\n\nAdmin accounts are for managing credentials only.\n\nRedirecting to dashboard...');
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
         return;
       }
 
@@ -857,7 +860,7 @@
           // Calculate profile limit status early
           if (myCred && myCred.isUnlimited === false) {
             const maxUsers = myCred.maxUsers || 100;
-            const dataFile = sessionStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
+            const dataFile = localStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
             const scope = dataFile.replace('.json', '').replace('data/', '');
             const myUsers = await dataService.getUsers(scope);
             const currentCount = myUsers ? myUsers.length : 0;
@@ -1122,7 +1125,7 @@
     const backBtn = document.getElementById('backBtn');
     if (backBtn) {
       backBtn.onclick = () => {
-        window.location.href = "index.html";
+        window.location.href = "dashboard.html";
       };
     }
 
@@ -1298,21 +1301,21 @@
       e.preventDefault();
 
       // --- AUTHENTICATION CHECK (Primary) ---
-      const adminAuthenticated = sessionStorage.getItem('adminAuthenticated');
-      const adminUsername = sessionStorage.getItem('adminUsername');
-      const adminRole = sessionStorage.getItem('adminRole');
+      const adminAuthenticated = localStorage.getItem('adminAuthenticated');
+      const adminUsername = localStorage.getItem('adminUsername');
+      const adminRole = localStorage.getItem('adminRole');
 
       // Block unauthenticated submissions
       if (!adminAuthenticated || !adminUsername || !adminRole) {
         alert('⚠️ Authentication Required\n\nYou must be logged in to save user profiles.\n\nRedirecting to login page...');
-        window.location.href = 'admin.html';
+        window.location.href = 'login.html';
         return;
       }
 
       // Block admin accounts (main_admin and super_admin) from creating/editing profiles
       if (adminRole === 'main_admin' || adminRole === 'super_admin') {
         alert('⚠️ Access Denied\n\nAdmin accounts cannot create or edit user profiles.\n\nAdmin accounts are for managing credentials only.\n\nRedirecting to dashboard...');
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
         return;
       }
 
@@ -1329,7 +1332,7 @@
 
           if (myCred && myCred.isFrozen) {
             // Silent block - no alert needed since button should be disabled
-            window.location.href = "index.html";
+            window.location.href = "dashboard.html";
             return;
           }
         } catch (err) {
@@ -1366,7 +1369,7 @@
             const maxUsers = myCred.maxUsers || 100;
 
             // 2. Count My Current Profiles
-            const dataFile = sessionStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
+            const dataFile = localStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
             const scope = dataFile.replace('.json', '').replace('data/', '');
 
             // Fetch users in my scope
@@ -1385,7 +1388,7 @@
               } else {
                 alert(`⚠️ User Limit Reached (${currentCount}/${maxUsers}).\n\nYou cannot create more profiles. Please contact admin.`);
                 // Redirect back to dashboard
-                window.location.href = "index.html";
+                window.location.href = "dashboard.html";
                 return;
               }
             }
@@ -1644,7 +1647,7 @@
 
         // If no scope (New User), try to determine from session
         if (!scope) {
-          const sessionFile = sessionStorage.getItem('adminDataFile');
+          const sessionFile = localStorage.getItem('adminDataFile');
           if (sessionFile) {
             scope = sessionFile.replace('data/', '').replace('.json', '');
           } else {
@@ -1717,7 +1720,7 @@
 
       document.getElementById('jsonOutput').value = jsonOutput;
 
-      let targetInfo = window.currentDataFile || sessionStorage.getItem('adminDataFile') || 'data/clients.json';
+      let targetInfo = window.currentDataFile || localStorage.getItem('adminDataFile') || 'data/clients.json';
       document.getElementById('targetDataFile').innerText = targetInfo;
 
       document.getElementById('output').style.display = 'block';
@@ -1754,9 +1757,9 @@
 
     // Check if user is authenticated and show admin links
     function checkAdminStatus() {
-      const isAuthenticated = sessionStorage.getItem('adminAuthenticated');
-      const loginTime = sessionStorage.getItem('adminLoginTime');
-      const dataFile = sessionStorage.getItem('adminDataFile');
+      const isAuthenticated = localStorage.getItem('adminAuthenticated');
+      const loginTime = localStorage.getItem('adminLoginTime');
+      const dataFile = localStorage.getItem('adminDataFile');
 
       if (isAuthenticated && loginTime) {
         const sessionAge = Date.now() - parseInt(loginTime);
