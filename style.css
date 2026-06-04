@@ -4166,3 +4166,135 @@ form input::placeholder {
     font-size: 0.9rem;
   }
 }
+
+/* ===================================
+   DYNAMIC LOCATION SECTION STYLES
+   =================================== */
+
+.locations-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.location-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideIn 0.3s ease-out;
+  width: 100%;
+}
+
+.location-entry input {
+  margin-bottom: 0 !important; /* override the default margin-bottom: 1rem */
+}
+
+.location-entry .location-title {
+  width: 150px !important;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.location-entry .location-url {
+  flex: 1;
+  width: auto !important;
+}
+
+.remove-location-btn {
+  padding: 0.875rem 1rem;
+  background: var(--danger);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+  font-size: 1rem;
+  min-width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.remove-location-btn:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+.add-location-btn {
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.add-location-btn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+}
+
+.add-location-btn:active {
+  transform: scale(0.95);
+}
+
+/* Show add button only on the last child */
+.location-entry .add-location-btn {
+  display: none;
+}
+.location-entry:last-child .add-location-btn {
+  display: flex;
+}
+
+/* Hide remove button if it is the only child */
+.location-entry:first-child:last-child .remove-location-btn {
+  display: none;
+}
+
+/* Hide title input if it is the only location entry */
+.location-entry:first-child:last-child .location-title {
+  display: none !important;
+}
+
+/* Mobile responsive for locations */
+@media (max-width: 768px) {
+  .location-entry {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .location-entry .location-title {
+    width: 100% !important;
+  }
+  
+  /* For elements that only have the remove button (non-last child) */
+  .location-entry .location-url {
+    width: calc(100% - 60px) !important;
+    flex: none;
+  }
+  
+  /* For the last element that has both remove and add buttons */
+  .location-entry:last-child .location-url {
+    width: calc(100% - 106px) !important;
+    flex: none;
+  }
+  
+  /* For the single element (first-child:last-child) which only has the add button */
+  .location-entry:first-child:last-child .location-url {
+    width: calc(100% - 44px) !important;
+    flex: none;
+  }
+}

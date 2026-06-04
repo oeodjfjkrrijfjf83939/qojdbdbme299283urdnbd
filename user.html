@@ -858,40 +858,56 @@
 
           // Special handling for gmaps (location and review)
           if (categoryName === '📞 Contact') {
-            const locationUrl = user.location;
             const reviewUrl = user.googleReview;
 
-            if (locationUrl && locationUrl.trim()) {
-              if (reviewUrl && reviewUrl.trim()) {
-                // Both location and review available - show combined option
-                const gmapsOptions = [];
-                gmapsOptions.push(`Location: ${locationUrl}`);
-                gmapsOptions.push(`Google Review: ${reviewUrl}`);
+            // Get all locations: either from user.locations array, or user.location string
+            let locations = [];
+            if (user.locations && Array.isArray(user.locations) && user.locations.length > 0) {
+              locations = user.locations.filter(l => l && l.url && typeof l.url === 'string' && l.url.trim());
+            } else if (user.location && typeof user.location === 'string' && user.location.trim()) {
+              locations = [{ title: 'Google Maps', url: user.location }];
+            }
 
-                categoryLinks.push(`
-                  <div class="social-link gmaps-link" onclick="showGmapsOverlay('${gmapsOptions.join('|')}', 'Google Maps')" title="Click to select Google Maps option">
-                    <img src="./assets/icons/gmaps.svg" alt="Google Maps" 
-                         onerror="this.src='./assets/icons/default.svg'" 
-                         style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                    <span class="link-label">Google Maps</span>
-                    <span class="upi-count-top-right">2</span>
-                  </div>
-                `);
-              } else {
-                // Only location available
-                categoryLinks.push(`
-                  <a href="${locationUrl}" target="_blank" rel="noopener" title="Google Maps Location" class="social-link">
-                    <img src="./assets/icons/gmaps.svg" alt="Google Maps" 
-                         onerror="this.src='./assets/icons/default.svg'" 
-                         style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                    <span class="link-label">Google Maps</span>
-                  </a>
-                `);
+            const hasReview = reviewUrl && typeof reviewUrl === 'string' && reviewUrl.trim();
+            const totalGmapsOptions = locations.length + (hasReview ? 1 : 0);
+
+            if (totalGmapsOptions > 1) {
+              // Show overlay
+              const gmapsOptions = [];
+              locations.forEach(loc => {
+                const title = loc.title && loc.title.trim() ? loc.title.trim() : 'Location';
+                gmapsOptions.push(`${title}: ${loc.url.trim()}`);
+              });
+              if (hasReview) {
+                gmapsOptions.push(`Google Review: ${reviewUrl.trim()}`);
               }
-            } else if (reviewUrl && reviewUrl.trim()) {
-              // Only review available
+
               categoryLinks.push(`
-                <a href="${reviewUrl}" target="_blank" rel="noopener" title="Google Review" class="social-link">
+                <div class="social-link gmaps-link" 
+                     onclick="showGmapsOverlayBtnClick(this)" 
+                     data-options="${encodeURIComponent(gmapsOptions.join('|'))}" 
+                     title="Click to select Google Maps option">
+                  <img src="./assets/icons/gmaps.svg" alt="Google Maps" 
+                       onerror="this.src='./assets/icons/default.svg'" 
+                       style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
+                  <span class="link-label">Google Maps</span>
+                  <span class="upi-count-top-right">${totalGmapsOptions}</span>
+                </div>
+              `);
+            } else if (locations.length === 1) {
+              // Only 1 location, no review - open directly
+              categoryLinks.push(`
+                <a href="${locations[0].url.trim()}" target="_blank" rel="noopener" title="${locations[0].title || 'Google Maps Location'}" class="social-link">
+                  <img src="./assets/icons/gmaps.svg" alt="Google Maps" 
+                       onerror="this.src='./assets/icons/default.svg'" 
+                       style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
+                  <span class="link-label">Google Maps</span>
+                </a>
+              `);
+            } else if (hasReview) {
+              // No locations, only review - open directly
+              categoryLinks.push(`
+                <a href="${reviewUrl.trim()}" target="_blank" rel="noopener" title="Google Review" class="social-link">
                   <img src="./assets/icons/gmaps.svg" alt="Google Maps" 
                        onerror="this.src='./assets/icons/default.svg'" 
                        style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
@@ -1200,16 +1216,16 @@
         const optionElement = document.createElement('div');
         optionElement.className = 'upi-option';
 
-        // Extract URL and label from the option string
-        const urlMatch = option.match(/https?:\/\/[^\s]+/);
-        const url = urlMatch ? urlMatch[0] : '';
-        let label = option.replace(/https?:\/\/[^\s]+/, '').replace(/^[^:]+:\s*/, '');
-
-        // Add specific labels based on the option type
-        if (option.includes('Location:')) {
-          label = 'Location';
-        } else if (option.includes('Google Review:')) {
-          label = 'Google Review';
+        // Extract URL and label from the option string by finding the first colon
+        const colonIndex = option.indexOf(':');
+        let label = 'Location';
+        let url = option;
+        if (colonIndex !== -1) {
+          const prefix = option.substring(0, colonIndex).trim();
+          if (prefix.toLowerCase() !== 'http' && prefix.toLowerCase() !== 'https') {
+            label = prefix;
+            url = option.substring(colonIndex + 1).trim();
+          }
         }
 
         optionElement.innerHTML = `
@@ -1227,6 +1243,12 @@
       });
 
       overlay.style.display = 'flex';
+    }
+
+    // Helper function for inline click attribute (avoids single quote syntax issues)
+    window.showGmapsOverlayBtnClick = function(element) {
+      const optionsStr = decodeURIComponent(element.getAttribute('data-options'));
+      showGmapsOverlay(optionsStr, 'Google Maps');
     }
 
     // Close Google Maps overlay

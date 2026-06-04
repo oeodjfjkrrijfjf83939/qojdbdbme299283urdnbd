@@ -16,7 +16,7 @@ const DEFAULT_MAX_USERS = 10;
 // ============================================================
 // UI VISIBILITY
 // ============================================================
-let SHOW_DATA_ACCESS_SCOPE_UI = false;
+let SHOW_DATA_ACCESS_SCOPE_UI = true;
 
 // QR Customization Settings
 let qrCustomization = {
@@ -315,6 +315,17 @@ async function loadUsers() {
       // Re-render UI if frozen status changed (e.g. while page open)
       if (userRole === 'user') showUserUI();
     }
+
+    // Resolve all scopes belonging to this admin account (including sub-folders)
+    if (userRole === 'super_admin' || userRole === 'main_admin') {
+      window.allMyScopes = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
+    } else if (userDataFile) {
+      window.allMyScopes = credentials
+        .filter(c => c.dataFile === userDataFile || (c.dataFile && c.dataFile.startsWith(userDataFile + '/')))
+        .map(c => c.dataFile);
+    } else {
+      window.allMyScopes = [];
+    }
   } catch (e) { console.warn("Could not load current user details", e); }
 
   try {
@@ -541,6 +552,26 @@ function updateUserStatistics(users) {
   const totalUsers = users.length;
   let totalLinks = 0;
 
+  // Build per-folder scope map for the breakdown button
+  const scopeMap = {};
+  const myDataFile = localStorage.getItem('adminDataFile') || '';
+  const initialScopes = window.allMyScopes || (myDataFile ? [myDataFile] : []);
+  
+  // Pre-populate known scopes with 0 count to show empty sub-folders
+  initialScopes.forEach(s => {
+    scopeMap[s] = 0;
+  });
+
+  users.forEach(u => {
+    const scope = u.dataFile || myDataFile || '(unknown)';
+    if (scopeMap[scope] === undefined) {
+      scopeMap[scope] = 0;
+    }
+    scopeMap[scope]++;
+  });
+  // Store globally so breakdown modal can use it
+  window._scopeMap = scopeMap;
+
   users.forEach(user => {
     const allPlatforms = [
       user.linkedin, user.xing, user.angellist, user.behance, user.dribbble, user.figma, user.portfolio,
@@ -555,7 +586,7 @@ function updateUserStatistics(users) {
       user.paypal, user.gpay, user.phonepe, user.paytm, user.upi, user.cashapp, user.crunchbase,
       user.glassdoor, user.indeed, user.coursera, user.udemy, user.skillshare, user.khanacademy,
       user.playstore, user.appstore,
-      user.email, user.phone, user.website, user.location, user.googleReview
+      user.email, user.phone, user.website, user.googleReview
     ];
 
     allPlatforms.forEach(link => {
@@ -568,20 +599,30 @@ function updateUserStatistics(users) {
         }
       }
     });
+
+    // Count locations
+    if (user.locations && Array.isArray(user.locations) && user.locations.length > 0) {
+      totalLinks += user.locations.length;
+    } else if (user.location && typeof user.location === 'string' && user.location.trim()) {
+      totalLinks += 1;
+    }
   });
+
+  const multipleScopes = Object.keys(window._scopeMap || {}).length > 1;
+  const infoIcon = multipleScopes ? `<button id="countBreakdownBtn" title="See per-folder breakdown" style="background:none;border:none;cursor:pointer;font-size:1rem;padding:0 0 0 4px;position:relative;top:0px;color:var(--dark);opacity:0.75;transition:opacity .2s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0.75" onclick="showFolderBreakdown()">ⓘ</button>` : '';
 
   if (window.currentUser && window.currentUser.role === 'user' && window.currentUser.isUnlimited === false) {
     const limit = window.currentUser.maxUsers || DEFAULT_MAX_USERS;
     const count = users ? users.length : 0;
-    document.getElementById('totalUsers').textContent = `${count} / ${limit}`;
+    document.getElementById('totalUsers').innerHTML = `${count} / ${limit}${infoIcon}`;
 
     const totalUsersLabel = document.querySelector('.total-users-label');
     const addUserBtn = document.getElementById('addUserBtn');
 
     if (count >= limit) {
-      if (totalUsersLabel) totalUsersLabel.style.color = 'var(--danger)'; // Red warning
+      if (totalUsersLabel) totalUsersLabel.style.color = 'var(--danger)';
       if (addUserBtn) {
-        addUserBtn.style.backgroundColor = '#9ca3af'; // Gray
+        addUserBtn.style.backgroundColor = '#9ca3af';
         addUserBtn.style.cursor = 'not-allowed';
         addUserBtn.disabled = true;
         addUserBtn.title = "User limit reached. Contact admin to upgrade.";
@@ -596,8 +637,80 @@ function updateUserStatistics(users) {
       }
     }
   } else {
-    document.getElementById('totalUsers').textContent = totalUsers;
+    document.getElementById('totalUsers').innerHTML = `${totalUsers}${infoIcon}`;
   }
+}
+
+// Show per-folder user count breakdown modal
+async function showFolderBreakdown() {
+  const modal = document.getElementById('folderDetailsModal');
+  const content = document.getElementById('folderDetailsContent');
+  if (!modal || !content) return;
+
+  const myDataFile = localStorage.getItem('adminDataFile') || '';
+  const scopeMap = window._scopeMap || {};
+
+  // Fetch credentials to get limits per scope
+  let credMap = {};
+  try {
+    const { dataService } = await import('./data-service.js');
+    const creds = await dataService.getCredentials();
+    creds.forEach(c => {
+      if (c.dataFile) credMap[c.dataFile] = c;
+    });
+  } catch (e) { console.warn('Could not load credentials for breakdown', e); }
+
+  // Sort scopes: own first, then sub-folders alphabetically
+  const scopes = Object.keys(scopeMap).sort((a, b) => {
+    if (a === myDataFile) return -1;
+    if (b === myDataFile) return 1;
+    return a.localeCompare(b);
+  });
+
+  const rows = scopes.map(scope => {
+    const count = scopeMap[scope];
+    const cred = credMap[scope] || {};
+    const isUnlimited = cred.isUnlimited === true;
+    const limit = isUnlimited ? '∞' : (cred.maxUsers || DEFAULT_MAX_USERS);
+    const isOwn = scope === myDataFile;
+    const isFull = !isUnlimited && typeof limit === 'number' && count >= limit;
+    const pct = isUnlimited ? 0 : Math.min(100, Math.round((count / (cred.maxUsers || DEFAULT_MAX_USERS)) * 100));
+    const barColor = isFull ? '#ef4444' : pct > 75 ? '#f59e0b' : '#6366f1';
+
+    return `
+      <div style="padding: 0.9rem 1.25rem; border-bottom: 1px solid #f1f5f9; display:flex; flex-direction:column; gap:0.35rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span style="font-size:0.8rem;">${isOwn ? '🏠' : '📁'}</span>
+            <span style="font-weight:700; font-size:0.9rem; color:#1e293b; font-family:monospace;">${scope}</span>
+            ${isOwn ? '<span style="font-size:0.68rem; background:#e0e7ff; color:#6366f1; padding:1px 7px; border-radius:99px; font-weight:700;">MY FOLDER</span>' : '<span style="font-size:0.68rem; background:#f1f5f9; color:#64748b; padding:1px 7px; border-radius:99px; font-weight:600;">SUB-FOLDER</span>'}
+          </div>
+          <span style="font-weight:800; font-size:1rem; color:${isFull ? '#ef4444' : '#1e293b'}">${count} <span style="font-weight:400; font-size:0.8rem; color:#94a3b8;">/ ${limit}</span></span>
+        </div>
+        ${!isUnlimited ? `<div style="height:5px; background:#e2e8f0; border-radius:99px; overflow:hidden;"><div style="height:100%; width:${pct}%; background:${barColor}; border-radius:99px; transition:width 0.6s ease;"></div></div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  content.innerHTML = `
+    <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6); padding:1.1rem 1.25rem; display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-weight:800; font-size:1rem; color:#fff;">📊 User Count Breakdown</div>
+        <div style="font-size:0.78rem; color:rgba(255,255,255,0.8); margin-top:2px;">Profiles across all your folders</div>
+      </div>
+      <button onclick="document.getElementById('folderDetailsModal').classList.add('hidden')" style="background:rgba(255,255,255,0.2); border:none; color:#fff; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">&times;</button>
+    </div>
+    <div style="max-height:340px; overflow-y:auto;">
+      ${rows || '<div style="padding:1.5rem; color:#94a3b8; text-align:center;">No data available</div>'}
+    </div>
+    <div style="padding:0.75rem 1.25rem; background:#f8fafc; border-top:1px solid #e2e8f0; font-size:0.78rem; color:#64748b; text-align:center;">
+      Total: <strong>${Object.values(scopeMap).reduce((a,b)=>a+b,0)}</strong> profiles across <strong>${scopes.length}</strong> folder${scopes.length !== 1 ? 's' : ''}
+    </div>
+  `;
+
+  modal.classList.remove('hidden');
+  // Close on overlay click
+  modal.onclick = (e) => { if (e.target === modal) modal.classList.add('hidden'); };
 }
 
 // Display users in the list
@@ -644,6 +757,11 @@ function displayUsers(users) {
     // alphabetical by fullname
     sortedUsers.sort((a, b) => (a.fullname || '').localeCompare(b.fullname || ''));
   }
+
+  // Determine if multiple scopes exist — used to show folder path badges on cards
+  const myDataFile = localStorage.getItem('adminDataFile') || '';
+  const distinctScopes = [...new Set(sortedUsers.map(u => u.dataFile || myDataFile).filter(Boolean))];
+  const showScopeBadge = distinctScopes.length > 1 || distinctScopes.some(s => s !== myDataFile);
 
   sortedUsers.forEach(u => {
     const div = document.createElement('div');
@@ -702,7 +820,7 @@ function displayUsers(users) {
       // OTT
       u.jiocinema, u.hotstar, u.netflix, u.primevideo, u.sonyliv, u.zee5, u.mxplayer, u.imdb,
       // Contact
-      u.email, u.phone, u.website, u.menucard, u.location, u.googleReview
+      u.email, u.phone, u.website, u.menucard, u.googleReview
     ];
 
     // Count links, considering multiple UPI IDs, phone numbers, and email addresses
@@ -732,6 +850,13 @@ function displayUsers(users) {
     // Add certificates count
     if (u.certificates && Array.isArray(u.certificates)) {
       linkCount += u.certificates.length;
+    }
+
+    // Add locations count
+    if (u.locations && Array.isArray(u.locations) && u.locations.length > 0) {
+      linkCount += u.locations.length;
+    } else if (u.location && typeof u.location === 'string' && u.location.trim()) {
+      linkCount += 1;
     }
 
     // Get first few active platforms for display badges dynamically
@@ -773,13 +898,20 @@ function displayUsers(users) {
     
     // First gather active platforms from popularity list
     popularityOrderedKeys.forEach(key => {
-      if (u[key] && typeof u[key] === 'string' && u[key].trim()) {
+      let isActive = false;
+      if (key === 'location') {
+        isActive = (u.location && typeof u.location === 'string' && u.location.trim()) || (u.locations && Array.isArray(u.locations) && u.locations.length > 0);
+      } else {
+        isActive = u[key] && typeof u[key] === 'string' && u[key].trim();
+      }
+
+      if (isActive) {
         activePlatforms.push(platformNames[key] || key);
       }
     });
 
     // Then check all other keys from user document
-    const excludedKeys = ['fullname', 'username', 'userCode', 'createdAt', 'description', 'design', 'customTheme', 'profileImage', 'dataFile', 'isFrozen', 'profileCount', 'certificates', 'publicDescription'];
+    const excludedKeys = ['fullname', 'username', 'userCode', 'createdAt', 'description', 'design', 'customTheme', 'profileImage', 'dataFile', 'isFrozen', 'profileCount', 'certificates', 'publicDescription', 'locations'];
     Object.keys(u).forEach(key => {
       if (!key.startsWith('_') && !excludedKeys.includes(key) && !popularityOrderedKeys.includes(key)) {
         if (u[key] && typeof u[key] === 'string' && u[key].trim()) {
@@ -807,10 +939,24 @@ function displayUsers(users) {
     const editBtnStyle = isFrozen ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="Account is frozen (Read-Only)"' : '';
     const editBtnOnclick = isFrozen ? '' : `onclick="editUser('${u.username}', '${u.userCode}')"`;
 
+    // Build optional folder path badge for the top-right corner of the card
+    const cardScope = u.dataFile || myDataFile;
+    const isOwnScope = cardScope === myDataFile;
+    let folderBadgeHtml = '';
+    if (showScopeBadge && cardScope) {
+      const badgeBg = isOwnScope ? 'rgba(99,102,241,0.12)' : 'rgba(245,158,11,0.13)';
+      const badgeColor = isOwnScope ? '#6366f1' : '#b45309';
+      const badgeIcon = isOwnScope ? '🏠' : '📁';
+      folderBadgeHtml = `<span style="position:absolute;top:0.75rem;right:0.9rem;font-size:0.67rem;font-weight:700;background:${badgeBg};color:${badgeColor};padding:2px 8px 2px 5px;border-radius:99px;letter-spacing:0.01em;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis;" title="Folder: ${cardScope}">${badgeIcon} ${cardScope}</span>`;
+    }
+
+    const titlePaddingStyle = showScopeBadge && cardScope ? 'style="padding-right: 110px; word-break: break-word;"' : 'style="word-break: break-word;"';
+
     // <p class="user-code">Code: ${u.userCode || 'N/A'}</p>
     div.innerHTML = `
+      ${folderBadgeHtml}
       <div class="user-info">
-        <h3>${u.fullname}</h3>
+        <h3 ${titlePaddingStyle}>${u.fullname}</h3>
         <p class="username">@${u.username}</p>
         <p class="user-code" style="font-size: 12px; color: #888; margin: 2px 0 6px 0;">🔑 ${u.userCode || 'N/A'}</p>
         <div class="user-links">

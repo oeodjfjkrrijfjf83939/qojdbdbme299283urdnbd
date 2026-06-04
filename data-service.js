@@ -6,6 +6,17 @@ class DataService {
         this.useFirebase = true; // Default to trying Firebase first
     }
 
+    // Helper functions to escape/unescape slashes in Firebase paths (Firestore document paths must have an even number of segments, so slashes in scope names are escaped to keep the structure flat)
+    escapeScope(scope) {
+        if (!scope) return '';
+        return scope.replace(/\//g, '___');
+    }
+
+    unescapeScope(scope) {
+        if (!scope) return '';
+        return scope.replace(/___/g, '/');
+    }
+
     // --- Credentials ---
 
     async getCredentials() {
@@ -49,36 +60,38 @@ class DataService {
 
         if (this.useFirebase) {
             try {
-                let q;
-                if (dataFile) {
-                    // Fetch specific scope (e.g. 'personal', 'clients')
-                    // Path: profiles/{dataFile}/users
-                    q = collection(db, "profiles", dataFile, "users");
-                    console.log(`🔍 Fetching from Firestore scope: ${dataFile}`);
-                } else {
-                    // Super Admin: Fetch ALL users from ALL scopes
-                    // Use Collection Group Query 'users'
-                    q = collectionGroup(db, "users");
-                    console.log(`🔍 Fetching ALL users (Collection Group)`);
-                }
-
+                // To support nested scopes (e.g., "user1/user2") and parent folder reads (e.g. "user1" reads all subfolders),
+                // we query all users via Collection Group and filter in memory by scope path structure.
+                const q = collectionGroup(db, "users");
+                console.log(`🔍 Fetching users from collection group (filter dataFile: ${dataFile})`);
                 const querySnapshot = await getDocs(q);
 
                 querySnapshot.forEach((doc) => {
                     const userData = doc.data();
-                    // Inject scope for admin grouping
-                    if (!userData.dataFile && doc.ref && doc.ref.parent && doc.ref.parent.parent) {
-                        userData.dataFile = doc.ref.parent.parent.id;
+                    
+                    // Retrieve parent scope from document path
+                    let scope = '';
+                    if (doc.ref && doc.ref.parent && doc.ref.parent.parent) {
+                        scope = this.unescapeScope(doc.ref.parent.parent.id);
                     }
-                    users.push(userData);
+                    
+                    if (!userData.dataFile) {
+                        userData.dataFile = scope;
+                    } else {
+                        // Ensure it matches unescaped scope
+                        userData.dataFile = this.unescapeScope(userData.dataFile);
+                    }
+
+                    // Filtering rules:
+                    // - If no dataFile specified (Super Admin), return all profiles.
+                    // - Otherwise, return profiles that match the dataFile scope directly or as a sub-folder.
+                    if (!dataFile || scope === dataFile || scope.startsWith(dataFile + "/")) {
+                        users.push(userData);
+                    }
                 });
 
-                if (users.length > 0) {
-                    console.log(`✅ Loaded ${users.length} users from Firebase`);
-                    return users;
-                } else {
-                    console.log("⚠️ No matching users in Firebase, falling back to local files");
-                }
+                console.log(`✅ Loaded ${users.length} users from Firebase (filtered)`);
+                return users;
 
             } catch (error) {
                 console.warn("⚠️ Firebase users fetch failed:", error);
@@ -92,12 +105,15 @@ class DataService {
     async getUser(scope, docId) {
         if (this.useFirebase && scope && docId) {
             try {
-                // Path: profiles/{scope}/users/{docId}
-                const docRef = doc(db, "profiles", scope, "users", docId);
+                const escapedScope = this.escapeScope(scope);
+                // Path: profiles/{escapedScope}/users/{docId}
+                const docRef = doc(db, "profiles", escapedScope, "users", docId);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     console.log(`✅ Loaded user ${docId} from Firebase`);
-                    return docSnap.data();
+                    const userData = docSnap.data();
+                    userData.dataFile = this.unescapeScope(scope); // Normalize scope to unescaped form
+                    return userData;
                 }
             } catch (error) {
                 console.warn("⚠️ Firebase user fetch failed:", error);
@@ -110,7 +126,11 @@ class DataService {
     async updateUser(scope, docId, userData) {
         if (this.useFirebase && scope && docId) {
             try {
-                const docRef = doc(db, "profiles", scope, "users", docId);
+                // Ensure the unescaped scope name is explicitly stored in dataFile field
+                userData.dataFile = this.unescapeScope(scope);
+
+                const escapedScope = this.escapeScope(scope);
+                const docRef = doc(db, "profiles", escapedScope, "users", docId);
                 await setDoc(docRef, userData, { merge: true });
                 console.log(`✅ User ${docId} updated in Firebase`);
                 await this.updateProfileCountInFirestore(scope);
@@ -127,8 +147,9 @@ class DataService {
     async deleteUser(scope, username, userCode) {
         if (this.useFirebase && scope && username && userCode) {
             try {
+                const escapedScope = this.escapeScope(scope);
                 // Find the exact document to delete using both username and userCode to prevent incorrect deletion of new profiles
-                const usersRef = collection(db, "profiles", scope, "users");
+                const usersRef = collection(db, "profiles", escapedScope, "users");
                 const q = query(usersRef, where("username", "==", username), where("userCode", "==", userCode));
                 const querySnapshot = await getDocs(q);
 
@@ -233,7 +254,8 @@ class DataService {
     async updateProfileCountInFirestore(scope) {
         if (!this.useFirebase || !scope) return;
         try {
-            const usersCol = collection(db, "profiles", scope, "users");
+            const escapedScope = this.escapeScope(scope);
+            const usersCol = collection(db, "profiles", escapedScope, "users");
             const usersSnapshot = await getDocs(usersCol);
             const count = usersSnapshot.size;
 
@@ -271,8 +293,9 @@ class DataService {
     async deleteScope(scope) {
         if (!this.useFirebase || !scope) return false;
         try {
-            // 1. Get all user docs under profiles/{scope}/users
-            const usersCol = collection(db, "profiles", scope, "users");
+            const escapedScope = this.escapeScope(scope);
+            // 1. Get all user docs under profiles/{escapedScope}/users
+            const usersCol = collection(db, "profiles", escapedScope, "users");
             const snapshot = await getDocs(usersCol);
 
             // 2. Delete in batches of 500 (Firestore limit)
@@ -294,9 +317,9 @@ class DataService {
 
             console.log(`🗑️ Firebase: Deleted ${count} user(s) from scope "${scope}"`);
 
-            // 3. Delete the parent scope doc (profiles/{scope})
-            await deleteDoc(doc(db, "profiles", scope));
-            console.log(`🗑️ Firebase: Deleted scope document "profiles/${scope}"`);
+            // 3. Delete the parent scope doc (profiles/{escapedScope})
+            await deleteDoc(doc(db, "profiles", escapedScope));
+            console.log(`🗑️ Firebase: Deleted scope document "profiles/${escapedScope}"`);
 
             // Update profileCount for this scope in Firestore
             await this.updateProfileCountInFirestore(scope);
@@ -369,7 +392,8 @@ class DataService {
                             // Create the scope document (e.g. profiles/clients) just to exist? 
                             // Firestore auto-creates hierarchy for subcollections, but good practice to have the parent doc.
                             // We can set a dummy field or metadata on profiles/{scope}
-                            await setDoc(doc(db, "profiles", scope), {
+                            const escapedScope = this.escapeScope(scope);
+                            await setDoc(doc(db, "profiles", escapedScope), {
                                 type: 'category',
                                 name: scope
                             }, { merge: true });
@@ -378,13 +402,15 @@ class DataService {
                                 // Inject 'dataFile' property for consistency
                                 if (!user.dataFile) {
                                     user.dataFile = scope;
+                                } else {
+                                    user.dataFile = this.unescapeScope(user.dataFile);
                                 }
 
                                 // Use username or userCode as Key
                                 const docId = user.username || user.userCode || 'unknown_' + Date.now();
 
-                                // Path: profiles/{scope}/users/{docId}
-                                const docRef = doc(db, "profiles", scope, "users", docId);
+                                // Path: profiles/{escapedScope}/users/{docId}
+                                const docRef = doc(db, "profiles", escapedScope, "users", docId);
 
                                 // Check existence logic
                                 const docSnap = await getDoc(docRef);
