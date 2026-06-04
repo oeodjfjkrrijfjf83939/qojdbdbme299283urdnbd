@@ -1652,25 +1652,17 @@
         // Always keep core identity fields
         ['username', 'fullname', 'userCode'].forEach(k => finalData[k] = data[k]);
 
-        // Copy others only if meaningful
+        // Copy others only if they have values
         Object.keys(data).forEach(key => {
           if (key.startsWith('_comment_')) return; // Skip comments
           if (['username', 'fullname', 'userCode'].includes(key)) return;
 
           const val = data[key];
 
-          // CRITICAL FIX: Explicitly Include Empty Arrays for dynamic lists to ensure they are CLEARED in Firebase
-          // (Firebase 'merge: true' would otherwise keep the old data if we omit the key)
-          if (key === 'certificates' || key === 'googleForms' || key === 'customDetails' || key === 'locations' || key === 'location' || key.endsWith('Custom')) {
-            if (Array.isArray(val)) {
-              finalData[key] = val; // Include even if empty []
-            } else if (key === 'location') {
-              finalData[key] = val || ""; // Include location even if empty ""
-            }
-          } else {
-            // For other fields, keep the "clean" logic (omit if empty)
-            if (Array.isArray(val) && val.length > 0) finalData[key] = val;
-            else if (typeof val === 'string' && val.trim() !== '') finalData[key] = val;
+          if (Array.isArray(val) && val.length > 0) {
+            finalData[key] = val;
+          } else if (typeof val === 'string' && val.trim() !== '') {
+            finalData[key] = val;
           }
         });
       }
@@ -1710,7 +1702,15 @@
         const origUsername = window.originalUsername || '';
         const origUserCode = window.originalUserCode || '';
 
-        await dataService.updateUser(scope, targetDocId, finalData);
+        // Prepare data for Firestore by stripping comments but keeping all other keys
+        // (even empty ones like "" or []) to ensure they clear correctly in Firestore
+        const firestoreData = {};
+        Object.keys(data).forEach(key => {
+          if (key.startsWith('_comment_')) return;
+          firestoreData[key] = data[key];
+        });
+
+        await dataService.updateUser(scope, targetDocId, firestoreData);
 
         // Auto-delete old profile feature
         if (isEditingMode) {
