@@ -471,53 +471,55 @@
         let user = null;
 
         // 1. Try to find scope via Index
-        try {
-          const indexRes = await fetch('./data/index.json');
-          if (indexRes.ok) {
-            const index = await indexRes.json();
-            const dataFile = index[userCode];
+        if (!user) {
+          try {
+            const indexRes = await fetch('./data/index.json');
+            if (indexRes.ok) {
+              const index = await indexRes.json();
+              const dataFile = index[userCode];
 
-            if (dataFile) {
-              console.log(`📋 Index lookup: ${userCode} → ${dataFile}`);
-              // Try Firebase with known scope
-              try {
-                let scope = dataFile.split('/')[0].replace('.json', '');
-                const { dataService } = await import('./data-service.js');
+              if (dataFile) {
+                console.log(`📋 Index lookup: ${userCode} → ${dataFile}`);
+                // Try Firebase with known scope
+                try {
+                  let scope = dataFile.split('/')[0].replace('.json', '');
+                  const { dataService } = await import('./data-service.js');
 
-                // Try combo ID first to prevent iteration fallback
-                const fbUserCombo = await dataService.getUser(scope, username + '_' + userCode);
-                if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
-                  user = fbUserCombo;
-                  console.log(`✅ Loaded user from Firebase scope: ${scope} (combo ID)`);
-                } else {
-                  const fbUser = await dataService.getUser(scope, username);
-                  // STRICT: verify userCode matches the URL parameter
-                  if (fbUser && fbUser.userCode === userCode) {
-                    user = fbUser;
-                    console.log(`✅ Loaded user from Firebase scope: ${scope}`);
+                  // Try combo ID first to prevent iteration fallback
+                  const fbUserCombo = await dataService.getUser(scope, username + '_' + userCode);
+                  if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
+                    user = fbUserCombo;
+                    console.log(`✅ Loaded user from Firebase scope: ${scope} (combo ID)`);
+                  } else {
+                    const fbUser = await dataService.getUser(scope, username);
+                    // STRICT: verify userCode matches the URL parameter
+                    if (fbUser && fbUser.userCode === userCode) {
+                      user = fbUser;
+                      console.log(`✅ Loaded user from Firebase scope: ${scope}`);
+                    }
+                  }
+                } catch (fbErr) {
+                  console.warn("⚠️ Firebase load attempt failed, falling back to local scoped:", fbErr);
+                }
+
+                // Fallback to specific local file (ONLY if Firebase is disconnected/offline/disabled)
+                if (!user) {
+                  const { dataService } = await import('./data-service.js');
+                  if (!dataService.useFirebase) {
+                    const res = await fetch(`./data/${dataFile}`);
+                    if (res.ok) {
+                      const users = await res.json();
+                      user = users.find(u => u.username === username && u.userCode === userCode);
+                    }
                   }
                 }
-              } catch (fbErr) {
-                console.warn("⚠️ Firebase load attempt failed, falling back to local scoped:", fbErr);
+              } else {
+                console.log(`⚠️ UserCode ${userCode} not found in index`);
               }
-
-              // Fallback to specific local file (ONLY if Firebase is disconnected/offline/disabled)
-              if (!user) {
-                const { dataService } = await import('./data-service.js');
-                if (!dataService.useFirebase) {
-                  const res = await fetch(`./data/${dataFile}`);
-                  if (res.ok) {
-                    const users = await res.json();
-                    user = users.find(u => u.username === username && u.userCode === userCode);
-                  }
-                }
-              }
-            } else {
-              console.log(`⚠️ UserCode ${userCode} not found in index`);
             }
+          } catch (e) {
+            console.warn("Index lookup failed:", e);
           }
-        } catch (e) {
-          console.warn("Index lookup failed:", e);
         }
 
         // 2. If not found, try Global Firebase Search (for new users not in index)
@@ -526,11 +528,7 @@
           try {
             const { dataService } = await import('./data-service.js');
             if (dataService.useFirebase) {
-              const allFbUsers = await dataService.getUsers(null);
-              // STRICT: both username AND userCode must match
-              user = allFbUsers.find(u =>
-                u.username === username && u.userCode === userCode
-              );
+              user = await dataService.getUserByCode(username, userCode);
               if (user) console.log("✅ Found user via Global Firebase Search");
             }
           } catch (globalErr) {

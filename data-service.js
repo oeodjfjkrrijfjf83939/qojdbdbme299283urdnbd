@@ -81,13 +81,13 @@ class DataService {
 
                 querySnapshot.forEach((doc) => {
                     const userData = doc.data();
-                    
+
                     // Retrieve parent scope from document path
                     let scope = '';
                     if (doc.ref && doc.ref.parent && doc.ref.parent.parent) {
                         scope = this.unescapeScope(doc.ref.parent.parent.id);
                     }
-                    
+
                     if (!userData.dataFile) {
                         userData.dataFile = scope;
                     } else {
@@ -135,6 +135,70 @@ class DataService {
         return null;
     }
 
+    // Get specific user by username and userCode across all scopes using a Cloud Index Collection lookup
+    async getUserByCode(username, userCode) {
+        if (this.useFirebase && username && userCode) {
+            try {
+                // 1. Fetch code mapping index directly from index collection (exactly 1 read)
+                const codeRef = doc(db, "index", userCode);
+                const codeSnap = await getDoc(codeRef);
+
+                if (codeSnap.exists()) {
+                    const indexData = codeSnap.data();
+                    const scope = indexData.scope;
+                    if (scope) {
+                        // Try combo ID first
+                        const fbUserCombo = await this.getUser(scope, username + '_' + userCode);
+                        if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
+                            console.log(`✅ Loaded user ${username} (${userCode}) via cloud index collection (combo ID)`);
+                            return fbUserCombo;
+                        }
+                        // Fallback to username ID
+                        const fbUser = await this.getUser(scope, username);
+                        if (fbUser && fbUser.userCode === userCode) {
+                            console.log(`✅ Loaded user ${username} (${userCode}) via cloud index collection`);
+                            return fbUser;
+                        }
+                        // Fallback to userCode ID
+                        const fbUserCode = await this.getUser(scope, userCode);
+                        if (fbUserCode && fbUserCode.username === username) {
+                            console.log(`✅ Loaded user ${username} (${userCode}) via cloud index collection (userCode ID)`);
+                            return fbUserCode;
+                        }
+                    }
+                }
+
+                // 2. Fallback: If not found in codes collection, try credentials folders loop lookup
+                console.log(`🔍 UserCode ${userCode} not found in cloud codes index. Falling back to active folders lookup...`);
+                const credentials = await this.getCredentials();
+                const folders = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
+
+                for (const folder of folders) {
+                    const scope = `${folder}/${userCode}`;
+                    // Try the standard {username}_{userCode} format first
+                    const fbUserCombo = await this.getUser(scope, username + '_' + userCode);
+                    if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
+                        console.log(`✅ Loaded user ${username} (${userCode}) via folders loop lookup`);
+                        // Auto-repair/populate the missing index mapping in codes collection
+                        await setDoc(codeRef, { scope: scope }, { merge: true });
+                        return fbUserCombo;
+                    }
+
+                    // Fallback to username only (older format)
+                    const fbUser = await this.getUser(scope, username);
+                    if (fbUser && fbUser.userCode === userCode) {
+                        console.log(`✅ Loaded user ${username} (${userCode}) via folders loop lookup`);
+                        await setDoc(codeRef, { scope: scope }, { merge: true });
+                        return fbUser;
+                    }
+                }
+            } catch (error) {
+                console.warn("⚠️ Firebase query by username and userCode failed:", error);
+            }
+        }
+        return null;
+    }
+
     // Update User
     async updateUser(scope, docId, userData) {
         if (this.useFirebase && scope && docId) {
@@ -147,6 +211,14 @@ class DataService {
                 const docRef = doc(db, "profiles", escapedScope, "users", docId);
                 await setDoc(docRef, userData, { merge: true });
                 console.log(`✅ User ${docId} updated in Firebase`);
+
+                // Also update/write the userCode index mapping under index collection
+                if (userData.userCode) {
+                    const codeRef = doc(db, "index", userData.userCode);
+                    await setDoc(codeRef, { scope: userData.dataFile }, { merge: true });
+                    console.log(`✅ Code index created: ${userData.userCode} -> ${userData.dataFile}`);
+                }
+
                 await this.updateProfileCountInFirestore(scope);
                 return true;
             } catch (error) {
@@ -174,6 +246,25 @@ class DataService {
                     });
                     await Promise.all(deletePromises);
                     console.log(`🗑️ User ${username} (${userCode}) deleted from Firebase`);
+
+                    // Also delete the index mapping under index collection only if it matches the scope of the deleted document
+                    const codeRef = doc(db, "index", userCode);
+                    try {
+                        const codeSnap = await getDoc(codeRef);
+                        if (codeSnap.exists()) {
+                            const indexData = codeSnap.data();
+                            const unescapedDeletedScope = this.unescapeScope(scope);
+                            if (indexData && indexData.scope === unescapedDeletedScope) {
+                                await deleteDoc(codeRef);
+                                console.log(`🗑️ Code index deleted for userCode: ${userCode}`);
+                            } else {
+                                console.log(`ℹ️ Code index NOT deleted because its current scope (${indexData?.scope}) does not match the deleted scope (${unescapedDeletedScope})`);
+                            }
+                        }
+                    } catch (indexErr) {
+                        console.error(`⚠️ Failed to check/delete index mapping for userCode ${userCode}:`, indexErr);
+                    }
+
                     await this.updateProfileCountInFirestore(scope);
                     return true;
                 } else {
@@ -304,7 +395,7 @@ class DataService {
             console.log("🔄 Starting backfill of parentFolder field for all user documents...");
             const q = collectionGroup(db, "users");
             const querySnapshot = await getDocs(q);
-            
+
             let count = 0;
             const batchSize = 500;
             let batch = writeBatch(db);
@@ -315,18 +406,18 @@ class DataService {
                 if (!docScope && docSnap.ref && docSnap.ref.parent && docSnap.ref.parent.parent) {
                     docScope = this.unescapeScope(docSnap.ref.parent.parent.id);
                 }
-                
+
                 const normalizedScope = this.unescapeScope(docScope);
                 const parentFolder = this.getParentFolderOfScope(normalizedScope, userData.userCode);
 
                 if (userData.parentFolder !== parentFolder || !userData.dataFile) {
-                    const updates = { 
+                    const updates = {
                         parentFolder: parentFolder,
                         dataFile: normalizedScope
                     };
                     batch.set(docSnap.ref, updates, { merge: true });
                     count++;
-                    
+
                     if (count % batchSize === 0) {
                         await batch.commit();
                         batch = writeBatch(db);
@@ -378,6 +469,12 @@ class DataService {
 
             for (const userDoc of snapshot.docs) {
                 batch.delete(userDoc.ref);
+                // Also delete their corresponding userCode index mapping under the index collection
+                const userData = userDoc.data();
+                if (userData && userData.userCode) {
+                    const codeRef = doc(db, "index", userData.userCode);
+                    batch.delete(codeRef);
+                }
                 count++;
                 if (count % batchSize === 0) {
                     await batch.commit();
@@ -509,12 +606,99 @@ class DataService {
                 // Also run a full scan of all credentials in Firestore to make sure everything is completely up-to-date
                 await this.syncAllProfileCounts();
 
+                // Rebuild index collection in Firestore
+                let indexInfo = "Cloud Index: Rebuilt successfully.";
+                try {
+                    const idxResult = await this.rebuildCloudIndex();
+                    if (idxResult && idxResult.success) {
+                        indexInfo = `Cloud Index: Created ${idxResult.created} new, Updated ${idxResult.updated}, Up-to-date ${idxResult.upToDate}${idxResult.failed ? `, Failed ${idxResult.failed}` : ''}.`;
+                    }
+                } catch (idxErr) {
+                    console.error("⚠️ Failed to rebuild Firestore index during sync:", idxErr);
+                    indexInfo = "Cloud Index: Failed to rebuild index.";
+                }
+
                 console.log(`✅ Profiles Sync: Added ${addedCount}, Skipped ${skippedCount}`);
-                alert(`Sync Complete!\n\nCredentials: Added key updates.\nProfiles: Added ${addedCount} new, Skipped ${skippedCount} existing.\nStructure: profiles/{scope}/users`);
+
+                alert(`Sync Complete!\n\nCredentials: Added key updates.\nProfiles: Added ${addedCount} new, Skipped ${skippedCount} existing.\nStructure: profiles/{scope}/users\n${indexInfo}`);
             }
         } catch (e) {
             console.error("❌ Failed to sync profiles:", e);
             alert("Sync Failed. Check console for details.");
+        }
+    }
+
+    // Rebuild the Firestore index collection by scanning all profile documents
+    async rebuildCloudIndex() {
+        if (!this.useFirebase) return { success: false, error: "Firebase not enabled" };
+        console.log("🔄 Rebuilding cloud index mapping in Firestore...");
+        try {
+            // Fetch all users across all subcollections via Collection Group
+            const q = collectionGroup(db, "users");
+            const querySnapshot = await getDocs(q);
+
+            let createdCount = 0;
+            let updatedCount = 0;
+            let upToDateCount = 0;
+            let failedCount = 0;
+
+            const batch = writeBatch(db);
+            let hasOperations = false;
+
+            // Fetch existing indexes from Firestore to avoid unnecessary writes
+            const indexSnapshot = await getDocs(collection(db, "index"));
+            const indexMap = {};
+            indexSnapshot.forEach(docSnap => {
+                indexMap[docSnap.id] = docSnap.data().scope;
+            });
+
+            querySnapshot.forEach(docSnap => {
+                const userData = docSnap.data();
+                const userCode = userData.userCode;
+
+                // Get parent scope
+                let scope = '';
+                if (docSnap.ref && docSnap.ref.parent && docSnap.ref.parent.parent) {
+                    scope = this.unescapeScope(docSnap.ref.parent.parent.id);
+                }
+
+                if (userCode && scope) {
+                    const existingScope = indexMap[userCode];
+                    const codeRef = doc(db, "index", userCode);
+
+                    if (existingScope === undefined) {
+                        // Missing - create it
+                        batch.set(codeRef, { scope: scope }, { merge: true });
+                        createdCount++;
+                        hasOperations = true;
+                    } else if (existingScope !== scope) {
+                        // Incorrect scope - update it
+                        batch.set(codeRef, { scope: scope }, { merge: true });
+                        updatedCount++;
+                        hasOperations = true;
+                    } else {
+                        // Up to date - do nothing
+                        upToDateCount++;
+                    }
+                } else {
+                    failedCount++;
+                }
+            });
+
+            if (hasOperations) {
+                await batch.commit();
+            }
+            console.log(`✅ Cloud index rebuild complete. Created: ${createdCount}, Updated: ${updatedCount}, Up-to-date: ${upToDateCount}, Failed: ${failedCount}`);
+            return {
+                success: true,
+                created: createdCount,
+                updated: updatedCount,
+                upToDate: upToDateCount,
+                failed: failedCount
+            };
+        } catch (error) {
+            console.error("❌ Failed to rebuild cloud index:", error);
+            throw error;
         }
     }
 }

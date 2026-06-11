@@ -56,25 +56,32 @@
         <textarea id="publicDescription"
           placeholder="Add a brief description about yourself or your organization (e.g., 'Slogans', 'Professional photographer specializing in weddings', 'Best Italian restaurant in downtown'). This will be shown on your public profile."
           rows="3"></textarea>
-        <small class="form-hint">💡 This description will appear on your profile page. Leave blank to show your username instead.</small>
-          
+        <small class="form-hint">💡 This description will appear on your profile page. Leave blank to show your username
+          instead.</small>
+
         <div id="profileDataFileGroup" style="margin-bottom: 10px;">
-          <label for="profileDataFile" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📁
+          <label for="profileDataFile"
+            style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📁
             Data File (Scope)</label>
-          <input type="text" id="profileDataFile" placeholder="Data File (auto-generated)" disabled class="readonly-input">
-          <small class="form-note" style="display: block; margin-top: 4px; margin-bottom: 6px;">📁 Data File / Scope where this user profile data is stored.</small>
+          <input type="text" id="profileDataFile" placeholder="Data File (auto-generated)" disabled
+            class="readonly-input">
+          <small class="form-note" style="display: block; margin-top: 4px; margin-bottom: 6px;">📁 Data File / Scope
+            where this user profile data is stored.</small>
           <div id="profileDataFileWarningBox"
             style="display:none; background: linear-gradient(135deg, #ff6b35 0%, #f7c59f 100%); border: 2px solid #ff6b35; border-radius: 10px; padding: 10px 14px; margin-top: 8px; margin-bottom: 4px; color: #7c2d12;">
             <strong>⚠️ Data File changed</strong>
-            <div style="font-size: 0.88em; margin-top: 4px;">A <u>new profile</u> will be created in the new Data File scope.
+            <div style="font-size: 0.88em; margin-top: 4px;">A <u>new profile</u> will be created in the new Data File
+              scope.
               The old profile will still exist — it is your responsibility to keep it or delete it manually from the
               dashboard. Make sure to redistribute your new QR code after saving.</div>
           </div>
         </div>
 
-        <label for="userCode" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">🔒 User Code</label>
+        <label for="userCode" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">🔒 User
+          Code</label>
         <input type="text" id="userCode" placeholder="User Code (auto-generated)" disabled class="readonly-input">
-        <small class="form-note" style="display: block; margin-top: 4px; margin-bottom: 6px;">🔒 User Code ensures uniqueness - This is what makes each user unique!</small>
+        <small class="form-note" style="display: block; margin-top: 4px; margin-bottom: 6px;">🔒 User Code ensures
+          uniqueness - This is what makes each user unique!</small>
         <div id="userCodeWarningBox"
           style="display:none; background: linear-gradient(135deg, #ff6b35 0%, #f7c59f 100%); border: 2px solid #ff6b35; border-radius: 10px; padding: 10px 14px; margin-top: 8px; margin-bottom: 4px; color: #7c2d12;">
           <strong>⚠️ User Code changed</strong>
@@ -95,7 +102,8 @@
         <label for="profileCreatedAt" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">🕒
           Created At</label>
         <input type="datetime-local" id="profileCreatedAt" disabled class="readonly-input">
-        <small class="form-note" style="display: block; margin-top: 4px; margin-bottom: 6px;">Auto-generated timestamp. This can be edited after profile creation.</small>
+        <small class="form-note" style="display: block; margin-top: 4px; margin-bottom: 6px;">Auto-generated timestamp.
+          This can be edited after profile creation.</small>
 
         <label for="description" style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 500;">📝
           Internal Description (Admin Only)</label>
@@ -1084,19 +1092,15 @@
           if (!window.currentUserScope) {
             console.log("🔍 Attempting Global Firebase Search...");
             try {
-              const allFbUsers = await dataService.getUsers(null); // Fetch all users from all scopes
-              // STRICT: both username AND userCode must match
-              const foundFbUser = allFbUsers.find(u =>
-                u.username === username && u.userCode === userCode
-              );
+              const foundFbUser = await dataService.getUserByCode(username, userCode);
 
               if (foundFbUser) {
                 console.log("✅ Found user via Global Firebase Search:", foundFbUser);
                 populateForm(foundFbUser);
 
                 // Set necessary window variables
-                window.currentUserScope = foundFbUser.dataFile; // getUsers injects 'dataFile' (scope)
-                window.currentUserDocId = foundFbUser.username; // Default ID
+                window.currentUserScope = foundFbUser.dataFile; // scope
+                window.currentUserDocId = foundFbUser.username + '_' + foundFbUser.userCode; // ID
                 return;
               }
             } catch (globalErr) {
@@ -1692,7 +1696,7 @@
       }
 
       data.locations = locations;
-      
+
       // Backward compatibility logic
       if (locations.length === 1) {
         data.location = locations[0].url.trim();

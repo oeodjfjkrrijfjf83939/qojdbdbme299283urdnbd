@@ -558,7 +558,7 @@ function updateUserStatistics(users) {
   const scopeMap = {};
   const myDataFile = localStorage.getItem('adminDataFile') || '';
   const initialScopes = window.allMyScopes || (myDataFile ? [myDataFile] : []);
-  
+
   // Create a set of all profile userCodes to identify and strip profile-level subfolders
   const userCodesSet = new Set(users.map(u => u.userCode).filter(Boolean));
 
@@ -697,8 +697,8 @@ async function showFolderBreakdown() {
     const barColor = isFull ? '#ef4444' : pct > 75 ? '#f59e0b' : '#6366f1';
 
     const isSubFolder = scope.includes('/');
-    const badgeHtml = isOwn ? 
-      '<span style="font-size:0.68rem; background:#e0e7ff; color:#6366f1; padding:1px 7px; border-radius:99px; font-weight:700;">MY FOLDER</span>' : 
+    const badgeHtml = isOwn ?
+      '<span style="font-size:0.68rem; background:#e0e7ff; color:#6366f1; padding:1px 7px; border-radius:99px; font-weight:700;">MY FOLDER</span>' :
       (isSubFolder ? '<span style="font-size:0.68rem; background:#f1f5f9; color:#64748b; padding:1px 7px; border-radius:99px; font-weight:600;">SUB-FOLDER</span>' : '');
 
     return `
@@ -728,7 +728,7 @@ async function showFolderBreakdown() {
       ${rows || '<div style="padding:1.5rem; color:#94a3b8; text-align:center;">No data available</div>'}
     </div>
     <div style="padding:0.75rem 1.25rem; background:#f8fafc; border-top:1px solid #e2e8f0; font-size:0.78rem; color:#64748b; text-align:center;">
-      Total: <strong>${Object.values(scopeMap).reduce((a,b)=>a+b,0)}</strong> profiles across <strong>${scopes.length}</strong> folder${scopes.length !== 1 ? 's' : ''}
+      Total: <strong>${Object.values(scopeMap).reduce((a, b) => a + b, 0)}</strong> profiles across <strong>${scopes.length}</strong> folder${scopes.length !== 1 ? 's' : ''}
     </div>
   `;
 
@@ -925,7 +925,7 @@ function displayUsers(users) {
       'instagram', 'whatsapp', 'phone', 'email', 'website', 'linkedin', 'youtube', 'facebook', 'twitter', 'github',
       'googleReview', 'location', 'menucard', 'telegram', 'spotify', 'behance', 'dribbble', 'medium', 'pinterest', 'snapchat'
     ];
-    
+
     // First gather active platforms from popularity list
     popularityOrderedKeys.forEach(key => {
       let isActive = false;
@@ -960,7 +960,7 @@ function displayUsers(users) {
     const platformBadges = activePlatforms.slice(0, displayLimit).map(p =>
       `<span class="link-badge">${p}</span>`
     ).join('');
-    
+
     const moreCount = activePlatforms.length - displayLimit;
     const moreBadge = moreCount > 0 ? `<span class="link-badge">+${moreCount} more</span>` : '';
 
@@ -1393,7 +1393,7 @@ function downloadQRSVG(username, userCode) {
   // QR modules with different styles
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
-      
+
       // Skip modules in logo area
       if (logoStartPos !== -1) {
         // Smart exclusion: Check shape
@@ -1695,7 +1695,7 @@ function downloadQRSVG(username, userCode) {
       const imgSize = logoSize - imgPadding * 2;
       const imgX = logoX + imgPadding;
       const imgY = logoY + imgPadding;
-      
+
       // Follow the custom logoCornerRadius for image clipping path
       const imgCornerRadius = logoSize * qrCustomization.logoCornerRadius;
 
@@ -3203,7 +3203,7 @@ async function saveEditLoginAccount(event) {
   try {
     const { dataService } = await import('./data-service.js');
     const credentials = await dataService.getCredentials();
-    const existing = credentials.find(cred => 
+    const existing = credentials.find(cred =>
       cred.dataFile && cred.dataFile.toLowerCase() === dataFile.toLowerCase() && cred.username.toLowerCase() !== username.toLowerCase()
     );
     if (existing) {
@@ -3240,15 +3240,13 @@ async function saveEditLoginAccount(event) {
     const oldDataFile = existingAccount ? existingAccount.dataFile : null;
     if (oldDataFile && dataFile !== oldDataFile) {
       console.log(`🚚 Scope changed from "${oldDataFile}" to "${dataFile}". Migrating user profiles...`);
-      
+
       // Initialize active migration state globally
       window.activeMigrations = window.activeMigrations || {};
       window.activeMigrations[username] = { total: 0, migrated: 0 };
 
       if (submitBtn) {
         submitBtn.innerHTML = '⏳ Initializing Migration...';
-        submitBtn.style.opacity = '1';
-        submitBtn.style.pointerEvents = 'none';
       }
 
       try {
@@ -3262,7 +3260,7 @@ async function saveEditLoginAccount(event) {
 
           // Target cell in "CLIENT USERS COUNT" column
           const countCell = document.getElementById(`client-count-${username}`);
-          
+
           if (countCell) {
             countCell.innerHTML = `<strong style="color: #6366f1;">⏳ ${migratedCount} / ${totalCount}</strong>`;
           }
@@ -3273,20 +3271,20 @@ async function saveEditLoginAccount(event) {
           for (const u of oldUsers) {
             const oldProfileScope = u.dataFile || oldDataFile;
             const newProfileScope = `${dataFile}/${u.userCode}`;
-            
+
             // Duplicate user profile object and update the dataFile scope property
             const profileData = { ...u };
             profileData.dataFile = newProfileScope;
-            
+
             // 1. Create document under the new scope/subcollection path
             const docId = u.username + '_' + u.userCode;
             await dataService.updateUser(newProfileScope, docId, profileData);
-            
+
             // 2. Delete document from the old scope/subcollection path
             await dataService.deleteUser(oldProfileScope, u.username, u.userCode);
 
             migratedCount++;
-            
+
             // Update global active migration status
             if (window.activeMigrations[username]) {
               window.activeMigrations[username].migrated = migratedCount;
@@ -3788,7 +3786,7 @@ function showAddLoginModal() {
     modal.classList.remove('hidden');
     // Reset form
     document.getElementById('addLoginForm').reset();
-    
+
     // Reset touched state for data file auto-generation
     const dataFileField = document.getElementById('newDataFile');
     if (dataFileField) {
@@ -4069,13 +4067,13 @@ async function validateUsername() {
 
     let candidate = baseFileName;
     let existingDataFile = credentials.find(cred => cred.dataFile && cred.dataFile.toLowerCase() === candidate.toLowerCase());
-    
+
     while (existingDataFile) {
       const randomStr = Math.random().toString(36).substring(2, 6);
       candidate = `${baseFileName}-${randomStr}`;
       existingDataFile = credentials.find(cred => cred.dataFile && cred.dataFile.toLowerCase() === candidate.toLowerCase());
     }
-    
+
     // Only update if still untouched
     if (dataFileField.dataset.touched !== 'true') {
       dataFileField.value = candidate;
