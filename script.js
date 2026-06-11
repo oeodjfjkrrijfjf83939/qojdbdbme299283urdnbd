@@ -13,6 +13,16 @@ const CONFIG = {
 // ============================================================
 const DEFAULT_MAX_USERS = 10;
 
+function escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ============================================================
 // UI VISIBILITY
 // ============================================================
@@ -166,7 +176,7 @@ function togglePasswordVisibility() {
 
 function editUser(username, userCode) {
   // Redirect to edit page with user parameters
-  window.location.href = `edit.html?username=${username}&code=${userCode}`;
+  window.location.href = `edit.html?user=${username}&code=${userCode}`;
 }
 
 // UI switching functions
@@ -293,7 +303,9 @@ function showUserUI() {
     // Disable Add New User button for frozen accounts
     const addUserBtn = document.getElementById('addUserBtn');
     if (addUserBtn) {
-      addUserBtn.style.backgroundColor = '#9ca3af'; // Gray
+      addUserBtn.style.background = '#e0f2fe'; // Ice blue background
+      addUserBtn.style.color = '#0284c7'; // Dark sky blue text
+      addUserBtn.style.border = '1px solid #bae6fd'; // Ice blue border
       addUserBtn.style.cursor = 'not-allowed';
       addUserBtn.disabled = true;
       addUserBtn.title = "Account is frozen (Read-Only). Contact admin to unfreeze.";
@@ -302,23 +314,59 @@ function showUserUI() {
   document.getElementById('userInfo').innerHTML = userInfoHtml;
 }
 
+// Helper to verify current session and role against database
+async function verifySessionAndRole(requiredRoles = []) {
+  const currentUsername = localStorage.getItem('adminUsername');
+  const token = localStorage.getItem('adminSessionToken');
+  if (!currentUsername || !token) {
+    localStorage.clear();
+    redirectToLogin();
+    throw new Error("No active session found.");
+  }
+  
+  const { dataService } = await import('./data-service.js');
+  const myself = await dataService.getCredential(currentUsername);
+  
+  if (!myself || myself.password !== token || myself.isActive !== true) {
+    alert("⚠️ Session Expired or Invalid\n\nPlease log in again.");
+    localStorage.clear();
+    redirectToLogin();
+    throw new Error("Session invalid or expired.");
+  }
+  
+  if (requiredRoles.length > 0 && !requiredRoles.includes(myself.role)) {
+    alert("⚠️ Unauthorized Access.\n\nYou do not have permissions to perform this action.");
+    window.location.reload();
+    throw new Error("Unauthorized action.");
+  }
+  
+  return myself;
+}
+
 // Load users from multiple JSON files
 async function loadUsers() {
   const userRole = localStorage.getItem('adminRole');
   const userDataFile = localStorage.getItem('adminDataFile');
   const currentUsername = localStorage.getItem('adminUsername');
 
-  // Load current user details to get latest limits/status
+  // Load current user details to get latest limits/status and verify session
   try {
     const { dataService } = await import('./data-service.js');
-    const credentials = await dataService.getCredentials();
-    const myself = credentials.find(c => c.username === currentUsername);
-    if (myself) {
-      window.currentUser = myself;
-      // Re-render UI if frozen status changed (e.g. while page open)
-      if (userRole === 'user') showUserUI();
+    const myself = await dataService.getCredential(currentUsername);
+    const token = localStorage.getItem('adminSessionToken');
+
+    if (!myself || myself.password !== token || myself.isActive !== true) {
+      console.warn("Session verification failed! Redirecting to login...");
+      localStorage.clear();
+      redirectToLogin();
+      return;
     }
 
+    window.currentUser = myself;
+    // Re-render UI if frozen status changed (e.g. while page open)
+    if (userRole === 'user') showUserUI();
+
+    const credentials = await dataService.getCredentials();
     // Resolve all scopes belonging to this admin account (including sub-folders)
     if (userRole === 'super_admin' || userRole === 'main_admin') {
       window.allMyScopes = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
@@ -630,33 +678,44 @@ function updateUserStatistics(users) {
   const multipleScopes = Object.keys(window._scopeMap || {}).length > 1;
   const infoIcon = multipleScopes ? `<button id="countBreakdownBtn" title="See per-folder breakdown" style="background:none;border:none;cursor:pointer;font-size:1rem;padding:0 0 0 4px;position:relative;top:0px;color:var(--dark);opacity:0.75;transition:opacity .2s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0.75" onclick="showFolderBreakdown()">ⓘ</button>` : '';
 
+  const isFrozen = window.currentUser && window.currentUser.isFrozen;
+  const limit = (window.currentUser && window.currentUser.role === 'user' && window.currentUser.isUnlimited === false) ? (window.currentUser.maxUsers || DEFAULT_MAX_USERS) : Infinity;
+  const count = users ? users.length : 0;
+
   if (window.currentUser && window.currentUser.role === 'user' && window.currentUser.isUnlimited === false) {
-    const limit = window.currentUser.maxUsers || DEFAULT_MAX_USERS;
-    const count = users ? users.length : 0;
     document.getElementById('totalUsers').innerHTML = `${count} / ${limit}${infoIcon}`;
-
-    const totalUsersLabel = document.querySelector('.total-users-label');
-    const addUserBtn = document.getElementById('addUserBtn');
-
-    if (count >= limit) {
-      if (totalUsersLabel) totalUsersLabel.style.color = 'var(--danger)';
-      if (addUserBtn) {
-        addUserBtn.style.backgroundColor = '#9ca3af';
-        addUserBtn.style.cursor = 'not-allowed';
-        addUserBtn.disabled = true;
-        addUserBtn.title = "User limit reached. Contact admin to upgrade.";
-      }
-    } else {
-      if (totalUsersLabel) totalUsersLabel.style.color = '';
-      if (addUserBtn) {
-        addUserBtn.style.backgroundColor = '';
-        addUserBtn.style.cursor = '';
-        addUserBtn.disabled = false;
-        addUserBtn.title = "";
-      }
-    }
   } else {
     document.getElementById('totalUsers').innerHTML = `${totalUsers}${infoIcon}`;
+  }
+
+  const totalUsersLabel = document.querySelector('.total-users-label');
+  const addUserBtn = document.getElementById('addUserBtn');
+
+  if (addUserBtn) {
+    if (isFrozen) {
+      addUserBtn.style.background = '#e0f2fe'; // Ice blue background
+      addUserBtn.style.color = '#0284c7'; // Dark sky blue text
+      addUserBtn.style.border = '1px solid #bae6fd'; // Ice blue border
+      addUserBtn.style.cursor = 'not-allowed';
+      addUserBtn.disabled = true;
+      addUserBtn.title = "Account is frozen (Read-Only). Contact admin to unfreeze.";
+    } else if (count >= limit) {
+      if (totalUsersLabel) totalUsersLabel.style.color = 'var(--danger)';
+      addUserBtn.style.background = '#9ca3af';
+      addUserBtn.style.color = '';
+      addUserBtn.style.border = '';
+      addUserBtn.style.cursor = 'not-allowed';
+      addUserBtn.disabled = true;
+      addUserBtn.title = "User limit reached. Contact admin to upgrade.";
+    } else {
+      if (totalUsersLabel) totalUsersLabel.style.color = '';
+      addUserBtn.style.background = '';
+      addUserBtn.style.color = '';
+      addUserBtn.style.border = '';
+      addUserBtn.style.cursor = '';
+      addUserBtn.disabled = false;
+      addUserBtn.title = "";
+    }
   }
 }
 
@@ -964,10 +1023,12 @@ function displayUsers(users) {
     const moreCount = activePlatforms.length - displayLimit;
     const moreBadge = moreCount > 0 ? `<span class="link-badge">+${moreCount} more</span>` : '';
 
-    // Check if account is frozen to disable Edit button
+    // Check if account is frozen to disable Edit and Delete buttons
     const isFrozen = window.currentUser && window.currentUser.isFrozen;
     const editBtnStyle = isFrozen ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="Account is frozen (Read-Only)"' : '';
     const editBtnOnclick = isFrozen ? '' : `onclick="editUser('${u.username}', '${u.userCode}')"`;
+    const deleteBtnStyle = isFrozen ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="Account is frozen (Read-Only)"' : '';
+    const deleteBtnOnclick = isFrozen ? '' : `onclick="deleteUser(this, '${escapeHtml(u.username)}', '${escapeHtml(u.userCode)}', '${escapeHtml(u.dataFile || '')}')"`;
 
     // Build optional folder path badge for the top-right corner of the card
     const cardScope = u.dataFile || myDataFile;
@@ -990,19 +1051,19 @@ function displayUsers(users) {
     div.innerHTML = `
       ${folderBadgeHtml}
       <div class="user-info">
-        <h3 ${titlePaddingStyle}>${u.fullname}</h3>
-        <p class="username">@${u.username}</p>
-        <p class="user-code" style="font-size: 12px; color: #888; margin: 2px 0 6px 0;">🔑 ${u.userCode || 'N/A'}</p>
+        <h3 ${titlePaddingStyle}>${escapeHtml(u.fullname)}</h3>
+        <p class="username">@${escapeHtml(u.username)}</p>
+        <p class="user-code" style="font-size: 12px; color: #888; margin: 2px 0 6px 0;">🔑 ${escapeHtml(u.userCode || 'N/A')}</p>
         <div class="user-links">
           ${platformBadges}
           ${moreBadge}
         </div>
         <p class="meta">${linkCount} active link${linkCount !== 1 ? 's' : ''}</p>
       <div class="user-actions">
-        <button class="qrBtn btn-show-qr" data-username="${u.username}" data-usercode="${u.userCode}" data-fullname="${u.fullname}">📱 Show QR</button>
+        <button class="qrBtn btn-show-qr" data-username="${escapeHtml(u.username)}" data-usercode="${escapeHtml(u.userCode)}" data-fullname="${escapeHtml(u.fullname)}">📱 Show QR</button>
         <button class="btn-edit" ${editBtnStyle} ${editBtnOnclick}>✏️ Edit</button>
-        <button class="btn-view" onclick="viewUser('${u.username}', '${u.userCode}')">👁️ View</button>
-        <button class="btn-delete" onclick="deleteUser(this, '${u.username}', '${u.userCode}', '${u.dataFile || ''}')">🗑️ Delete</button>
+        <button class="btn-view" onclick="viewUser('${escapeHtml(u.username)}', '${escapeHtml(u.userCode)}')">👁️ View</button>
+        <button class="btn-delete" ${deleteBtnStyle} ${deleteBtnOnclick}>🗑️ Delete</button>
       </div>
     `;
     list.appendChild(div);
@@ -1812,11 +1873,7 @@ document.getElementById('addUserBtn').onclick = (e) => {
 
 // Logout button
 document.getElementById('logoutBtn').onclick = () => {
-  localStorage.removeItem('adminAuthenticated');
-  localStorage.removeItem('adminLoginTime');
-  localStorage.removeItem('adminUsername');
-  localStorage.removeItem('adminRole');
-  localStorage.removeItem('adminDataFile');
+  localStorage.clear();
   window.location.href = 'login.html';
 };
 
@@ -2991,13 +3048,13 @@ async function displayLoginAccountsTable(accountsToShow = null) {
       row.innerHTML = `
         <td>
           <div class="username-cell">
-            <div class="username">${account.username}</div>
-            <div class="password ${isMainAdmin ? 'hidden admin-hidden' : (passwordsVisible ? 'visible' : 'hidden')}">${account.password}</div>
+            <div class="username">${escapeHtml(account.username)}</div>
+            <div class="password ${isMainAdmin ? 'hidden admin-hidden' : (passwordsVisible ? 'visible' : 'hidden')}">${escapeHtml(account.password)}</div>
           </div>
         </td>
-        <td>${account.description || 'No description'}</td>
-        <td>${account.dataFile || '-'}</td>
-        <td class="centered-cell" id="client-count-${account.username}">${clientCountsDisplay}</td>
+        <td>${escapeHtml(account.description || 'No description')}</td>
+        <td>${escapeHtml(account.dataFile || '-')}</td>
+        <td class="centered-cell" id="client-count-${escapeHtml(account.username)}">${clientCountsDisplay}</td>
         <td>${roleDisplay}</td>
         <td>
           <div class="status-badge ${account.isFrozen ? 'frozen' : statusClass}">
@@ -3009,7 +3066,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
           `
             <label class="toggle-switch" title="Toggle Limit/Unlimited">
                 <input type="checkbox" ${account.isUnlimited !== false ? 'checked' : ''} 
-                       onchange="toggleLimitMode('${account.username}', this.checked)">
+                       onchange="toggleLimitMode('${escapeHtml(account.username)}', this.checked)">
                 <span class="toggle-slider"></span>
             </label>
             `
@@ -3020,7 +3077,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
           (account.isUnlimited !== false ?
             '<span class="limit-text">∞</span>' :
             `<input type="number" class="limit-input" value="${account.maxUsers || DEFAULT_MAX_USERS}" 
-                          min="1" onchange="updateLimitValue('${account.username}', this.value)">`
+                          min="1" onchange="updateLimitValue('${escapeHtml(account.username)}', this.value)">`
           )
         }
         </td>
@@ -3029,7 +3086,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
           `
             <label class="toggle-switch" title="Activate/Deactivate Login">
               <input type="checkbox" ${account.isActive ? 'checked' : ''} 
-                     onchange="toggleAccountStatus('${account.username}', this.checked)">
+                     onchange="toggleAccountStatus('${escapeHtml(account.username)}', this.checked)">
               <span class="toggle-slider"></span>
             </label>
             `
@@ -3040,7 +3097,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
           `
             <button class="btn-capsule-edit" 
                     title="Edit Account"
-                    onclick="openEditLoginModal('${account.username}')">
+                    onclick="openEditLoginModal('${escapeHtml(account.username)}')">
               ✏️
             </button>
             `
@@ -3052,7 +3109,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
             <label class="toggle-switch" title="${!account.isActive ? 'Account Deactivated' : (account.isFrozen ? 'Unfreeze' : 'Freeze')}">
               <input type="checkbox" ${account.isFrozen ? 'checked' : ''} 
                      ${!account.isActive ? 'disabled' : ''}
-                     onchange="toggleAccountFreeze('${account.username}', this.checked)">
+                     onchange="toggleAccountFreeze('${escapeHtml(account.username)}', this.checked)">
               <span class="toggle-slider"></span>
             </label>
             `
@@ -3063,7 +3120,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
           `
             <button class="btn-capsule-delete" 
                     title="Delete Account"
-                    onclick="deleteAccount(this, '${account.username}')">
+                    onclick="deleteAccount(this, '${escapeHtml(account.username)}')">
               Delete
             </button>
             `
@@ -3185,6 +3242,13 @@ function setEditLoginFormDisabled(disabled) {
 
 async function saveEditLoginAccount(event) {
   event.preventDefault();
+
+  try {
+    await verifySessionAndRole(['super_admin', 'main_admin']);
+  } catch (err) {
+    console.error("Action blocked:", err.message);
+    return;
+  }
 
   const username = document.getElementById('editLoginUsername').value;
   const newPassword = document.getElementById('editLoginPassword').value.trim();
@@ -3417,6 +3481,13 @@ async function getClientUserCounts(users = []) {
 // Toggle account status (admin only function)
 async function toggleAccountStatus(username, isActive) {
   try {
+    await verifySessionAndRole(['super_admin', 'main_admin']);
+  } catch (err) {
+    console.error("Action blocked:", err.message);
+    displayLoginAccountsTable();
+    return;
+  }
+  try {
     const { dataService } = await import('./data-service.js');
 
     // Attempt update via DataService (Firebase)
@@ -3462,6 +3533,13 @@ async function toggleAccountStatus(username, isActive) {
 
 // Toggle Freeze status (Read-Only)
 async function toggleAccountFreeze(username, isFrozen) {
+  try {
+    await verifySessionAndRole(['super_admin', 'main_admin']);
+  } catch (err) {
+    console.error("Action blocked:", err.message);
+    displayLoginAccountsTable();
+    return;
+  }
   try {
     const { dataService } = await import('./data-service.js');
     const success = await dataService.updateCredential(username, { isFrozen: isFrozen });
@@ -3536,6 +3614,12 @@ function openFinalDeleteModal(btn, username) {
   finalBtn.parentNode.replaceChild(newFinalBtn, finalBtn);
 
   newFinalBtn.addEventListener('click', async () => {
+    try {
+      await verifySessionAndRole(['super_admin', 'main_admin']);
+    } catch (err) {
+      console.error("Action blocked:", err.message);
+      return;
+    }
     closeFinalDeleteModal();
 
     const originalContent = btn.innerHTML;
@@ -3621,6 +3705,13 @@ function closeFinalDeleteModal() {
 // Toggle Limit Mode (Infinity vs Limited)
 async function toggleLimitMode(username, isUnlimited) {
   try {
+    await verifySessionAndRole(['super_admin', 'main_admin']);
+  } catch (err) {
+    console.error("Action blocked:", err.message);
+    displayLoginAccountsTable();
+    return;
+  }
+  try {
     const { dataService } = await import('./data-service.js');
     const updateData = { isUnlimited: isUnlimited };
     if (!isUnlimited) {
@@ -3639,6 +3730,13 @@ async function toggleLimitMode(username, isUnlimited) {
 
 // Update Max Users Value
 async function updateLimitValue(username, value) {
+  try {
+    await verifySessionAndRole(['super_admin', 'main_admin']);
+  } catch (err) {
+    console.error("Action blocked:", err.message);
+    displayLoginAccountsTable();
+    return;
+  }
   try {
     const { dataService } = await import('./data-service.js');
     await dataService.updateCredential(username, { maxUsers: parseInt(value) });
@@ -3841,6 +3939,13 @@ async function closeAddLoginModal() {
 
 async function handleAddLoginForm(e) {
   e.preventDefault();
+
+  try {
+    await verifySessionAndRole(['super_admin', 'main_admin']);
+  } catch (err) {
+    console.error("Action blocked:", err.message);
+    return;
+  }
 
   const username = document.getElementById('newUsername').value.trim();
   const password = document.getElementById('newPassword').value;
@@ -4391,6 +4496,18 @@ if (!checkAdminAuth()) {
 }
 
 window.deleteUser = async function (btn, username, userCode, scope) {
+  try {
+    const myself = await verifySessionAndRole();
+    if (myself.isFrozen) {
+      alert("⚠️ Account is Frozen (Read-Only). You cannot delete user profiles.");
+      window.location.reload();
+      return;
+    }
+  } catch (err) {
+    console.error("Delete blocked:", err.message);
+    return;
+  }
+
   // If button is in confirmation state
   if (btn.dataset.confirming === 'true') {
     // Perform delete

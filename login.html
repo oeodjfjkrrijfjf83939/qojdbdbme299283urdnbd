@@ -137,16 +137,22 @@
     // Authenticate admin user
     async function authenticateAdmin(username, password) {
       console.log('Authenticating user:', username);
-      const credentials = await dataService.getCredentials();
+      const user = await dataService.getCredential(username);
 
-      const user = credentials.find(cred =>
-        cred.username === username &&
-        cred.password === password &&
-        cred.isActive === true
-      );
+      if (!user || user.isActive !== true) {
+        console.log('Authentication result: FAILED (User not found or inactive)');
+        return null;
+      }
 
-      console.log('Authentication result:', user ? 'SUCCESS' : 'FAILED');
-      return user;
+      const isMatch = (password === user.password);
+
+      if (isMatch) {
+        console.log('Authentication result: SUCCESS');
+        return user;
+      }
+
+      console.log('Authentication result: FAILED');
+      return null;
     }
 
     document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
@@ -172,6 +178,7 @@
           localStorage.setItem('adminUsername', user.username);
           localStorage.setItem('adminRole', user.role);
           localStorage.setItem('adminDataFile', user.dataFile || '');
+          localStorage.setItem('adminSessionToken', user.password);
           localStorage.setItem('adminLoginTime', Date.now().toString());
 
           // Redirect to dashboard

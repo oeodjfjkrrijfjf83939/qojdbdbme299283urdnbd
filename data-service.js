@@ -31,6 +31,23 @@ class DataService {
     }
 
     // --- Credentials ---
+    async getCredential(username) {
+        if (!username) return null;
+        if (this.useFirebase) {
+            try {
+                const docRef = doc(db, "credentials", username);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    return docSnap.data();
+                }
+            } catch (error) {
+                console.warn(`⚠️ Firebase credential fetch failed for ${username}:`, error);
+            }
+        }
+        // Fallback to local
+        const credentials = await this.getCredentials();
+        return credentials.find(c => c.username === username) || null;
+    }
 
     async getCredentials() {
         let credentials = [];

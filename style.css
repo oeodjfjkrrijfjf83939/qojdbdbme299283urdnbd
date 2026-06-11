@@ -1312,11 +1312,12 @@ button[type="submit"] {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .upi-input-group input {
   flex: 1;
-  margin: 0;
+  margin-bottom: 0rem !important;
 }
 
 .add-upi-btn {

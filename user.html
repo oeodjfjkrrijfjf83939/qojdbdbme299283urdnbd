@@ -596,11 +596,45 @@
           return;
         }
 
+        function escapeHtml(text) {
+          if (text === null || text === undefined) return '';
+          return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function sanitizeUrl(url) {
+          if (!url) return '';
+          const trimmed = url.trim();
+          // Block javascript:, data:, vbscript:, file: protocols
+          if (/^(javascript|data|vbscript|file):/i.test(trimmed)) {
+            console.warn('Potentially malicious URL blocked:', trimmed);
+            return '#';
+          }
+          return trimmed;
+        }
+
+        function sanitizePhone(phone) {
+          if (!phone) return '';
+          // Strip any characters that are not digits, spaces, hyphens, plus, parentheses
+          return phone.replace(/[^\d+\s()-]/g, '');
+        }
+
+        function sanitizeEmail(email) {
+          if (!email) return '';
+          const trimmed = email.trim();
+          if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmed)) {
+            return trimmed;
+          }
+          return trimmed.replace(/[^a-zA-Z0-9._%+-@]/g, '');
+        }
+
         // Sanitize user input to prevent XSS
         function sanitizeInput(input) {
           if (typeof input !== 'string') return '';
-          // No escaping needed - innerText automatically treats content as plain text
-          // This prevents XSS while allowing all characters to display correctly
           return input;
         }
 
@@ -667,11 +701,11 @@
               <h3 class="category-title">🎓 Certificates & Credentials</h3>
               <div class="category-links">
                 ${user.certificates.map(cert => `
-                  <a href="${cert.url}" target="_blank" rel="noopener" title="${cert.title}" class="social-link">
+                  <a href="${sanitizeUrl(cert.url)}" target="_blank" rel="noopener" title="${escapeHtml(cert.title)}" class="social-link">
                     <img src="./assets/icons/certificate.svg" alt="Certificate" 
                          onerror="this.src='./assets/icons/default.svg'" 
                          style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                    <span class="link-label">${cert.title}</span>
+                    <span class="link-label">${escapeHtml(cert.title)}</span>
                   </a>
                 `).join('')}
               </div>
@@ -683,7 +717,7 @@
           // Details & Licenses Section
           // Ensure we don't duplicate logic if re-running
           if (categoryName === '📞 Contact' && user.customDetails && Array.isArray(user.customDetails) && user.customDetails.length > 0) {
-
+ 
             // 1. Group by Label
             const groupedDetails = {};
             user.customDetails.forEach(detail => {
@@ -693,43 +727,38 @@
               }
               groupedDetails[label].push(detail.value);
             });
-
+ 
             // 2. Create Section
             const detailsSection = document.createElement('div');
             detailsSection.className = 'category-section';
-
+ 
             let detailsHtml = `
               <h3 class="category-title">🪪 Details & Licenses</h3>
               <div class="category-links">
             `;
-
+ 
             // 3. Create Buttons
             Object.keys(groupedDetails).forEach(label => {
               const values = groupedDetails[label];
-              // Join values with a special separator to pass to the function, or better, pass as JSON string if possible, 
-              // but simple delimiter is safer for inline onclick. We'll use a globally accessible array or encoded string.
-              // Actually, simply joining with existing overlay logic pattern (pipe |) might work if values don't contain pipes.
-              // To be safe, let's use encodeURIComponent for values.
-
               const valuesString = values.map(v => encodeURIComponent(v)).join('|');
-
+ 
               detailsHtml += `
-                <div class="social-link detail-link" onclick="showDetailsOverlay('${encodeURIComponent(label)}', '${valuesString}')" title="Click to view ${label}">
+                <div class="social-link detail-link" onclick="showDetailsOverlay('${encodeURIComponent(label)}', '${valuesString}')" title="Click to view ${escapeHtml(label)}">
                   <img src="./assets/icons/license.svg" alt="License" 
                        onerror="this.src='./assets/icons/default.svg'" 
                        style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                  <span class="link-label">${label}</span>
+                  <span class="link-label">${escapeHtml(label)}</span>
                   <span class="upi-count-top-right">${values.length}</span>
                 </div>
               `;
               linkCount++;
             });
-
+ 
             detailsHtml += `</div>`;
             detailsSection.innerHTML = detailsHtml;
             linksDiv.appendChild(detailsSection);
           }
-
+ 
           platforms.forEach(platform => {
             const config = platformConfig[platform];
             let url = user[platform];
@@ -747,23 +776,23 @@
                 if (emailAddresses.length > 1) {
                   // Multiple email addresses - show overlay option
                   categoryLinks.push(`
-                    <div class="social-link email-link" onclick="showEmailOverlay('${emailAddresses.join('|')}', '${config.label}')" title="Click to select ${config.label} address">
-                      <img src="${iconPath}" alt="${config.label}" 
+                    <div class="social-link email-link" onclick="showEmailOverlay('${emailAddresses.map(e => sanitizeEmail(e)).join('|')}', '${escapeHtml(config.label)}')" title="Click to select ${escapeHtml(config.label)} address">
+                      <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
+                      <span class="link-label">${escapeHtml(config.label)}</span>
                       <span class="upi-count-top-right">${emailAddresses.length}</span>
                     </div>
                   `);
                 } else {
                   // Single email address - direct mailto
-                  url = `mailto:${url}`;
+                  url = `mailto:${sanitizeEmail(url)}`;
                   categoryLinks.push(`
-                    <a href="${url}" target="_blank" rel="noopener" title="${config.label}" class="social-link">
-                      <img src="${iconPath}" alt="${config.label}" 
+                    <a href="${url}" target="_blank" rel="noopener" title="${escapeHtml(config.label)}" class="social-link">
+                      <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
+                      <span class="link-label">${escapeHtml(config.label)}</span>
                     </a>
                   `);
                 }
@@ -775,23 +804,23 @@
                 if (phoneNumbers.length > 1) {
                   // Multiple phone numbers - show overlay option
                   categoryLinks.push(`
-                    <div class="social-link phone-link" onclick="showPhoneOverlay('${phoneNumbers.join('|')}', '${config.label}')" title="Click to select ${config.label} number">
-                      <img src="${iconPath}" alt="${config.label}" 
+                    <div class="social-link phone-link" onclick="showPhoneOverlay('${phoneNumbers.map(n => sanitizePhone(n)).join('|')}', '${escapeHtml(config.label)}')" title="Click to select ${escapeHtml(config.label)} number">
+                      <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
+                      <span class="link-label">${escapeHtml(config.label)}</span>
                       <span class="upi-count-top-right">${phoneNumbers.length}</span>
                     </div>
                   `);
                 } else {
                   // Single phone number - direct call
-                  url = `tel:${url}`;
+                  url = `tel:${sanitizePhone(url)}`;
                   categoryLinks.push(`
-                    <a href="${url}" target="_blank" rel="noopener" title="${config.label}" class="social-link">
-                      <img src="${iconPath}" alt="${config.label}" 
+                    <a href="${url}" target="_blank" rel="noopener" title="${escapeHtml(config.label)}" class="social-link">
+                      <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
+                      <span class="link-label">${escapeHtml(config.label)}</span>
                     </a>
                   `);
                 }
@@ -805,11 +834,11 @@
 
                 // Always show overlay for UPI IDs (even if single)
                 categoryLinks.push(`
-                    <div class="social-link upi-link" onclick="showUPIOverlay('${upiIds.join('|')}', '${config.label}')" title="Click to view ${config.label} options">
-                      <img src="${iconPath}" alt="${config.label}" 
+                    <div class="social-link upi-link" onclick="showUPIOverlay('${upiIds.map(id => escapeHtml(id)).join('|')}', '${escapeHtml(config.label)}')" title="Click to view ${escapeHtml(config.label)} options">
+                      <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
+                      <span class="link-label">${escapeHtml(config.label)}</span>
                       <span class="upi-count-top-right">${upiIds.length}</span>
                     </div>
                   `);
@@ -821,22 +850,22 @@
                 if (whatsappUrls.length > 1) {
                   // Multiple WhatsApp numbers - show overlay option
                   categoryLinks.push(`
-                    <div class="social-link whatsapp-link" onclick="showWhatsAppOverlay('${whatsappUrls.join('|')}', '${config.label}')" title="Click to select ${config.label} number">
-                      <img src="${iconPath}" alt="${config.label}" 
+                    <div class="social-link whatsapp-link" onclick="showWhatsAppOverlay('${whatsappUrls.map(u => sanitizeUrl(u)).join('|')}', '${escapeHtml(config.label)}')" title="Click to select ${escapeHtml(config.label)} number">
+                      <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
+                      <span class="link-label">${escapeHtml(config.label)}</span>
                       <span class="upi-count-top-right">${whatsappUrls.length}</span>
                     </div>
                   `);
                 } else {
                   // Single WhatsApp number - direct link
                   categoryLinks.push(`
-                    <a href="${url}" target="_blank" rel="noopener" title="${config.label}" class="social-link">
-                      <img src="${iconPath}" alt="${config.label}" 
+                    <a href="${sanitizeUrl(url)}" target="_blank" rel="noopener" title="${escapeHtml(config.label)}" class="social-link">
+                      <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${config.label}</span>
+                      <span class="link-label">${escapeHtml(config.label)}</span>
                     </a>
                   `);
                 }
@@ -844,11 +873,11 @@
               }
 
               categoryLinks.push(`
-                <a href="${url}" target="_blank" rel="noopener" title="${config.label}" class="social-link">
-                  <img src="${iconPath}" alt="${config.label}" 
+                <a href="${sanitizeUrl(url)}" target="_blank" rel="noopener" title="${escapeHtml(config.label)}" class="social-link">
+                  <img src="${iconPath}" alt="${escapeHtml(config.label)}" 
                        onerror="this.src='./assets/icons/default.svg'" 
                        style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                  <span class="link-label">${config.label}</span>
+                  <span class="link-label">${escapeHtml(config.label)}</span>
                 </a>
               `);
             }
@@ -895,7 +924,7 @@
             } else if (locations.length === 1) {
               // Only 1 location, no review - open directly
               categoryLinks.push(`
-                <a href="${locations[0].url.trim()}" target="_blank" rel="noopener" title="${locations[0].title || 'Google Maps Location'}" class="social-link">
+                <a href="${sanitizeUrl(locations[0].url.trim())}" target="_blank" rel="noopener" title="${escapeHtml(locations[0].title || 'Google Maps Location')}" class="social-link">
                   <img src="./assets/icons/gmaps.svg" alt="Google Maps" 
                        onerror="this.src='./assets/icons/default.svg'" 
                        style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
@@ -905,7 +934,7 @@
             } else if (hasReview) {
               // No locations, only review - open directly
               categoryLinks.push(`
-                <a href="${reviewUrl.trim()}" target="_blank" rel="noopener" title="Google Review" class="social-link">
+                <a href="${sanitizeUrl(reviewUrl.trim())}" target="_blank" rel="noopener" title="Google Review" class="social-link">
                   <img src="./assets/icons/gmaps.svg" alt="Google Maps" 
                        onerror="this.src='./assets/icons/default.svg'" 
                        style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
@@ -955,11 +984,11 @@
             customLinks.forEach(link => {
               if (link.title && link.url) {
                 categoryLinks.push(`
-                  <a href="${link.url}" target="_blank" rel="noopener" title="${link.title}" class="social-link">
-                    <img src="./assets/icons/custom.svg" alt="${link.title}" 
+                  <a href="${sanitizeUrl(link.url)}" target="_blank" rel="noopener" title="${escapeHtml(link.title)}" class="social-link">
+                    <img src="./assets/icons/custom.svg" alt="${escapeHtml(link.title)}" 
                          onerror="this.src='./assets/icons/default.svg'" 
                          style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                    <span class="link-label">${link.title}</span>
+                    <span class="link-label">${escapeHtml(link.title)}</span>
                   </a>
                 `);
               }
@@ -970,7 +999,7 @@
           if (categoryLinks.length > 0) {
             linksDiv.innerHTML += `
               <div class="category-section">
-                <h3 class="category-title">${categoryName}</h3>
+                <h3 class="category-title">${escapeHtml(categoryName)}</h3>
                 <div class="category-links">
                   ${categoryLinks.join('')}
                 </div>
@@ -985,11 +1014,11 @@
                 <h3 class="category-title">📋 Forms</h3>
                 <div class="category-links">
                   ${user.googleForms.map(form => `
-                    <a href="${form.url}" target="_blank" rel="noopener" title="${form.title}" class="social-link">
+                    <a href="${sanitizeUrl(form.url)}" target="_blank" rel="noopener" title="${escapeHtml(form.title)}" class="social-link">
                       <img src="./assets/icons/googleforms.svg" alt="Form" 
                            onerror="this.src='./assets/icons/default.svg'" 
                            style="image-rendering: crisp-edges; -webkit-image-rendering: crisp-edges;">
-                      <span class="link-label">${form.title}</span>
+                      <span class="link-label">${escapeHtml(form.title)}</span>
                     </a>
                   `).join('')}
                 </div>
@@ -1003,7 +1032,7 @@
           linksDiv.innerHTML = "<p style='color: #999; margin-top: 20px;'>No links added yet</p>";
         }
       } catch (err) {
-        document.body.innerHTML = "<div class='profile-card'><h2>❌ Error loading user</h2><p>" + err.message + "</p></div>";
+        document.body.innerHTML = "<div class='profile-card'><h2>❌ Error loading user</h2><p>" + escapeHtml(err.message) + "</p></div>";
       }
     }
 
@@ -1013,7 +1042,7 @@
         // Show success message
         const toast = document.createElement('div');
         toast.className = 'upi-toast';
-        toast.innerHTML = `✅ ${platformName} UPI ID copied!<br><strong>${upiId}</strong>`;
+        toast.innerHTML = `✅ ${escapeHtml(platformName)} UPI ID copied!<br><strong>${escapeHtml(upiId)}</strong>`;
         document.body.appendChild(toast);
 
         // Remove toast after 3 seconds
@@ -1032,7 +1061,7 @@
         // Show success message
         const toast = document.createElement('div');
         toast.className = 'upi-toast';
-        toast.innerHTML = `✅ ${platformName} UPI ID copied!<br><strong>${upiId}</strong>`;
+        toast.innerHTML = `✅ ${escapeHtml(platformName)} UPI ID copied!<br><strong>${escapeHtml(upiId)}</strong>`;
         document.body.appendChild(toast);
 
         setTimeout(() => {
@@ -1078,7 +1107,7 @@
         let openButtonHtml = '';
         if (isValidUPI) {
           openButtonHtml = `
-            <button class="upi-action-btn open-btn" onclick="event.stopPropagation(); openUPI('${upiId}')" title="Open in App">
+            <button class="upi-action-btn open-btn" onclick="event.stopPropagation(); openUPI('${escapeHtml(upiId)}')" title="Open in App">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15 3 21 3 21 9"></polyline>
@@ -1096,7 +1125,7 @@
 
         option.innerHTML = `
           <div class="upi-id-text-container">
-             <span class="upi-id-text">${upiId}</span>
+             <span class="upi-id-text">${escapeHtml(upiId)}</span>
           </div>
           <div class="upi-actions-container">
             ${openButtonHtml}
@@ -1135,11 +1164,11 @@
         option.className = 'upi-option';
         option.innerHTML = `
           <div class="upi-option-content">
-            <span class="upi-id">${phoneNumber}</span>
+            <span class="upi-id">${escapeHtml(phoneNumber)}</span>
           </div>
         `;
         option.onclick = () => {
-          window.location.href = `tel:${phoneNumber}`;
+          window.location.href = `tel:${sanitizePhone(phoneNumber)}`;
           closePhoneOverlay();
         };
         options.appendChild(option);
@@ -1175,11 +1204,11 @@
         option.className = 'upi-option';
         option.innerHTML = `
           <div class="upi-option-content">
-            <span class="upi-id">${emailAddress}</span>
+            <span class="upi-id">${escapeHtml(emailAddress)}</span>
           </div>
         `;
         option.onclick = () => {
-          window.location.href = `mailto:${emailAddress}`;
+          window.location.href = `mailto:${sanitizeEmail(emailAddress)}`;
           closeEmailOverlay();
         };
         options.appendChild(option);
@@ -1228,12 +1257,12 @@
 
         optionElement.innerHTML = `
           <div class="upi-option-content">
-            <span class="upi-id">${label}</span>
+            <span class="upi-id">${escapeHtml(label)}</span>
           </div>
         `;
         optionElement.onclick = () => {
           if (url) {
-            window.open(url, '_blank', 'noopener');
+            window.open(sanitizeUrl(url), '_blank', 'noopener');
           }
           closeGmapsOverlay();
         };
@@ -1299,11 +1328,11 @@
 
         option.innerHTML = `
           <div class="upi-option-content">
-            <span class="upi-id">${displayText}</span>
+            <span class="upi-id">${escapeHtml(displayText)}</span>
           </div>
         `;
         option.onclick = () => {
-          window.open(whatsappUrl, '_blank', 'noopener');
+          window.open(sanitizeUrl(whatsappUrl), '_blank', 'noopener');
           closeWhatsAppOverlay();
         };
         options.appendChild(option);
@@ -1386,7 +1415,7 @@
 
         option.innerHTML = `
           <div class="upi-option-content" style="width: 100%;">
-            <span class="upi-id" style="font-family: 'Courier New', monospace; font-size: 1em;">${value}</span>
+            <span class="upi-id" style="font-family: 'Courier New', monospace; font-size: 1em;">${escapeHtml(value)}</span>
           </div>
         `;
 
@@ -1395,7 +1424,7 @@
             // Show toast
             const toast = document.createElement('div');
             toast.className = 'upi-toast';
-            toast.innerHTML = `✅ Copied!<br><strong>${value}</strong>`;
+            toast.innerHTML = `✅ Copied!<br><strong>${escapeHtml(value)}</strong>`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
 
@@ -1412,7 +1441,7 @@
 
             const toast = document.createElement('div');
             toast.className = 'upi-toast';
-            toast.innerHTML = `✅ Copied!<br><strong>${value}</strong>`;
+            toast.innerHTML = `✅ Copied!<br><strong>${escapeHtml(value)}</strong>`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
 

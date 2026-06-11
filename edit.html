@@ -884,8 +884,15 @@
       if (adminRole === 'user' && adminUsername) {
         try {
           const { dataService } = await import('./data-service.js');
-          const credentials = await dataService.getCredentials();
-          const myCred = credentials.find(c => c.username === adminUsername);
+          const myCred = await dataService.getCredential(adminUsername);
+          const token = localStorage.getItem('adminSessionToken');
+
+          if (!myCred || myCred.password !== token || myCred.isActive !== true) {
+            alert('⚠️ Session Expired or Invalid\n\nPlease log in again.');
+            localStorage.clear();
+            window.location.href = 'login.html';
+            return;
+          }
 
           // Calculate profile limit status early
           if (myCred && myCred.isUnlimited === false) {
@@ -896,6 +903,13 @@
             const currentCount = myUsers ? myUsers.length : 0;
             if (currentCount >= maxUsers) {
               window.isAtProfileLimit = true;
+
+              // Immediately alert and redirect regular users trying to create a new profile if limit is reached
+              if (!username) {
+                alert(`⚠️ User Limit Reached (${currentCount}/${maxUsers}).\n\nYou cannot create more profiles. Please contact admin.`);
+                window.location.href = "dashboard.html";
+                return;
+              }
             }
           }
 
@@ -903,36 +917,38 @@
             // Set global frozen flag
             window.isAccountFrozen = true;
 
-            // Keep Save button disabled for frozen accounts
-            if (saveBtn) {
-              saveBtn.disabled = true;
-              saveBtn.style.backgroundColor = '#9ca3af'; // Gray
-              saveBtn.style.cursor = 'not-allowed';
-              saveBtn.title = "Account is frozen (Read-Only). Cannot save changes.";
-              saveBtn.innerHTML = '❄️ Frozen (Read-Only)';
+            // // Keep Save button disabled for frozen accounts
+            // if (saveBtn) {
+            //   saveBtn.disabled = true;
+            //   saveBtn.style.background = '#9ca3af'; // Gray
+            //   saveBtn.style.cursor = 'not-allowed';
+            //   saveBtn.style.pointerEvents = 'auto';
+            //   saveBtn.title = "Account is frozen (Read-Only). Cannot save changes.";
+            //   saveBtn.innerHTML = '❄️ Frozen (Read-Only)';
 
-              // CRITICAL: Use MutationObserver to prevent ANY code from re-enabling the button
-              const observer = new MutationObserver(() => {
-                if (!saveBtn.disabled || saveBtn.innerHTML !== '❄️ Frozen (Read-Only)') {
-                  saveBtn.disabled = true;
-                  saveBtn.style.backgroundColor = '#9ca3af';
-                  saveBtn.style.cursor = 'not-allowed';
-                  saveBtn.title = "Account is frozen (Read-Only). Cannot save changes.";
-                  saveBtn.innerHTML = '❄️ Frozen (Read-Only)';
-                }
-              });
+            //   // CRITICAL: Use MutationObserver to prevent ANY code from re-enabling the button
+            //   const observer = new MutationObserver(() => {
+            //     if (!saveBtn.disabled || saveBtn.innerHTML !== '❄️ Frozen (Read-Only)') {
+            //       saveBtn.disabled = true;
+            //       saveBtn.style.background = '#9ca3af';
+            //       saveBtn.style.cursor = 'not-allowed';
+            //       saveBtn.style.pointerEvents = 'auto';
+            //       saveBtn.title = "Account is frozen (Read-Only). Cannot save changes.";
+            //       saveBtn.innerHTML = '❄️ Frozen (Read-Only)';
+            //     }
+            //   });
 
-              observer.observe(saveBtn, {
-                attributes: true,
-                attributeFilter: ['disabled'],
-                childList: true,
-                characterData: true,
-                subtree: true
-              });
+            //   observer.observe(saveBtn, {
+            //     attributes: true,
+            //     attributeFilter: ['disabled'],
+            //     childList: true,
+            //     characterData: true,
+            //     subtree: true
+            //   });
 
-              // Store observer to prevent garbage collection
-              window.frozenButtonObserver = observer;
-            }
+            //   // Store observer to prevent garbage collection
+            //   window.frozenButtonObserver = observer;
+            // }
 
             // Disable all form inputs
             const formInputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
@@ -942,11 +958,16 @@
               input.style.opacity = '0.6';
             });
 
-            // Show frozen notice
-            const formTitle = document.getElementById('formTitle');
-            if (formTitle && !formTitle.innerHTML.includes('Read-Only')) {
-              formTitle.innerHTML += ' <span style="color: #3b82f6; font-size: 0.9em;">❄️ (Read-Only - Account Frozen)</span>';
-            }
+            // // Show frozen notice
+            // const formTitle = document.getElementById('formTitle');
+            // if (formTitle && !formTitle.innerHTML.includes('Read-Only')) {
+            //   formTitle.innerHTML += ' <span style="color: #3b82f6; font-size: 0.9em;">❄️ (Read-Only - Account Frozen)</span>';
+            // }
+
+            // Immediately alert and redirect back to dashboard
+            alert("⚠️ Account is Frozen (Read-Only). You cannot add or edit user profiles.");
+            window.location.href = "dashboard.html";
+            return;
           } else {
             // Account is NOT frozen - enable Save button
             window.isAccountFrozen = false;
@@ -1007,6 +1028,9 @@
         // Auto-populate Data File for new users using the unique userCode
         const parentScope = getParentDataFileScope();
         document.getElementById('profileDataFile').value = `${parentScope}/${uniqueCode}`;
+
+        // Initialize empty location entry for new user profile
+        loadLocations({});
 
         checkFormChanges();
       } else {
@@ -1417,8 +1441,15 @@
       if (adminRole === 'user' && adminUsername) {
         try {
           const { dataService } = await import('./data-service.js');
-          const credentials = await dataService.getCredentials();
-          const myCred = credentials.find(c => c.username === adminUsername);
+          const myCred = await dataService.getCredential(adminUsername);
+          const token = localStorage.getItem('adminSessionToken');
+
+          if (!myCred || myCred.password !== token || myCred.isActive !== true) {
+            alert('⚠️ Session Expired or Invalid\n\nPlease log in again.');
+            localStorage.clear();
+            window.location.href = 'login.html';
+            return;
+          }
 
           if (myCred && myCred.isFrozen) {
             // Silent block - no alert needed since button should be disabled
@@ -1454,8 +1485,7 @@
           const { dataService } = await import('./data-service.js');
 
           // 1. Get My Account Rules (Limit)
-          const credentials = await dataService.getCredentials();
-          const myCred = credentials.find(c => c.username === adminUsername);
+          const myCred = await dataService.getCredential(adminUsername);
 
           if (myCred && myCred.isUnlimited === false) {
             const maxUsers = myCred.maxUsers || 100;
@@ -1811,7 +1841,7 @@
         }
 
         saveBtn.innerHTML = '✅ Saved!';
-        saveBtn.style.backgroundColor = '#4CAF50';
+        saveBtn.style.background = '#6366f1';
 
         // If identity (username, userCode, or datafile) changed, update the URL in the browser
         const oldScope = window.originalProfileDataFile || window.currentUserScope;
@@ -1832,11 +1862,11 @@
       } catch (e) {
         console.error("Save failed:", e);
         saveBtn.innerHTML = '❌ Save Failed';
-        saveBtn.style.backgroundColor = '#f44336';
+        saveBtn.style.background = '#f44336';
 
         setTimeout(() => {
           saveBtn.innerHTML = originalBtnText;
-          saveBtn.style.backgroundColor = '';
+          saveBtn.style.background = '';
           saveBtn.disabled = false;
         }, 3000);
 
@@ -2433,7 +2463,7 @@
       // the button must be "💾 Save User" and enabled.
       if (window.lastSavedState === undefined || window.lastSavedState === null) {
         saveBtn.disabled = false;
-        saveBtn.style.backgroundColor = '';
+        saveBtn.style.background = '';
         saveBtn.style.cursor = '';
         saveBtn.style.pointerEvents = 'auto';
         saveBtn.title = '';
@@ -2453,9 +2483,9 @@
 
       if (window.isAtProfileLimit && isIdentityChanged && cb && !cb.checked) {
         saveBtn.disabled = true;
-        saveBtn.style.backgroundColor = '#9ca3af';
+        saveBtn.style.background = '#9ca3af';
         saveBtn.style.cursor = 'not-allowed';
-        saveBtn.style.pointerEvents = 'none';
+        saveBtn.style.pointerEvents = 'auto';
         saveBtn.title = "Profile limit reached. You must delete the old profile to save changes to username, user code, or data file.";
         saveBtn.innerHTML = '💾 Save User';
         return;
@@ -2465,14 +2495,14 @@
       const currentState = getCurrentFormState();
       if (currentState === window.lastSavedState) {
         saveBtn.disabled = true;
-        saveBtn.style.backgroundColor = '#4CAF50'; // Green
+        saveBtn.style.background = '#6366f1'; // Blue (Theme color)
         saveBtn.style.cursor = 'default';
-        saveBtn.style.pointerEvents = 'none';
+        saveBtn.style.pointerEvents = 'auto';
         saveBtn.title = 'No changes to save';
         saveBtn.innerHTML = '✓ Saved!';
       } else {
         saveBtn.disabled = false;
-        saveBtn.style.backgroundColor = '';
+        saveBtn.style.background = '';
         saveBtn.style.cursor = '';
         saveBtn.style.pointerEvents = 'auto';
         saveBtn.title = '';
