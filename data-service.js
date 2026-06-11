@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch, collectionGroup, query, where } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch, collectionGroup, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 class DataService {
     constructor() {
@@ -15,6 +15,19 @@ class DataService {
     unescapeScope(scope) {
         if (!scope) return '';
         return scope.replace(/___/g, '/');
+    }
+
+    getParentFolderOfScope(scope, userCode) {
+        if (!scope) return '';
+        const unescaped = this.unescapeScope(scope);
+        const parts = unescaped.split('/');
+        if (parts.length > 1) {
+            const lastPart = parts[parts.length - 1];
+            if (userCode && lastPart === userCode) {
+                return parts.slice(0, -1).join('/');
+            }
+        }
+        return unescaped;
     }
 
     // --- Credentials ---
@@ -128,6 +141,7 @@ class DataService {
             try {
                 // Ensure the unescaped scope name is explicitly stored in dataFile field
                 userData.dataFile = this.unescapeScope(scope);
+                userData.parentFolder = this.getParentFolderOfScope(userData.dataFile, userData.userCode);
 
                 const escapedScope = this.escapeScope(scope);
                 const docRef = doc(db, "profiles", escapedScope, "users", docId);
@@ -213,16 +227,24 @@ class DataService {
             try {
                 // We assume username doc exists
                 const docRef = doc(db, "credentials", username);
+                const docSnap = await getDoc(docRef);
+                const oldDataFile = docSnap.exists() ? docSnap.data().dataFile : null;
+
                 await setDoc(docRef, updateData, { merge: true });
                 console.log(`✅ Firebase: Updated credential for ${username}`);
+
+                // Update profile count for the new dataFile scope
                 if (updateData.dataFile) {
                     await this.updateProfileCountInFirestore(updateData.dataFile);
-                } else {
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists() && docSnap.data().dataFile) {
-                        await this.updateProfileCountInFirestore(docSnap.data().dataFile);
-                    }
+                } else if (oldDataFile) {
+                    await this.updateProfileCountInFirestore(oldDataFile);
                 }
+
+                // If the dataFile changed, update the profile count for the old dataFile scope too!
+                if (updateData.dataFile && oldDataFile && updateData.dataFile !== oldDataFile) {
+                    await this.updateProfileCountInFirestore(oldDataFile);
+                }
+
                 return true;
             } catch (error) {
                 console.error("❌ Firebase: Update credential failed:", error);
@@ -254,21 +276,69 @@ class DataService {
     async updateProfileCountInFirestore(scope) {
         if (!this.useFirebase || !scope) return;
         try {
-            const escapedScope = this.escapeScope(scope);
-            const usersCol = collection(db, "profiles", escapedScope, "users");
-            const usersSnapshot = await getDocs(usersCol);
-            const count = usersSnapshot.size;
+            // Normalize the target scope parameter
+            const targetParentFolder = this.getParentFolderOfScope(scope, scope.split('/').pop());
+
+            // Retrieve count from Firestore server using getCountFromServer (extremely cheap and fast!)
+            const q = query(collectionGroup(db, "users"), where("parentFolder", "==", targetParentFolder));
+            const countSnapshot = await getCountFromServer(q);
+            const count = countSnapshot.data().count;
 
             const credsCol = collection(db, "credentials");
-            const q = query(credsCol, where("dataFile", "==", scope));
-            const credsSnapshot = await getDocs(q);
+            const qCreds = query(credsCol, where("dataFile", "==", targetParentFolder));
+            const credsSnapshot = await getDocs(qCreds);
 
             for (const credDoc of credsSnapshot.docs) {
                 await setDoc(credDoc.ref, { profileCount: count }, { merge: true });
-                console.log(`📊 Firebase: Updated profileCount to ${count} for credential "${credDoc.id}"`);
+                console.log(`📊 Firebase: Updated profileCount to ${count} for credential "${credDoc.id}" (parent scope: "${targetParentFolder}")`);
             }
         } catch (error) {
             console.error("❌ Firebase: Update profile count failed:", error);
+        }
+    }
+
+    // Safely backfills parentFolder and normalized dataFile fields for all users in Firestore
+    async backfillParentFolder() {
+        if (!this.useFirebase) return;
+        try {
+            console.log("🔄 Starting backfill of parentFolder field for all user documents...");
+            const q = collectionGroup(db, "users");
+            const querySnapshot = await getDocs(q);
+            
+            let count = 0;
+            const batchSize = 500;
+            let batch = writeBatch(db);
+
+            for (const docSnap of querySnapshot.docs) {
+                const userData = docSnap.data();
+                let docScope = userData.dataFile || '';
+                if (!docScope && docSnap.ref && docSnap.ref.parent && docSnap.ref.parent.parent) {
+                    docScope = this.unescapeScope(docSnap.ref.parent.parent.id);
+                }
+                
+                const normalizedScope = this.unescapeScope(docScope);
+                const parentFolder = this.getParentFolderOfScope(normalizedScope, userData.userCode);
+
+                if (userData.parentFolder !== parentFolder || !userData.dataFile) {
+                    const updates = { 
+                        parentFolder: parentFolder,
+                        dataFile: normalizedScope
+                    };
+                    batch.set(docSnap.ref, updates, { merge: true });
+                    count++;
+                    
+                    if (count % batchSize === 0) {
+                        await batch.commit();
+                        batch = writeBatch(db);
+                    }
+                }
+            }
+            if (count % batchSize !== 0) {
+                await batch.commit();
+            }
+            console.log(`✅ Backfilled parentFolder for ${count} user document(s).`);
+        } catch (error) {
+            console.error("❌ Failed to backfill parentFolder:", error);
         }
     }
 
@@ -276,6 +346,9 @@ class DataService {
     async syncAllProfileCounts() {
         if (!this.useFirebase) return;
         try {
+            // Perform parentFolder backfill first to ensure count query matches documents correctly
+            await this.backfillParentFolder();
+
             const querySnapshot = await getDocs(collection(db, "credentials"));
             for (const docSnap of querySnapshot.docs) {
                 const cred = docSnap.data();
@@ -405,6 +478,7 @@ class DataService {
                                 } else {
                                     user.dataFile = this.unescapeScope(user.dataFile);
                                 }
+                                user.parentFolder = this.getParentFolderOfScope(user.dataFile, user.userCode);
 
                                 // Use username or userCode as Key
                                 const docId = user.username || user.userCode || 'unknown_' + Date.now();
