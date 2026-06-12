@@ -38,7 +38,12 @@ class DataService {
                 const docRef = doc(db, "credentials", username);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    return docSnap.data();
+                    const cred = docSnap.data();
+                    if (cred.password) {
+                        cred.rawPassword = cred.password;
+                        cred.password = await this.decryptPassword(cred.password);
+                    }
+                    return cred;
                 }
             } catch (error) {
                 console.warn(`⚠️ Firebase credential fetch failed for ${username}:`, error);
@@ -50,14 +55,29 @@ class DataService {
     }
 
     async getCredentials() {
+        const userRole = localStorage.getItem('adminRole');
+        if (userRole !== 'super_admin' && userRole !== 'main_admin') {
+            console.warn("🚫 Security Block: getCredentials() called by unauthorized role:", userRole);
+            return [];
+        }
+
         let credentials = [];
         if (this.useFirebase) {
             try {
                 const querySnapshot = await getDocs(collection(db, "credentials"));
                 if (!querySnapshot.empty) {
-                    querySnapshot.forEach((doc) => {
-                        credentials.push(doc.data());
+                    const decryptPromises = [];
+                    querySnapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        decryptPromises.push((async () => {
+                            if (data.password) {
+                                data.rawPassword = data.password;
+                                data.password = await this.decryptPassword(data.password);
+                            }
+                            credentials.push(data);
+                        })());
                     });
+                    await Promise.all(decryptPromises);
                     console.log("✅ Loaded credentials from Firebase");
                     return credentials;
                 } else {
@@ -307,10 +327,110 @@ class DataService {
         return { usernameExists, dataFileExists };
     }
 
+    async hashPassword(password) {
+        if (!password) return '';
+        // If password is already a SHA-256 hash (64 hex characters), don't hash it again
+        if (/^[a-f0-9]{64}$/i.test(password)) {
+            return password;
+        }
+        try {
+            const msgUint8 = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (error) {
+            console.error('Cryptographic hashing failed, falling back to plaintext:', error);
+            return password;
+        }
+    }
+
+    async getCryptoKey(passphrase) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+            "raw",
+            enc.encode(passphrase),
+            { name: "PBKDF2" },
+            false,
+            ["deriveBits", "deriveKey"]
+        );
+        const salt = enc.encode("MultiLynkQR-Salt-123");
+        return await crypto.subtle.deriveKey(
+            {
+                name: "PBKDF2",
+                salt: salt,
+                iterations: 1000,
+                hash: "SHA-256"
+            },
+            keyMaterial,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["encrypt", "decrypt"]
+        );
+    }
+
+    async encryptPassword(password) {
+        if (!password) return '';
+        const secret = window.ENCRYPTION_SECRET || 'MultiLynkQR-DefaultSecret-54321';
+        try {
+            const key = await this.getCryptoKey(secret);
+            const enc = new TextEncoder();
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const ciphertext = await crypto.subtle.encrypt(
+                { name: "AES-GCM", iv: iv },
+                key,
+                enc.encode(password)
+            );
+            const combined = new Uint8Array(iv.length + ciphertext.byteLength);
+            combined.set(iv, 0);
+            combined.set(new Uint8Array(ciphertext), iv.length);
+            
+            let binary = '';
+            const len = combined.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(combined[i]);
+            }
+            return btoa(binary);
+        } catch (error) {
+            console.error('Encryption failed, using plaintext:', error);
+            return password;
+        }
+    }
+
+    async decryptPassword(encryptedBase64) {
+        if (!encryptedBase64) return '';
+        // If it doesn't look like base64 or is too short, return as-is
+        if (encryptedBase64.length < 16 || !/^[A-Za-z0-9+/=]+$/.test(encryptedBase64)) {
+            return encryptedBase64;
+        }
+        const secret = window.ENCRYPTION_SECRET || 'MultiLynkQR-DefaultSecret-54321';
+        try {
+            const key = await this.getCryptoKey(secret);
+            const binaryString = atob(encryptedBase64);
+            const len = binaryString.length;
+            const combined = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                combined[i] = binaryString.charCodeAt(i);
+            }
+            const iv = combined.slice(0, 12);
+            const ciphertext = combined.slice(12);
+            const decrypted = await crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: iv },
+                key,
+                ciphertext
+            );
+            return new TextDecoder().decode(decrypted);
+        } catch (e) {
+            return encryptedBase64;
+        }
+    }
+
     // Add new credential (Login Account)
     async addCredential(credentialData) {
         if (this.useFirebase) {
             try {
+                if (credentialData.password) {
+                    credentialData.password = await this.encryptPassword(credentialData.password);
+                }
                 // We use username as document ID for credentials for uniqueness and easy lookup
                 const docRef = doc(db, "credentials", credentialData.username);
                 await setDoc(docRef, credentialData);
@@ -333,6 +453,9 @@ class DataService {
     async updateCredential(username, updateData) {
         if (this.useFirebase) {
             try {
+                if (updateData.password) {
+                    updateData.password = await this.encryptPassword(updateData.password);
+                }
                 // We assume username doc exists
                 const docRef = doc(db, "credentials", username);
                 const docSnap = await getDoc(docRef);
@@ -521,28 +644,32 @@ class DataService {
     // --- Sync (Admin Only) ---
 
     async syncToFirebase() {
-        console.log("🔄 Starting Safe Sync to Firebase (Add Missing Only) -> Subcollections...");
+        console.log("🔄 Starting Overwrite Sync to Firebase (Update & Add) -> Subcollections...");
 
         // 1. Sync Credentials
+        let credAddedCount = 0;
+        let credUpdatedCount = 0;
         try {
             const credRes = await fetch('./credentials/login_credentials.json');
             if (credRes.ok) {
                 const credentials = await credRes.json();
-                let addedCount = 0;
-                let skippedCount = 0;
 
                 for (const cred of credentials) {
                     const docRef = doc(db, "credentials", cred.username);
                     const docSnap = await getDoc(docRef);
 
+                    if (cred.password) {
+                        cred.password = await this.encryptPassword(cred.password);
+                    }
+
+                    await setDoc(docRef, cred);
                     if (!docSnap.exists()) {
-                        await setDoc(docRef, cred);
-                        addedCount++;
+                        credAddedCount++;
                     } else {
-                        skippedCount++;
+                        credUpdatedCount++;
                     }
                 }
-                console.log(`✅ Credentials Sync: Added ${addedCount}, Skipped ${skippedCount}`);
+                console.log(`✅ Credentials Sync: Added ${credAddedCount}, Updated ${credUpdatedCount}`);
             }
         } catch (e) {
             console.error("❌ Failed to sync credentials:", e);
@@ -555,8 +682,8 @@ class DataService {
                 const index = await indexRes.json();
                 const files = [...new Set(Object.values(index))];
 
-                let addedCount = 0;
-                let skippedCount = 0;
+                let profileAddedCount = 0;
+                let profileUpdatedCount = 0;
                 const uniqueScopes = new Set();
 
                 for (const file of files) {
@@ -566,8 +693,6 @@ class DataService {
                             const users = await fileRes.json();
 
                             // Determine Scope from folder name in path
-                            // e.g. "clients/clients-1.json" -> scope "clients"
-                            // "personal/personal.json" -> scope "personal"
                             let scope = file.split('/')[0];
                             if (scope.endsWith('.json')) {
                                 scope = scope.replace('.json', ''); // Fallback for root files
@@ -576,9 +701,6 @@ class DataService {
 
                             console.log(`📂 Processing ${file} -> Scope: ${scope}`);
 
-                            // Create the scope document (e.g. profiles/clients) just to exist? 
-                            // Firestore auto-creates hierarchy for subcollections, but good practice to have the parent doc.
-                            // We can set a dummy field or metadata on profiles/{scope}
                             const escapedScope = this.escapeScope(scope);
                             await setDoc(doc(db, "profiles", escapedScope), {
                                 type: 'category',
@@ -600,13 +722,12 @@ class DataService {
                                 // Path: profiles/{escapedScope}/users/{docId}
                                 const docRef = doc(db, "profiles", escapedScope, "users", docId);
 
-                                // Check existence logic
                                 const docSnap = await getDoc(docRef);
+                                await setDoc(docRef, user);
                                 if (!docSnap.exists()) {
-                                    await setDoc(docRef, user);
-                                    addedCount++;
+                                    profileAddedCount++;
                                 } else {
-                                    skippedCount++;
+                                    profileUpdatedCount++;
                                 }
                             }
                         }
@@ -635,9 +756,9 @@ class DataService {
                     indexInfo = "Cloud Index: Failed to rebuild index.";
                 }
 
-                console.log(`✅ Profiles Sync: Added ${addedCount}, Skipped ${skippedCount}`);
+                console.log(`✅ Profiles Sync: Added ${profileAddedCount}, Updated ${profileUpdatedCount}`);
 
-                alert(`Sync Complete!\n\nCredentials: Added key updates.\nProfiles: Added ${addedCount} new, Skipped ${skippedCount} existing.\nStructure: profiles/{scope}/users\n${indexInfo}`);
+                alert(`Sync Complete!\n\nCredentials: Added ${credAddedCount}, Updated ${credUpdatedCount} (Passwords Encrypted).\nProfiles: Added ${profileAddedCount} new, Updated ${profileUpdatedCount} existing.\nStructure: profiles/{scope}/users\n${indexInfo}`);
             }
         } catch (e) {
             console.error("❌ Failed to sync profiles:", e);

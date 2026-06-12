@@ -12,10 +12,21 @@ const DATA_FILES_CONFIG = {
     useIndex: true,
 
     // Fallback files if index cannot be loaded
-    fallbackFiles: ['personal.json', 'clients.json', 'demo.json']
+    fallbackFiles: ['example.json']
 };
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DATA_FILES_CONFIG;
 }
+
+// Global UI Settings
+// Set to true to show the Edit button for Admin/Main accounts, or false to hide it
+window.ALLOW_ADMIN_EDIT = true;
+
+// Set to true to show the real decrypted password in the admin dashboard UI.
+// Set to false to show the raw encrypted/hashed key stored in the database.
+window.SHOW_REAL_PASSWORD = true;
+
+// Encryption Secret Key for credentials database security (Reversible AES-GCM)
+window.ENCRYPTION_SECRET = "MultiLynkQR-SecureKey-2026";

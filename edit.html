@@ -13,6 +13,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="config.js"></script>
+  <link rel="modulepreload" href="./data-service.js" />
+  <link rel="modulepreload" href="./firebase-config.js" />
 
   <link rel="icon" type="image/svg+xml" href="assets/MultiLynkQR-Logo.png">
 </head>
@@ -693,7 +695,30 @@
 
         <input type="url" id="website" placeholder="Website - https://yourwebsite.com">
         <input type="url" id="businesscard" placeholder="Business Card - https://yourbusinesscard.com">
-        <div id="locations-container" class="locations-container"></div>
+        <div id="locations-container" class="locations-container">
+          <div class="location-entry" id="location-entry-1">
+            <input type="text" 
+                   class="location-title" 
+                   placeholder="Title (e.g. Location 1)" 
+                   value="Location 1">
+            <input type="url" 
+                   class="location-url" 
+                   placeholder="Location - City, Country or Google Maps link" 
+                   value="">
+            <button type="button" 
+                    class="remove-location-btn" 
+                    onclick="removeLocationEntry(1)"
+                    title="Remove this location">
+              ✖
+            </button>
+            <button type="button" 
+                    class="add-location-btn" 
+                    onclick="addLocationEntry('', '')"
+                    title="Add another location">
+              +
+            </button>
+          </div>
+        </div>
         <input type="url" id="googleReview" placeholder="Google Review Link - https://maps.app.goo.gl/.../review">
 
         <div id="contact-custom-container" class="custom-links-container"></div>
@@ -853,6 +878,44 @@
 
     // Auto-generate user code on page load (for new users)
     window.addEventListener('DOMContentLoaded', async () => {
+      // Disable form fields by default until validation checks pass
+      disableFormFields();
+
+      // Observe dynamically added nodes inside userForm to auto-disable them if account is frozen or limited
+      const userFormEl = document.getElementById('userForm');
+      if (userFormEl) {
+        const dynamicObserver = new MutationObserver((mutations) => {
+          const shouldDisable = window.isAccountFrozen || (window.isAtProfileLimit && !window.originalUsername);
+          if (shouldDisable) {
+            mutations.forEach(mutation => {
+              mutation.addedNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                  if (node.matches && node.matches('input, textarea, select, button:not(#backBtn)')) {
+                    node.disabled = true;
+                    node.style.cursor = 'not-allowed';
+                    node.style.opacity = '0.6';
+                  }
+                  const nested = node.querySelectorAll ? node.querySelectorAll('input, textarea, select, button:not(#backBtn)') : [];
+                  nested.forEach(el => {
+                    el.disabled = true;
+                    el.style.cursor = 'not-allowed';
+                    el.style.opacity = '0.6';
+                  });
+                }
+              });
+            });
+          }
+        });
+        dynamicObserver.observe(userFormEl, { childList: true, subtree: true });
+        window.dynamicFormFieldsObserver = dynamicObserver;
+      }
+
+      // Apply UI visibility config immediately
+      const dataFileGroup = document.getElementById('profileDataFileGroup');
+      if (dataFileGroup) {
+        dataFileGroup.style.display = SHOW_DATA_FILE_PROFILE_UI ? 'block' : 'none';
+      }
+
       const params = new URLSearchParams(window.location.search);
       const username = params.get('user');
 
@@ -884,8 +947,21 @@
       if (adminRole === 'user' && adminUsername) {
         try {
           const { dataService } = await import('./data-service.js');
-          const myCred = await dataService.getCredential(adminUsername);
           const token = localStorage.getItem('adminSessionToken');
+
+          const storedDataFile = localStorage.getItem('adminDataFile');
+          let myCredPromise = dataService.getCredential(adminUsername);
+          let myUsersPromise = null;
+
+          if (storedDataFile) {
+            const scope = storedDataFile.replace('.json', '').replace('data/', '');
+            myUsersPromise = dataService.getUsers(scope);
+          }
+
+          const [myCred, myUsersResult] = await Promise.all([
+            myCredPromise,
+            myUsersPromise || Promise.resolve(null)
+          ]);
 
           if (!myCred || myCred.password !== token || myCred.isActive !== true) {
             alert('⚠️ Session Expired or Invalid\n\nPlease log in again.');
@@ -894,18 +970,67 @@
             return;
           }
 
+          // Secure Verification: Block localStorage tampering/spoofing of roles or scopes on edit page
+          if (myCred.role !== adminRole || (myCred.dataFile || '') !== (storedDataFile || '')) {
+            console.warn("🚫 Security: Local session mismatch detected on edit page. Syncing and reloading...");
+            localStorage.setItem('adminRole', myCred.role);
+            localStorage.setItem('adminDataFile', myCred.dataFile || '');
+            window.location.reload();
+            return;
+          }
+
           // Calculate profile limit status early
           if (myCred && myCred.isUnlimited === false) {
             const maxUsers = myCred.maxUsers || 100;
-            const dataFile = localStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
-            const scope = dataFile.replace('.json', '').replace('data/', '');
-            const myUsers = await dataService.getUsers(scope);
+            let myUsers = myUsersResult;
+
+            if (!myUsers) {
+              const dataFile = myCred.dataFile || 'clients';
+              const scope = dataFile.replace('.json', '').replace('data/', '');
+              myUsers = await dataService.getUsers(scope);
+            }
+
             const currentCount = myUsers ? myUsers.length : 0;
             if (currentCount >= maxUsers) {
               window.isAtProfileLimit = true;
 
               // Immediately alert and redirect regular users trying to create a new profile if limit is reached
               if (!username) {
+                // Initialize default state/inputs so they exist in the DOM
+                window.lastSavedState = null;
+                try {
+                  const uniqueCode = await generateUniqueUserCode();
+                  const userCodeInput = document.getElementById('userCode');
+                  if (userCodeInput) userCodeInput.value = uniqueCode;
+
+                  const parentScope = getParentDataFileScope();
+                  const profileDataFileInput = document.getElementById('profileDataFile');
+                  if (profileDataFileInput) profileDataFileInput.value = `${parentScope}/${uniqueCode}`;
+                } catch (e) {
+                  console.warn("Failed to pre-generate user code for blocked profile", e);
+                }
+
+                const createdAtField = document.getElementById('profileCreatedAt');
+                if (createdAtField) {
+                  const now = new Date();
+                  const localISO = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                  createdAtField.value = localISO;
+                }
+
+                // Initialize location counter
+                locationCounter = 1;
+
+                disableFormFields();
+
+                if (saveBtn) {
+                  saveBtn.disabled = true;
+                  saveBtn.style.background = '#9ca3af'; // Gray
+                  saveBtn.style.cursor = 'not-allowed';
+                  saveBtn.style.pointerEvents = 'auto';
+                  saveBtn.title = "Profile limit reached. Cannot create new profiles.";
+                  saveBtn.innerHTML = '⚠️ Limit Reached';
+                }
+
                 alert(`⚠️ User Limit Reached (${currentCount}/${maxUsers}).\n\nYou cannot create more profiles. Please contact admin.`);
                 window.location.href = "dashboard.html";
                 return;
@@ -951,12 +1076,7 @@
             // }
 
             // Disable all form inputs
-            const formInputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
-            formInputs.forEach(input => {
-              input.disabled = true;
-              input.style.cursor = 'not-allowed';
-              input.style.opacity = '0.6';
-            });
+            disableFormFields();
 
             // // Show frozen notice
             // const formTitle = document.getElementById('formTitle');
@@ -1006,14 +1126,6 @@
         userForm.addEventListener('change', checkFormChanges);
       }
 
-      // Hide Data File (Scope) UI group if disabled
-      if (!SHOW_DATA_FILE_PROFILE_UI) {
-        const group = document.getElementById('profileDataFileGroup');
-        if (group) {
-          group.style.display = 'none';
-        }
-      }
-
       // Only generate if it's a new user (no username in URL)
       if (!username) {
         window.lastSavedState = null;
@@ -1029,9 +1141,10 @@
         const parentScope = getParentDataFileScope();
         document.getElementById('profileDataFile').value = `${parentScope}/${uniqueCode}`;
 
-        // Initialize empty location entry for new user profile
-        loadLocations({});
+        // Initialize location counter
+        locationCounter = 1;
 
+        enableFormFields();
         checkFormChanges();
       } else {
         // Store originals so save handler can detect identity changes
@@ -1380,24 +1493,7 @@
         loadDetails(user.customDetails);
       }
 
-      // If frozen, ensure all dynamically loaded inputs are disabled
-      if (window.isAccountFrozen) {
-        setTimeout(() => {
-          const allInputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
-          allInputs.forEach(input => {
-            input.disabled = true;
-            input.style.cursor = 'not-allowed';
-            input.style.opacity = '0.6';
-          });
-
-          const allButtons = document.querySelectorAll('#userForm button:not(#backBtn)');
-          allButtons.forEach(btn => {
-            btn.disabled = true;
-            btn.style.cursor = 'not-allowed';
-            btn.style.opacity = '0.6';
-          });
-        }, 100);
-      } else {
+      if (!window.isAccountFrozen) {
         // For non-frozen accounts, capture populated state as lastSavedState.
         // Use setTimeout so all dynamic field renders (loadLocations, loadCertificates, etc.)
         // have fully added their DOM elements before we snapshot the "clean" state.
@@ -1405,6 +1501,7 @@
         setTimeout(() => {
           window.isLoadingUser = false;
           window.lastSavedState = getCurrentFormState();
+          enableFormFields();
           checkFormChanges();
         }, 50);
       }
@@ -1484,18 +1581,30 @@
         try {
           const { dataService } = await import('./data-service.js');
 
-          // 1. Get My Account Rules (Limit)
-          const myCred = await dataService.getCredential(adminUsername);
+          const storedDataFile = localStorage.getItem('adminDataFile');
+          let myCredPromise = dataService.getCredential(adminUsername);
+          let myUsersPromise = null;
+
+          if (storedDataFile) {
+            const scope = storedDataFile.replace('.json', '').replace('data/', '');
+            myUsersPromise = dataService.getUsers(scope);
+          }
+
+          const [myCred, myUsersResult] = await Promise.all([
+            myCredPromise,
+            myUsersPromise || Promise.resolve(null)
+          ]);
 
           if (myCred && myCred.isUnlimited === false) {
             const maxUsers = myCred.maxUsers || 100;
+            let myUsers = myUsersResult;
 
-            // 2. Count My Current Profiles
-            const dataFile = localStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
-            const scope = dataFile.replace('.json', '').replace('data/', '');
+            if (!myUsers) {
+              const dataFile = localStorage.getItem('adminDataFile') || myCred.dataFile || 'clients';
+              const scope = dataFile.replace('.json', '').replace('data/', '');
+              myUsers = await dataService.getUsers(scope);
+            }
 
-            // Fetch users in my scope
-            const myUsers = await dataService.getUsers(scope);
             const currentCount = myUsers ? myUsers.length : 0;
 
             if (currentCount >= maxUsers) {
@@ -2186,7 +2295,7 @@
     }
 
     // Location Management Functions
-    let locationCounter = 0;
+    let locationCounter = 1;
 
     function addLocationEntry(title = '', url = '') {
       locationCounter++;
@@ -2207,7 +2316,7 @@
                class="location-title" 
                placeholder="Title (e.g. Location 1)" 
                value="${defaultTitle}">
-        <input type="text" 
+        <input type="url" 
                class="location-url" 
                placeholder="Location - City, Country or Google Maps link" 
                value="${url}">
@@ -2236,6 +2345,38 @@
         updateDefaultLocationTitles();
         checkFormChanges();
       }
+    }
+
+    function disableFormFields() {
+      const inputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
+      inputs.forEach(input => {
+        input.disabled = true;
+        input.style.cursor = 'not-allowed';
+        input.style.opacity = '0.6';
+      });
+
+      const buttons = document.querySelectorAll('#userForm button:not(#backBtn)');
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.style.cursor = 'not-allowed';
+        btn.style.opacity = '0.6';
+      });
+    }
+
+    function enableFormFields() {
+      const inputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
+      inputs.forEach(input => {
+        input.disabled = false;
+        input.style.cursor = '';
+        input.style.opacity = '';
+      });
+
+      const buttons = document.querySelectorAll('#userForm button:not(#backBtn)');
+      buttons.forEach(btn => {
+        btn.disabled = false;
+        btn.style.cursor = '';
+        btn.style.opacity = '';
+      });
     }
 
     function updateDefaultLocationTitles() {
@@ -2459,6 +2600,17 @@
       const saveBtn = document.getElementById('saveUserBtn');
       if (!saveBtn) return;
 
+      const origUsername = window.originalUsername || '';
+      if (window.isAtProfileLimit && !origUsername) {
+        saveBtn.disabled = true;
+        saveBtn.style.background = '#9ca3af';
+        saveBtn.style.cursor = 'not-allowed';
+        saveBtn.style.pointerEvents = 'auto';
+        saveBtn.title = "Profile limit reached. Cannot create new profiles.";
+        saveBtn.innerHTML = '⚠️ Limit Reached';
+        return;
+      }
+
       // 1. If we don't have a lastSavedState (meaning it's a new profile that has never been saved),
       // the button must be "💾 Save User" and enabled.
       if (window.lastSavedState === undefined || window.lastSavedState === null) {
@@ -2475,9 +2627,9 @@
       const curUsername = document.getElementById('username')?.value.trim().replace(/\s+/g, '-') || '';
       const curUserCode = document.getElementById('userCode')?.value.trim() || '';
       const curProfileDataFile = document.getElementById('profileDataFile')?.value.trim() || '';
-      const origUsername = window.originalUsername || '';
       const origUserCode = window.originalUserCode || '';
       const origProfileDataFile = window.originalProfileDataFile || '';
+
       const isIdentityChanged = (curUsername !== origUsername || curUserCode !== origUserCode || curProfileDataFile !== origProfileDataFile);
       const cb = document.getElementById('autoDeleteOldProfile');
 

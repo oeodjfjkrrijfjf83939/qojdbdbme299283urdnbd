@@ -11,6 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <script src="config.js"></script>
+  <link rel="modulepreload" href="./data-service.js" />
+  <link rel="modulepreload" href="./firebase-config.js" />
+
   <link rel="icon" type="image/svg+xml" href="assets/MultiLynkQR-Logo.png">
 </head>
 
@@ -144,7 +148,9 @@
         return null;
       }
 
-      const isMatch = (password === user.password);
+      // Hash entered password and compare with either plaintext (backward compatibility) or hashed password in db
+      const enteredHash = await dataService.hashPassword(password);
+      const isMatch = (password === user.password || enteredHash === user.password);
 
       if (isMatch) {
         console.log('Authentication result: SUCCESS');

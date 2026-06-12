@@ -148,8 +148,8 @@ let userSortMode = 'oldest'; // 'alphabetical', 'newest', 'oldest' — sort mode
 function togglePasswordVisibility() {
   passwordsVisible = !passwordsVisible;
 
-  // Update all password elements except admin accounts
-  const passwordElements = document.querySelectorAll('.password:not(.admin-hidden)');
+  // Update all password elements
+  const passwordElements = document.querySelectorAll('.password');
   passwordElements.forEach(element => {
     if (passwordsVisible) {
       element.classList.remove('hidden');
@@ -362,18 +362,27 @@ async function loadUsers() {
       return;
     }
 
+    // Secure Verification: Block localStorage tampering/spoofing of roles or scopes
+    if (myself.role !== userRole || (myself.dataFile || '') !== (userDataFile || '')) {
+      console.warn("🚫 Security: Local session mismatch detected. Syncing and reloading...");
+      localStorage.setItem('adminRole', myself.role);
+      localStorage.setItem('adminDataFile', myself.dataFile || '');
+      window.location.reload();
+      return;
+    }
+
     window.currentUser = myself;
     // Re-render UI if frozen status changed (e.g. while page open)
     if (userRole === 'user') showUserUI();
 
-    const credentials = await dataService.getCredentials();
     // Resolve all scopes belonging to this admin account (including sub-folders)
     if (userRole === 'super_admin' || userRole === 'main_admin') {
+      const credentials = await dataService.getCredentials();
       window.allMyScopes = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
     } else if (userDataFile) {
-      window.allMyScopes = credentials
-        .filter(c => c.dataFile === userDataFile || (c.dataFile && c.dataFile.startsWith(userDataFile + '/')))
-        .map(c => c.dataFile);
+      // For regular users, their authorized scopes are limited to their assigned dataFile scope.
+      // They don't need to load other user credentials.
+      window.allMyScopes = [userDataFile];
     } else {
       window.allMyScopes = [];
     }
@@ -732,10 +741,24 @@ async function showFolderBreakdown() {
   let credMap = {};
   try {
     const { dataService } = await import('./data-service.js');
-    const creds = await dataService.getCredentials();
-    creds.forEach(c => {
-      if (c.dataFile) credMap[c.dataFile] = c;
-    });
+    const userRole = localStorage.getItem('adminRole');
+    if (userRole === 'super_admin' || userRole === 'main_admin') {
+      const creds = await dataService.getCredentials();
+      creds.forEach(c => {
+        if (c.dataFile) credMap[c.dataFile] = c;
+      });
+    } else {
+      // For regular user, their own scope and any sub-folders use their own credentials limit
+      if (window.currentUser) {
+        credMap[myDataFile] = window.currentUser;
+        // Also map any sub-scopes to the same credential
+        Object.keys(scopeMap).forEach(s => {
+          if (s.startsWith(myDataFile + '/')) {
+            credMap[s] = window.currentUser;
+          }
+        });
+      }
+    }
   } catch (e) { console.warn('Could not load credentials for breakdown', e); }
 
   // Sort scopes: own first, then sub-folders alphabetically
@@ -3045,11 +3068,12 @@ async function displayLoginAccountsTable(accountsToShow = null) {
       if (isMainAdmin) {
         row.classList.add('main-admin-row');
       }
+      const displayPassword = (window.SHOW_REAL_PASSWORD !== false) ? account.password : (account.rawPassword || account.password);
       row.innerHTML = `
         <td>
           <div class="username-cell">
             <div class="username">${escapeHtml(account.username)}</div>
-            <div class="password ${isMainAdmin ? 'hidden admin-hidden' : (passwordsVisible ? 'visible' : 'hidden')}">${escapeHtml(account.password)}</div>
+            <div class="password ${passwordsVisible ? 'visible' : 'hidden'}">${escapeHtml(displayPassword)}</div>
           </div>
         </td>
         <td>${escapeHtml(account.description || 'No description')}</td>
@@ -3093,7 +3117,7 @@ async function displayLoginAccountsTable(accountsToShow = null) {
         }
         </td>
         <td class="centered-cell">
-          ${isMainAdmin ? '-' :
+          ${(isMainAdmin && window.ALLOW_ADMIN_EDIT === false) ? '-' :
           `
             <button class="btn-capsule-edit" 
                     title="Edit Account"
@@ -3150,12 +3174,23 @@ function openEditLoginModal(username) {
     return;
   }
 
-  // Populate modal fields
+  const displayPassword = (window.SHOW_REAL_PASSWORD !== false) ? (account.password || '') : (account.rawPassword || account.password || '');
   document.getElementById('editLoginUsername').value = account.username;
   document.getElementById('editLoginUsernameDisplay').value = account.username;
-  document.getElementById('editLoginPassword').value = account.password || '';
+  document.getElementById('editLoginPassword').value = displayPassword;
   document.getElementById('editLoginDescription').value = account.description || '';
   document.getElementById('editLoginDataFile').value = account.dataFile || '';
+
+  // Hide Data Access Scope for main_admin and super_admin accounts
+  const isMainAdmin = account.role === 'main_admin' || account.role === 'super_admin';
+  const dataFileGroup = document.getElementById('editLoginDataFile')?.closest('.form-group');
+  if (dataFileGroup) {
+    if (isMainAdmin) {
+      dataFileGroup.style.display = 'none';
+    } else {
+      dataFileGroup.style.display = 'block';
+    }
+  }
 
   // Populate createdAt field
   const createdAtInput = document.getElementById('editLoginCreatedAt');
@@ -3296,7 +3331,12 @@ async function saveEditLoginAccount(event) {
       createdAt: createdAtValue
     };
 
-    if (newPassword) {
+    // Determine the displayed password value for comparison
+    const existingPassword = existingAccount ? existingAccount.password : '';
+    const existingRawPassword = existingAccount ? existingAccount.rawPassword : '';
+    const displayedPassword = (window.SHOW_REAL_PASSWORD !== false) ? existingPassword : (existingRawPassword || existingPassword);
+
+    if (newPassword && newPassword !== displayedPassword) {
       updates.password = newPassword;
     }
 
