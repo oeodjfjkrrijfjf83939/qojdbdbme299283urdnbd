@@ -1,1 +1,1524 @@
-const _0x4b5bf3=_0x1281;function _0x5482(){const _0x4f1645=['DLP0sfi','4PYfief1DgGGqxv0BY1szwDPC3rYyxrPB24Gy29TCgXLDguUifjLz2LZDgvYzwqG','z2zHB0O','8j+tGIbqCM9JzxnZAw5Nia','vu5Qv3K','uenWCLm','rLrSDve','4P2miezHAwXLzcb0BYbYzwj1AwXKignSB3vKigLUzgv4oG','Aw1WB3j0s2v5','sKD0y1q','y2vtyLq','EMvNqNa','uMvIDwLSzgLUzYbZzwfYy2GGAw5KzxHLCY4UlG','q2nfAfq','4P2miezHAwXLzcb0BYbLBNn1CMuGCgfYzw50ihbYB2zPBguGzg9JDw1LBNrZigv4Axn0oG','4P2miezHAwXLzcb0BYbJCMvHDguGBwLZC2LUzYbbDxrOihvZzxiGzM9Yia','zenttLm','thDfwMO','ihvZzxiGzg9JDw1LBNqOCYKU','DwjgAKG','reTftwS','igzVBgrLCNmSihnRAxbWzwqG','CerOs3y','s3PLteq','zgvSzxrLvxnLCG','C3vIDgXL','BefJqum','zxjYB3i','8j+uHcbtDgfYDgLUzYbpDMvYD3jPDguGu3LUyYb0BYbgAxjLyMfZzsaOvxbKyxrLicyGqwrKksaTpIbtDwjJB2XSzwn0Aw9UCY4UlG','EerTs20','BvrNy2W','ks4UlG','Awz6Dvu','yuL5u3O','z2v0sxrLBq','Afreuxi','yMnYD00','EgX1qxC','zvfOzvu','icH0AgLZigLZigv4CgvJDgvKigLMihLVDsbHCMuGBM90igfUigfKBwLUktO','r09vuuG','A1HIthK','tM5zEK4','ww1Ise4','4P2mierHDgfIyxnLig1Pz3jHDgLVBIbMywLSzwq6','zgf0yuzPBgu','uKzgr24','igv4Axn0Aw5NlGPbDxrVlvjLCgfPCJOGvMvYAwzPzwqGywXSihbHCMvUDcbMB2XKzxiGzg9JDw1LBNrZicyGCMvJywXJDwXHDgvKigfSBcbJBgLLBNqGDxnLCIbJB3vUDhmGAw4GrMLYzxn0B3jLlGPtDhj1y3r1CMu6ihbYB2zPBgvZl3TZy29Wzx0VDxnLCNmk','4PYfieLUzgv4ihjLCgfPCMvKoIbPBMrLEc8','4PQG77IpifDHCM5PBMC6iezHAwXLzcb0BYbJAgvJAY9KzwXLDguGzw1WDhKGy2f0zwDVCNKGzg9JDw1LBNqGChjVzMLSzxmV','zw5JCNLWDfbHC3n3B3jK','4PYfienSB3vKigLUzgv4ihjLyNvPBgqGy29TCgXLDguUienYzwf0zwq6ia','ywrKq3jLzgvUDgLHBa','BfH0tgC','CMDMBKq','DLv4u1m','zwHksw8','B0D0Ew4','EKrhDKW','ywrTAw5vC2vYBMfTzq','4PYfiefSBcbJCMvKzw50AwfSihbYB2zPBguGy291BNrZigjHy2TMAwXSzwqGC3vJy2vZC2z1BgX5','yxDXsgG','u2nHBM5PBMCGzgf0ywjHC2uGzM9Yig9SzcbWCM9MAwXLihnJB3bLCY4UlG','lI4U','s3jAsui','ksbKzwXLDgvKigzYB20GrMLYzwjHC2u','ugTKwxu','AgfZAfbHC3n3B3jK','CuvsyLa','uM55sgK','4PYfienYzwf0zwqGBwLZC2LUzYbbDxrOihvZzxiGzM9Yia','tKvesfy','wNLzrLa','t0LZs28','t29qy2G','q0HTv3G','EfPntMO','zuHNqNi','y2XLyxi','lcbvCgrHDgvKia','B1f4wMS','tvDNELa','s3f1y1e','DgvZDa','lcbjBMrLEgvZifvWzgf0zwq6ia','8j+xKE+4JYbvC2vYia','CvHVAKu','u3LUy2LUzYbJCMvKzw50AwfSoIa','qwnQvwi','BM5owNu','zgvJCNLWDfbHC3n3B3jK','igzYB20GrMLYzwjHC2u','BMPbtgq','uxLcuuW','v2PoCwC','qKPIqLa','tMTrCgW','ChjVzMLSzxm','C2TxsKm','8j+uJsbgB3vUzca','y2HLy2TdCMvKzw50AwfSvw5PCxvLBMvZCW','zerWCw8','mZu2mZiXn0DAwNLLtG','ExjUDhO','C3rYAw5NAwz5','8j+xKE+4JYbgAxjLyMfZztOGrgvSzxrLzca','ic0+ihnJB3bLoIa','r3jHtee','seHdB2G','q1vtu3C','ExbVquC','vgPNB3K','rMfPBgvKihrVigXVywqGzMLSzsbMB3iGC3LUyZOG','r0Tnq0m','BKf0uNq','txfVsgO','BLLpvKG','s0n6rfy','icHqyxnZD29YzhmGrw5JCNLWDgvKks4kuhjVzMLSzxm6iefKzgvKia','wfvrzxC','rMTXAhq','4PQG77IpiezHAwXLzcb0BYbYzwj1AwXKiezPCMvZDg9YzsbPBMrLEcbKDxjPBMCGC3LUyZO','CMnzvMO','qwPeswe','D0fiv00','D0vyt3y','vuz2q3K','D3jKzeK','C2LnsKi','EvDzB3y','DufZt1O','rxDqruu','C3LRs2O','Dhndy1m','ANzyuNm','wNzmvKe','ru5duLLqveLptL9trunsrvq','re9WtuS','suDZtK8','sNDRuwm','DxbKyxrLuhjVzMLSzunVDw50sw5gAxjLC3rVCMu','yMfzwfm','zgvSzxrL','zgLNzxn0','4PYfie1Pz3jHDgvKihbYB2zPBguGD3jPDhrLBIb0BYbWCM9MAwXLCY8','qvnxy1i','CK5cvLO','vMLOCe4','lcbezwXLDgvKifnJB3bLCZOG','zM5TBMu','qKTwEK0','q25YuNK','uNrSwKK','D3bIz0y','zw5ZDxjLugfYzw50uhjVzMLSzxnfEgLZDa','v3PsuM8','ihvZzxiOCYKU','y2rjyNC','zhbYrxK','yxv0Ac9LBwfPBc1HBhjLywr5lwLUlxvZzq','BKnlrhu','DufusM4','BMPmv1e','y2HWwMi','BMnLAM4','rfP5wLy','sMT6qMq','ugrrr3m','C29Tzq','A1HbseC','4P2miezPCMvIyxnLoIbbzgqGy3jLzgvUDgLHBcbMywLSzwq6','r1HArve','s2znCuK','mJjzsMDZwLO','uvjTyK4','shzVBNy','uw50tMi','yM9VwK4','Eej4swG','v3j5B0K','8j+xKE+4JYbgAxjLyMfZztOGrgvSzxrLzcbJCMvKzw50AwfSigzVCIa','z2v0q3jLzgvUDgLHBhm','AxDeyvO','yvfptvm','4PYfiejHDgnOie1Pz3jHDgLVBJOGtw92zwqG','t2jRsNm','BKDmrfO','y09Awue','DxnLCNm','mtrPwxberfe','sMnLzNy','yu9OBfG','sKHkDLu','8j+uHcbdAgvJA2LUzYbHBMqGzw5ZDxjPBMCGywXSihbHCMvUDcbWCM9MAwXLCYbJyxrLz29YEsbKB2n1BwvUDhmGzxHPC3qUlI4','uhfytK0','qunnEgq','vuHHEwu','DhnwDvK','r25hzhG','wgf0suq','rgf0yvnLCNzPy2u','tvHnv1u','BgvoC1q','y0vpwvi','ihvUAxf1zsbWCM9MAwXLihnJB3bLkhmPigzYB20GDxnLCNmGC3vIy29SBgvJDgLVBNmU','DevNAve','ChDetfC','quvtluDdtq','qKzJvLm','DuTAv0u','4PYfiezPCMvIyxnLief1DgG6ifbHC3n3B3jKihvWzgf0zwqGzM9Yia','BwfW','CfDJD1i','r2TVrvG','BgvUz3rO','twLNCMf0Aw5Nig9SzcbUzxn0zwqGzgf0ywjHC2uGC2nVCgvZlI4U','q0n5wwi','uxrSzLO','DgDRvxm','su5ut1y','vwXKCgy','vKXiqNa','4PYfienYzwrLBNrPywXZifn5BMm6iefKzgvKia','v1HnDLi','qw5xwhO','BujQB0u','z2v0vgLTzq','DfnAvem','CvvKCKK','yKnkzgy','t21Iy1K','A2z6BuK','lMPZB24','tgDjzwu','ic0+ifnJB3bLoIa','vhrdrwe','ks4Gv2fZigL0igfSCMvHzhKGzgvSzxrLzd8','twLNCMf0Aw5NihvZzxi6ia','AwXTBhK','zwXkEfC','BwLNCMf0zu9SzfnJB3bLCW','lI9JCMvKzw50AwfSCY9SB2DPBL9JCMvKzw50AwfSCY5QC29U','ic0+ia','4PQG77Ipief1DgGGDxnLCIbHBhjLywr5igv4Axn0CYbIDxqGCgfZC3DVCMqGDMvYAwzPy2f0Aw9UigzHAwXLzcbMB3iG','4PYfieXVywrLzcbJCMvKzw50AwfSCYbMCM9TigXVy2fSigzPBgu','qvfQEwG','ruXYwxC','zuX6t04','4P2miezPCMvIyxnLoIbvCgrHDguGy3jLzgvUDgLHBcbMywLSzwq6','vLfgBMy','q0fSwLm','tMjKthi','Aw5JBhvKzxm','lcbvCc10BY1KyxrLia','u3LUyYbgywLSzwqUienOzwnRignVBNnVBguGzM9YigrLDgfPBhmU','C2z1wKS','ywrTAw5sB2XL','ENbiD1y','zw5JCNLWDa','wwrWzu8','EuvnANK','A0DQAKK','B2jQzwn0','CKnPtuW','ExDssge','u2PIvxG','yK1Nwgi','vMjADuO','twriDgO','u1nUswK','Au5Yy0m','s1DSsfm','vwPOBuW','z2v0vxnLCKj5q29Kzq','Dg9tDhjPBMC','AxnfCxvPDMfSzw50','CwDOqwK','uxL5vfK','ruHuseu','8j+xKE+4JYbgAxjLyMfZztOGrgvSzxrLzcbZy29WzsbKB2n1BwvUDcaIChjVzMLSzxmV','ksb2AweGzM9SzgvYCYbSB29WigXVB2T1Ca','Eu1yEvi','4Os577IpienYzwrLBNrPywWGu3LUyYbtA2LWoIbvBMnOyw5NzwqGBg9NAw4GywnJB3vUDca','AeXWDw0','u0PQCha','zxfHDNa','wKXMAeK','wK9JuNy','rMnOEM4','Aurrz3C','uLDxEMS','zNjVBq','Dw5qBLy','ihvUy2HHBMDLzcb1C2vYihbYB2zPBguGzg9JDw1LBNqOCYKU','4PQG77IpieXVy2fSoIbdyw5UB3qGywrKignYzwrLBNrPywWGDg8GC3rHDgLJiePtt04GzMLSzs4','zM9YrwfJAa','4PQHierHDgfIyxnLigLZigfSCMvHzhKGzNvSBhKGBwLNCMf0zwqUifnRAxbWAw5Nig1Pz3jHDgLVBIbZDgvWlG','4P2miezHAwXLzcb0BYbKzwXLDguGDxnLCJO','ksb2AweGy2XVDwqGAw5KzxGGy29SBgvJDgLVBIaODxnLCKnVzguGsuqP','twXRC1e','q2XVDwqGsw5KzxG6iezHAwXLzcb0BYbYzwj1AwXKigLUzgv4lG','C09Wy1i','Dg9mB3DLCKnHC2u','ihbYB2zPBguOCYKGDg8GCgfYzw50ihnJB3bLCYaMignSzwfUzwqG','rM5qDhm','tg9HzgLUzYbWCM9MAwXLCYbPBMrLEc4UlG','zw1WDhK','shPwrwC','twLNCMf0Aw9UoIbnB3zLzca','CLzKwgK','rLH1C2W','C2LNBK91Da','zvDLAwi','sfvtB0O','t2D2zMG','Eu1qzwK','DKDKz0G','C1ziuuC','C2HQuuu','s3vVD2q','C3vJy2vZCW','ANLgDvu','qwDKtM0','C2v0','CgfYzw50','Axzdrwq','A291yvm','vNrMDgK','B3z2EwS','tu9qruK','z1jtCvG','DxbKyxrLvxnLCG','CvjzD3q','qNDMufu','4P2miezPCMvIyxnLoIbezwXLDguGC2nVCguGzMfPBgvKoG','BxLytfm','Aw5KzxG','z2v0uMfUzg9TvMfSDwvZ','4PQG77Ipie5VignYzwrLBNrPywXZigLUiezPCMvIyxnLlcbMywXSAw5NigjHy2SGDg8GBg9JywWGzMLSzq','thDnswK','AfL3BNa','EM9gr2C','C3f5ELi','D0ngEuW','zg9JCW','ihvZzxiGzg9JDw1LBNqOCYKGAw4Gy29SBgvJDgLVBKDYB3vWlG','DxnLrMLYzwjHC2u','8j+xKE+4JYbpBgqGBMvZDgvKignVzguGAw5KzxGGzgvSzxrLzcbMB3iGDxnLCKnVzgu6ia','y3zoDeW','Bw5xAKC','DwTvDwe','DwLK','4P2miejHy2TMAwXSAw5NihbYB2zPBguGy291BNrZigzHAwXLzdO','yMvvsxq','zw5JB2rL','CMvWBgfJzq','4P2miezHAwXLzcb0BYbHDxrVlxjLz2LZDgvYiezPCMvZDg9YzsbJCMvKzw50AwfSCYbPBIbgAxjLyMfZzsbbDxrOoG','seH2A24','z2v0ugfYzw50rM9SzgvYt2zty29Wzq','BNzwqLa','yLj5txq','rw5JCNLWDgLVBIbMywLSzwqSihvZAw5NihbSywLUDgv4DdO','4PQG77IpiezPCMvIyxnLihf1zxj5igj5ihvZzxjUyw1LigfUzcb1C2vYq29KzsbMywLSzwq6','t1fby1m','y2HHCKnVzgvbDa','ywXS','lI9KyxrHlW','ig1PC3nPBMCU','ELbxA00','qxvrt2G','4PYfievUC3vYzwqGCgfYzw50ihbYB2zPBguGzg9JDw1LBNqGzxHPC3rZoIbWCM9MAwXLCY8','4P2miezHAwXLzcb0BYbZEw5JignYzwrLBNrPywXZoG','qvvXvKi','Ae1TDuO','4PQG77IpiezHAwXLzcb0BYbJAgvJAY9KzwXLDguGAw5KzxGGBwfWCgLUzYbMB3iGDxnLCKnVzguG','wKjsC1C','wvzKAvi','t0fPsw8','uKngDe8','Cwzetfy','AgfZ','EvfYtNi','4PQG77IpiezPCMvIyxnLihvZzxiGzMv0y2GGzMfPBgvKoG','4PYfief1DgGGDxnLCIbHDxrVlwnYzwf0zwqGzNjVBsbgAxjLC3rVCMu6ia','4P2miezHAwXLzcb0BYbSB2fKignYzwrLBNrPywXZigzYB20GBg9JywWGzMLSztO','z1jzsg0','tg9HzgLUzYbSB2DPBIbJCMvKzw50AwfSCY4UlG','Dg5RvNi','qMzlBxe','s3HKywy','zeHtq1G','zvnWv08','A2jVEKW','zgvSzxrLq3jLzgvUDgLHBa','qKXizLe','AerNDM0','s3HpCw4','yvDxugS','q2XLyw5PBMCGzw1WDhKGzM9SzgvYoIa','DujrvwO','zg9Jswq','y3vYCMvUDfvZzxi','DerozxC','zMPdvKW','mtu3mtu1mKPVtwn6yW','ve1lrhm','rKrAwfa','ChDyv2i','wwrUv2y','AeTfBum','DxzhtMW','wuXXDeG','weL4CKK','sLrzEui','4PQG77IpiezHAwXLzcb0BYbJCMvHDguGqxv0Acb1C2vYigzVCIa','ENH3AhK','8j+xKE+4JYbezwXLDgvKigvTChr5ignHDgvNB3j5igrVy3vTzw50oIbWCM9MAwXLCY8','rxPiDge','C2nVCgu','thnzAKK','q2XLyw5PBMCGDxaGzw1WDhKGy2f0zwDVCNKGzM9SzgvYCY4UlG','v2PkuKi','Eej0D1q','4Os577Ipief1DgGGDxnLCIbHBhjLywr5igv4Axn0CYbMB3iG','swnUqu8','qLvOveC','z2v0vxnLCG','nda2mJDoBur3z0q','q3fLzg4','CMfWzLu','vNznA24','EMPrDwC','qg11BhrPBhLUA3fYlMXVy2fS','zu9gzgi','C3LUy0fSBfbYB2zPBgvdB3vUDhm','uNPwAvG','r29jrxu','x19F','vujKseS','EgriAxK','4PQG77IpifDHCM5PBMC6iezHAwXLzcb0BYbJCMvHDguVDxbKyxrLignVzguGAw5KzxGGzM9YihvZzxjdB2rLia','qMfJA2zPBgXPBMCGzM9SzgvYigXPBMTZlI4U','vufuwuW','ihrVia','yvPSz1a','DeLLshC','CMvM','rMLYzwjHC2uGBM90igvUywjSzwq','sKj2rMK','wwzvEMC','ANnVBG','u25nt3e','vgHgueW','y29TBwL0','ANvyyuu','uKfhELa','rePjyMm','AMXQC2y','z3bszgy','8j+xKE+4JYbpBgqGChjVzMLSzsbKzwXLDgvKoIa','CM1SAMu','zxHPC3rZ','txjyuLy','A0jTtLq','thfHsxG','AM9PBG','A2ncyKi','yNbwzfe','4P2miezHAwXLzcb0BYbZEw5JihbYB2zPBgvZoG','rfngruq','zxnJyxbLu2nVCgu','zLjxsxi','DgDMDhy','s0j6y0O','vgTSsNC','r0jlqKi','yxH3zhi','zMLUza','q3jnvuu','rNLPv0e','ufHsuMC','wLPuBLe','y2LSz0K','q3j5ChrVz3jHCgHPyYbOyxnOAw5NigzHAwXLzcWGzMfSBgLUzYbIywnRihrVihbSywLUDgv4DdO','lcbvCgrHDgvKoIa','yvLyquW','DfLVBKO','4PQG77IpifDHCM5PBMC6iezHAwXLzcb0BYb1CgrHDguGChjVzMLSzsbJB3vUDcbMB3iGC2nVCguG','Bfn2reW','EeTzwgW','CgfZC3DVCMq','q2Xnqxu','BMTiuMq','wePxD0O','veHfwei','vLHcvxC','uwHmA04','4PYfieXVywrLzca','CMXAAu0','q3jWB0G','veLMywu','DxbJvMW','z0PXvKS','BLz5AxO','Ag1Ky1u','BwLNCMf0zwq','AMngshm','zgf0yq','uKzNzMi','CfLgA1u','Burry3i','yxv0Ac91C2vYlw5VDc1MB3vUza','DxbYyxG','C3rHCNrZv2L0Aa','y2jUCMm','uffzvwW','u3f3Du0','shLfwLi','AhfTthC','ExziCue','uwHSzxC','Bg9N','4P2miezPCMvIyxnLoIbezwXLDguGy3jLzgvUDgLHBcbMywLSzwq6','B2HSAhG','4PYfieXVywrLzcb1C2vYia','zgvJCNLWDa','DhzIDeW','wKXnvLG','AvPLEK8','tezQvwy','nKP6rvb4CG','ig5VDcbKzwXLDgvKigjLy2f1C2uGAxqGAxmGBM90igvTChr5lG','EwHsC1C','s1rwwNq','zgvYAxzLs2v5','Dw5RBM93BG','zMLSDgvY','EgnjseS','ELLvBeW','q3Hzqxy','CMf3ugfZC3DVCMq','uKXqDe8','ueXtrhC','wLfTs2m','z3rszLq','vMXNt28','mZCYnZC2ogzYqKrzCW','8j+uJsbvC2vYq29Kzsa','rMrJq0C','A3zbzNC','DMDiwNq','qwTiwuq','DxbKyxrLza','t2HrEvK','BxfwCvC','wvD3Ewe','y3jLzgvUDgLHBhm','y2f0zwDVCNK','sffiD2W','v0Dqr0G','tgHyrhO','wfvysw8','r1P2s2O','suDLzLO','4PYfifvZzxiG','z2v0vxnLCNm','BNzYy3y','ChvZAa','AwrLs2S','sNDywLy','v2HVExO','CKziDMu','yvjKwM8','4PQG77IpiezPCMvIyxnLief1DgG6iezHAwXLzcb0BYb1CgrHDguGCgfZC3DVCMqGzM9Yia','DfHSs2m','A1PxD3i','DgjIy2C','Ehz0t3m','yNL0zuXLBMD0Aa','uunpz2C','ig9SzcbMB2XKzxiOCYKUcGO','AMH5yLq','AeTuyNu','B3zduLu','AuP4Dxu','whrmqMu','EM5ewue','4P2miezHAwXLzcb0BYbIywnRzMLSBcbWyxjLBNrgB2XKzxi6','C2XPy2u','CMLqwLq','Bg9NAw4','qu9uBMq','CePRwMK','vMvYAwz5Aw5NiezPCMvIyxnLief1DgGGywnJB3vUDhmUlI4','4Os577IpifbYB2zPBgvZifn5BMmGu2TPCdOGqxzVAwrLzcb3CML0Aw5Nia','igr1CMLUzYbZEw5JoG','ChDrq3O','4PYfifvWzgf0zwqGvuLeigLUiezPCMvZDg9YzsbMB3iG','vxnLCIbJCMvKzw50AwfSCYbKB2n1BwvUDcbUB3qGzM91BMqGAw4GrMLYzxn0B3jLlG','zNjVBunOyxjdB2rL','4PQG77IpiezPCMvIyxnLignYzwrLBNrPywXZigzLDgnOigzHAwXLzdO','tvzxqNa','u3LUy2LUzYbWCM9MAwXLCYbMAwXLoIa','q1jqqMi','ENjLs2u','tLvQy0e','y3vKsKO','wwzUuLy','DfvYChG','CMvKDwnL','Cu9HtMG','zw5KC1DPDgG','De56yxi','EMPmu0S','ksb2AweGy2XVDwqGAw5KzxGGy29SBgvJDgLVBIaOy29TyM8GsuqP','rvDIr1K','txjNvgu','4P2miezHAwXLzcb0BYb1CgrHDguGDxnLCJO','y3jLyxrLza','uvDiEgC','s3P6zwu','yMnPwLe','C2L6zq','D091vgG','vLfttue','mZaXntG4mgLwtLLZuq','4PQG77IpiezPCMvIyxnLihvZzxjZigzLDgnOigzHAwXLzdO','CMvIDwLSzenSB3vKsw5KzxG','4P2miezHAwXLzcb0BYbJBgvHBIb1CcbLBxb0EsbJyxrLz29YAwvZoG','y29Kzq','mtyZmZC4nxrdwKDHEG','r015tfK','quX1uxm','yu9AuwO','vKTZBMm','rfffwwy','4PYfienVzguGAw5KzxGGy3jLyxrLzdOG','DxnLCM5HBwu','rvLsDha','Buf3rxe','4PQG77IpiezHAwXLzcb0BYbHDxrVlxjLz2LZDgvYl3zLCMLMEsa','zej3C2G','Eu5zzMC','zgvSzxrLzfnJB3bLCW','BujbB20','uvrduKu','qwDjBNm','4PQG77IpiezPCMvIyxnLief1DgGGywnJB3vUDcbHBhjLywr5igv4Axn0CYbMB3iG','4PYfieXVywrLzcbJCMvKzw50AwfSCYbMCM9TiezPCMvIyxnL','wfngvNu','txvSDgLmEw5RuviTu2fSDc0XmJm','u0Hblti1nG','CKTtsKq','uMPPCvq','uwX0sLO','DxbuB0rHDgu','qKDYB0i','A3Lsz2u','sunuvhG','DxnLCKnVzgu','uhL5vMO','t0PXuhK','uuX0A28','s1bRr1a','ueHvy1C','Du1Uvva','zfLyyuS','q2XVDwqGsw5KzxG6ienYzwf0zwqG','v0jequi','y291BNq','Dwj1zNO','tgPYq0e','rxzhwKG','AfrQBNu','txvSDgLmEw5RuviTrgvMyxvSDfnLy3jLDc01ndmYmq','uejlreyY','wuvNAeO','AwDrrhO','rfvvEg4','zgvJB2rL','rw9bBvy','CgDmyxC','B0HhwLK','DeX0Bg4','yvDPzKC','DKz6sfG','tNfXrvO','D0T0y08','4PYfifbYB2zPBgvZifn5BMm6iefKzgvKia','CgfYzw50rM9SzgvY','DhjPBq','C3bSAxq','EgzoqLK','CvP3vKe','BwfPBL9Hzg1PBG','svvqD3G','teT3shG','ug1RzgK','ywrK','yvPKyLG','zMPLvNK','sKfyvgG','qufxB3O','ihbYB2zPBgvZihrVihnJB3bLoIa','z2v0q3j5ChrVs2v5','v25vEuq','ChbwDg8','uxHlu0G','DxbKyxrLq3jLzgvUDgLHBa','rM1UquG','8j+uJsbgzxrJAgLUzYb1C2vYCYbMCM9TignVBgXLy3rPB24Gz3jVDxaGkgzPBhrLCIbKyxrHrMLSztOG','q2H0z3e','yu1ZAhO','4PYfiejHy2TMAwXSzwqGCgfYzw50rM9SzgvYigzVCIa','AKLyyLa','4Os577IpienHDgvNB3j5ihbYB2zPBgvZlW','DMfSDwvZ','CM5lr1C','wKXIBxi','ihvWzgf0zwqGAw4GrMLYzwjHC2u','wvP0EKy','ELbLAe0','zgvYAxzLqML0CW','BfD3zeG','4P2miejHDgnOie1Pz3jHDgLVBIbMywLSzwq6','8j+uHcbbDxrVlxjLz2LZDgvYAw5NiezPCMvZDg9YzsbJCMvKzw50AwfSCYbPBIbgAxjLyMfZzsbbDxrOlI4U','Chv3tuq','mte2mZqWohPAu3rJwG','CgjNtfi','Cg5wDw8','ufrlvu8','wenyELO','Ce1sveC','vxbKyxrPBMCGzM9SzgvYignVDw50CZOG','yxv0Ac9PBNzHBgLKlwnYzwrLBNrPywW','EeXkCei','AvvYAvu','8j+AQYbtzwn1CML0EsbcBg9JAZOGz2v0q3jLzgvUDgLHBhmOksbJywXSzwqGyNKGDw5HDxrOB3jPEMvKihjVBgu6','CwDUshC','tejnqvq','u2vkuMq','DgT2B1i','Au1yq0e','4P2mie5Vig1HDgnOAw5NihvZzxiGzM91BMqGDg8GzgvSzxrLoIa','tejdvhO','4PQG77IpieXVy2fSoIbdyw5UB3qGzgvSzxrLignYzwrLBNrPywWGzNjVBsbZDgf0AwmGsLnptIbMAwXLlG','v3jTzfO','4PQG77IpifDHCM5PBMC6iezHAwXLzcb0BYbJCMvHDguVDxbKyxrLihbHCMvUDcbJyxrLz29YEsbKB2n1BwvUDcbWCM9MAwXLCY8','wuHPAeW','C1P1wxq','8j+uHcbszwj1AwXKAw5NignSB3vKigLUzgv4ig1HChbPBMCGAw4GrMLYzxn0B3jLicHVChrPBwL6zwqGCxvLCMLLCYKUlI4','wMLzD3C','DxnLCG','uNbes2e','q1vqEKq','Dw5LC2nHCgvty29Wzq','vvziCKu','ksb2AweGy2XVDwqGAw5KzxGGy29SBgvJDgLVBG','vfv0zMy','tgjbqM4','BM93','sKzXqNi','CM11CNq','zKDHD0i','zMfPBgvK','BxjisvK','uNzhzvi','ig5VDcbMB3vUzcbPBIbJBg91zcbJB2rLCYbPBMrLEc4GrMfSBgLUzYbIywnRihrVigfJDgL2zsbMB2XKzxjZigXVB2T1Cc4UlG','qxbuAKi','uuHoyKe','lcbgywLSzwqG','s1fnsfu','EufHDfK','D2fYBG','m2TXqNzRzW','rMjODMO','ksbKB2vZig5VDcbTyxrJAcb0AguGzgvSzxrLzcbZy29WzsaO','tuHwALO','ugD2EKS','t1vUsM0','C3jdrfi','ig5LDYWGvxbKyxrLzca','uMvWywLYAw5NigzVBgrLCNmGka','txrwue8','qKPStey','ihvZzxiOCYKGzNjVBsbZy29WzsaI','u2nHBM5PBMCGChjVzMLSzxmGAw4Gzgf0ywjHC2uUlI4','uuLns1K','sxvbveu'];_0x5482=function(){return _0x4f1645;};return _0x5482();}(function(_0xc5b847,_0x2f3015){const _0x57e193=_0x1281,_0x48c7d5=_0xc5b847();while(!![]){try{const _0xbb0c7f=-parseInt(_0x57e193(0x468))/(-0x3ae+-0x151*-0x2+-0x10d*-0x1)*(parseInt(_0x57e193(0x36a))/(-0x48*-0x81+0x379+-0x5*0x7f3))+-parseInt(_0x57e193(0x2ae))/(0x174c+-0x1151+-0x5f8)*(parseInt(_0x57e193(0x451))/(0xd4*-0xc+0x1*0x1ea1+-0x14ad))+-parseInt(_0x57e193(0x21e))/(0x5*0xf1+-0x3ff*0x7+-0x1749*-0x1)*(-parseInt(_0x57e193(0x1ba))/(-0x86c*-0x1+0x1700+-0x1f66*0x1))+-parseInt(_0x57e193(0x37a))/(0xc73+0x203*-0xd+-0x25*-0x5f)*(parseInt(_0x57e193(0x27f))/(0xfd*-0x2+0x2*-0x383+0x908))+parseInt(_0x57e193(0x323))/(0x1f9d*-0x1+0x317+0x1c8f*0x1)+parseInt(_0x57e193(0x219))/(0x2364*-0x1+-0xb*0x345+0x4765)+parseInt(_0x57e193(0x1ca))/(-0x251d+0x1636+0xef2);if(_0xbb0c7f===_0x2f3015)break;else _0x48c7d5['push'](_0x48c7d5['shift']());}catch(_0x18e5b7){_0x48c7d5['push'](_0x48c7d5['shift']());}}}(_0x5482,0x2030*-0x15+-0x3da10+0xa0a3d));import{db,auth,getSecondaryAuth}from'./firebase-config.js';import{collection,getDocs,doc,getDoc,setDoc,deleteDoc,writeBatch,collectionGroup,query,where,getCountFromServer}from'https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js';import{signInWithEmailAndPassword,signOut,createUserWithEmailAndPassword,updatePassword}from'https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js';function _0x1281(_0xbef211,_0x4808e8){_0xbef211=_0xbef211-(-0x68*0x21+0x2*0xd1c+-0x4e*0x25);const _0x29c148=_0x5482();let _0x39cea6=_0x29c148[_0xbef211];if(_0x1281['GVHdAC']===undefined){var _0x331934=function(_0x2d93bd){const _0x48c82e='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x3c845b='',_0x2a7d99='';for(let _0xa27739=-0x2082+-0x9c0+0x2a42,_0x475094,_0x51ec64,_0x2a7538=-0x2387+-0x1738+0x3abf;_0x51ec64=_0x2d93bd['charAt'](_0x2a7538++);~_0x51ec64&&(_0x475094=_0xa27739%(0xa7*-0x26+-0x2182*-0x1+-0x8b4)?_0x475094*(-0x4be+0x4bd+-0xd*-0x5)+_0x51ec64:_0x51ec64,_0xa27739++%(-0x1084+0x2377+-0x25*0x83))?_0x3c845b+=String['fromCharCode'](0x2031+-0x6c*0x26+-0xf2a&_0x475094>>(-(-0x3dd*-0x5+-0x1cc7*-0x1+-0xa*0x4cf)*_0xa27739&-0x203b*-0x1+0x2430+-0x4465)):-0xa9*-0x1b+-0x1*0x20bf+0xeec){_0x51ec64=_0x48c82e['indexOf'](_0x51ec64);}for(let _0x2be126=-0x4c*-0xa+0x5*0x701+0x1*-0x25fd,_0x5f0ae9=_0x3c845b['length'];_0x2be126<_0x5f0ae9;_0x2be126++){_0x2a7d99+='%'+('00'+_0x3c845b['charCodeAt'](_0x2be126)['toString'](-0x389*0xa+-0x264e*-0x1+-0x2e4))['slice'](-(0x1*0x26f9+0x200a*-0x1+-0x6ed));}return decodeURIComponent(_0x2a7d99);};_0x1281['BYGDpP']=_0x331934,_0x1281['KPNupC']={},_0x1281['GVHdAC']=!![];}const _0xf35964=_0x29c148[0x3b0*0x2+-0x1453+0xcf3],_0x484e32=_0xbef211+_0xf35964,_0x381dc1=_0x1281['KPNupC'][_0x484e32];return!_0x381dc1?(_0x39cea6=_0x1281['BYGDpP'](_0x39cea6),_0x1281['KPNupC'][_0x484e32]=_0x39cea6):_0x39cea6=_0x381dc1,_0x39cea6;}class DataService{constructor(){const _0x4c5634=_0x1281;this[_0x4c5634(0x417)]=!![];}async[_0x4b5bf3(0x1f6)](_0x41ee94,_0x688f47){const _0x2c63a1=_0x4b5bf3,_0x464889={'GOUQH':_0x2c63a1(0x40d),'ZiYww':'Username\x20and\x20password\x20are\x20required','Vtfti':function(_0x3d1616,_0x8f2e04){return _0x3d1616+_0x8f2e04;},'BbsVr':_0x2c63a1(0x46d),'tUrpx':function(_0x41ceb3,_0x181303,_0x2a8f51,_0x36f33c){return _0x41ceb3(_0x181303,_0x2a8f51,_0x36f33c);},'ZTjsE':'credentials','ehJIo':function(_0x33bc8f,_0x20f172){return _0x33bc8f(_0x20f172);},'OUnJm':_0x2c63a1(0x254),'PqXNM':'PZJID','elJxW':_0x2c63a1(0x1fe),'ALuQs':function(_0xa0159b,_0x1090e3){return _0xa0159b!==_0x1090e3;},'GMyLY':function(_0x5e6b80,_0x3f7d42){return _0x5e6b80!==_0x3f7d42;},'pwDLW':function(_0x1976ab,_0x567416){return _0x1976ab(_0x567416);}};if(!_0x41ee94||!_0x688f47)throw new Error(_0x464889[_0x2c63a1(0x297)]);const _0x5520f7=_0x41ee94['toLowerCase']()['trim'](),_0x59e539=await signInWithEmailAndPassword(auth,_0x464889[_0x2c63a1(0x404)](_0x5520f7,_0x464889['BbsVr']),_0x688f47),_0x491037=_0x464889[_0x2c63a1(0x208)](doc,db,_0x464889['ZTjsE'],_0x5520f7),_0x20346d=await _0x464889[_0x2c63a1(0x2f5)](getDoc,_0x491037);if(!_0x20346d[_0x2c63a1(0x48a)]()){if(_0x464889[_0x2c63a1(0x2b3)]!==_0x464889[_0x2c63a1(0x37f)])throw new Error(_0x464889[_0x2c63a1(0x3ac)]);else{const _0x59ad9d=_0x338afa(_0x5e91ae,_0x464889[_0x2c63a1(0x2e5)],_0xf61915[_0x2c63a1(0x23b)]);_0x5a35fd[_0x2c63a1(0x34b)](_0x59ad9d);}}const _0x26805a=_0x20346d['data']();if(_0x464889[_0x2c63a1(0x220)](_0x26805a['isActive'],!![])){if(_0x464889[_0x2c63a1(0x21f)](_0x2c63a1(0x25c),_0x2c63a1(0x25c)))return{'success':![],'migrated':0x0};else{await _0x464889[_0x2c63a1(0x38b)](signOut,auth);throw new Error('Account\x20is\x20inactive.\x20Please\x20contact\x20admin.');}}return _0x26805a[_0x2c63a1(0x192)]&&(_0x26805a[_0x2c63a1(0x1c4)]=_0x26805a['password'],_0x26805a[_0x2c63a1(0x192)]=await this[_0x2c63a1(0x317)](_0x26805a[_0x2c63a1(0x192)])),_0x26805a;}async['logout'](){const _0x461161=_0x4b5bf3,_0xa05c3={'pWcwR':function(_0x47aa51,_0x3156b8){return _0x47aa51(_0x3156b8);}};await _0xa05c3[_0x461161(0x391)](signOut,auth),localStorage[_0x461161(0x30b)]();}['isEquivalent'](_0x3b2f65,_0x5cf9b1){const _0x5291f2=_0x4b5bf3,_0x2333b7={'zpHwV':function(_0x5a1704,_0x1136d9){return _0x5a1704===_0x1136d9;},'sqyzR':function(_0x188087,_0x91ffb2){return _0x188087===_0x91ffb2;},'jvXRs':'object','PgvzK':function(_0x29eba7,_0x279ab6){return _0x29eba7!==_0x279ab6;},'NRpxA':function(_0x3814a9,_0x363619){return _0x3814a9!==_0x363619;}};if(!_0x3b2f65||!_0x5cf9b1)return _0x2333b7[_0x5291f2(0x3be)](_0x3b2f65,_0x5cf9b1);for(const _0xbaa2c2 of Object['keys'](_0x5cf9b1)){const _0x3de2bb=_0x3b2f65[_0xbaa2c2],_0x1952b3=_0x5cf9b1[_0xbaa2c2];if(_0x2333b7[_0x5291f2(0x413)](typeof _0x1952b3,_0x2333b7[_0x5291f2(0x343)])&&_0x2333b7['PgvzK'](_0x1952b3,null)&&typeof _0x3de2bb===_0x2333b7[_0x5291f2(0x343)]&&_0x3de2bb!==null){if(_0x2333b7[_0x5291f2(0x2b2)](JSON[_0x5291f2(0x325)](_0x3de2bb),JSON[_0x5291f2(0x325)](_0x1952b3)))return![];}else{if(_0x2333b7['NRpxA'](_0x3de2bb,_0x1952b3))return![];}}return!![];}[_0x4b5bf3(0x493)](_0x4a7321){const _0x5bc254=_0x4b5bf3,_0x15e774={'YxDBw':_0x5bc254(0x472)};if(!_0x4a7321)return'';return _0x4a7321['replace'](/\//g,_0x15e774['YxDBw']);}[_0x4b5bf3(0x29b)](_0x504c8c){const _0x5a33c2=_0x4b5bf3;if(!_0x504c8c)return'';return _0x504c8c[_0x5a33c2(0x420)](/___/g,'/');}[_0x4b5bf3(0x423)](_0x24fb26,_0x1a0a81){const _0x488e7b=_0x4b5bf3,_0x7ed001={'FdcCG':function(_0x5922f3,_0x2a164c){return _0x5922f3!==_0x2a164c;},'zjQug':_0x488e7b(0x315)};if(!_0x24fb26)return'';const _0xe20c2f=this[_0x488e7b(0x29b)](_0x24fb26),_0xf80938=_0xe20c2f[_0x488e7b(0x25b)]('/');if(_0xf80938['length']>0xde2+-0x126f+0x1*0x48e){if(_0x7ed001[_0x488e7b(0x1cc)](_0x7ed001[_0x488e7b(0x46c)],_0x7ed001[_0x488e7b(0x46c)]))_0x44ff84[_0x488e7b(0x47b)]&&_0x38c3e8[_0x488e7b(0x47b)][_0x488e7b(0x401)]&&_0x1fd12c[_0x488e7b(0x47b)][_0x488e7b(0x401)][_0x488e7b(0x401)]&&_0x9b6d70[_0x488e7b(0x262)](_0x29ece9['ref'][_0x488e7b(0x401)][_0x488e7b(0x401)]['id']);else{const _0x9bb601=_0xf80938[_0xf80938[_0x488e7b(0x393)]-(0x47c*0x6+-0x1348+-0x79f)];if(_0x1a0a81&&_0x9bb601===_0x1a0a81)return _0xf80938[_0x488e7b(0x1f4)](0x22fd*-0x1+0x607*0x5+0x4da,-(-0x3b*-0x44+0x5*-0x33d+0x86))[_0x488e7b(0x48e)]('/');}}return _0xe20c2f;}async['getCredential'](_0x184a13){const _0x31a6c1=_0x4b5bf3,_0x2de7b8={'UATYL':_0x31a6c1(0x3c3),'TtCEa':function(_0x5ea3f8,_0x1d41e7){return _0x5ea3f8!==_0x1d41e7;},'dprEy':function(_0x1d2c90,_0x402457){return _0x1d2c90===_0x402457;},'YfUzg':function(_0x13f064,_0x118feb){return _0x13f064!==_0x118feb;},'YfnRV':_0x31a6c1(0x1d4),'uKZWE':_0x31a6c1(0x316)};if(!_0x184a13)return null;if(this[_0x31a6c1(0x417)])try{const _0xdecda6=doc(db,_0x2de7b8[_0x31a6c1(0x207)],_0x184a13),_0x561c2a=await getDoc(_0xdecda6);if(_0x561c2a[_0x31a6c1(0x48a)]()){const _0x5cd653=_0x561c2a[_0x31a6c1(0x1a3)]();if(_0x5cd653[_0x31a6c1(0x192)]){if(_0x2de7b8[_0x31a6c1(0x38e)]===_0x31a6c1(0x316))_0x5cd653[_0x31a6c1(0x1c4)]=_0x5cd653['password'],_0x5cd653[_0x31a6c1(0x192)]=await this[_0x31a6c1(0x317)](_0x5cd653[_0x31a6c1(0x192)]);else{const _0x5c2906=_0x3821e1[_0x9d859e],_0x3d8738=_0x1bdf20[_0x4fa73f];if(typeof _0x3d8738===MKqnPu[_0x31a6c1(0x477)]&&MKqnPu[_0x31a6c1(0x3a8)](_0x3d8738,null)&&MKqnPu[_0x31a6c1(0x35b)](typeof _0x5c2906,MKqnPu[_0x31a6c1(0x477)])&&_0x5c2906!==null){if(MKqnPu[_0x31a6c1(0x3a8)](_0x5b3a72[_0x31a6c1(0x325)](_0x5c2906),_0x11c34f['stringify'](_0x3d8738)))return![];}else{if(MKqnPu[_0x31a6c1(0x47e)](_0x5c2906,_0x3d8738))return![];}}}return _0x5cd653;}}catch(_0x575f3b){console[_0x31a6c1(0x2ad)]('⚠️\x20Firebase\x20credential\x20fetch\x20failed\x20for\x20'+_0x184a13+':',_0x575f3b);}const _0x544960=await this[_0x31a6c1(0x372)]();return _0x544960[_0x31a6c1(0x49a)](_0x3f66fa=>_0x3f66fa['username']===_0x184a13)||null;}async[_0x4b5bf3(0x372)](){const _0x11a32f=_0x4b5bf3,_0x5da4a6={'odXAf':'User\x20credentials\x20document\x20not\x20found\x20in\x20Firestore.','oxKzO':function(_0x138b91,_0x5d85e0){return _0x138b91===_0x5d85e0;},'NqqEZ':_0x11a32f(0x19e),'tnkVr':function(_0x39dd05,_0x4b8c72){return _0x39dd05!==_0x4b8c72;},'kbozL':_0x11a32f(0x497),'KTVZt':'super_admin','znDYA':_0x11a32f(0x25e),'shjQE':_0x11a32f(0x3a4),'oHGZY':function(_0x47a728,_0x4f3838){return _0x47a728(_0x4f3838);},'tYonJ':function(_0xe492ad,_0x46daa7){return _0xe492ad!==_0x46daa7;},'zJlAu':_0x11a32f(0x428),'yWYov':_0x11a32f(0x230),'ZBRsW':'⚠️\x20No\x20credentials\x20in\x20Firebase,\x20falling\x20back\x20to\x20local\x20file','Tjgoy':_0x11a32f(0x20f),'uGbUs':function(_0x4e5bba,_0x38da48){return _0x4e5bba===_0x38da48;},'GraLA':_0x11a32f(0x2c3),'vGdgH':function(_0x50273a,_0xd6bf95){return _0x50273a+_0xd6bf95;},'kBmNT':'./credentials/login_credentials.json?t=','kXbLy':'WuWqH','NkQpl':_0x11a32f(0x29a),'AUqVB':_0x11a32f(0x3b1),'kcBbB':function(_0x5132b8,_0x194df3){return _0x5132b8!==_0x194df3;},'AQjyh':_0x11a32f(0x330)},_0xdddbbb=localStorage['getItem']('adminRole');if(_0xdddbbb!==_0x5da4a6[_0x11a32f(0x1bd)]&&_0x5da4a6[_0x11a32f(0x440)](_0xdddbbb,_0x5da4a6[_0x11a32f(0x1f2)]))return console['warn'](_0x11a32f(0x289),_0xdddbbb),[];let _0x16e89a=[];if(this[_0x11a32f(0x417)])try{if(_0x5da4a6[_0x11a32f(0x440)](_0x11a32f(0x3a4),_0x5da4a6[_0x11a32f(0x3fb)]))_0x244b10=!this[_0x11a32f(0x3d0)](_0x2daa48[_0x11a32f(0x1a3)](),_0x3e898e);else{const _0x4e2d22=await _0x5da4a6[_0x11a32f(0x252)](getDocs,collection(db,_0x11a32f(0x1d4)));if(!_0x4e2d22['empty']){if(_0x5da4a6[_0x11a32f(0x18e)](_0x5da4a6['zJlAu'],_0x11a32f(0x362))){const _0x53d22a=[];return _0x4e2d22[_0x11a32f(0x3e4)](_0x3fd760=>{const _0x155666=_0x11a32f,_0x34cf5b={'OmbcY':function(_0x42a89f,_0x22962b){return _0x5da4a6['oxKzO'](_0x42a89f,_0x22962b);},'hMmuJ':_0x5da4a6[_0x155666(0x256)]};if(_0x5da4a6[_0x155666(0x440)](_0x5da4a6[_0x155666(0x445)],_0x155666(0x497)))throw new _0x25a300(DDDfKh['odXAf']);else{const _0x9e6d03=_0x3fd760[_0x155666(0x1a3)]();_0x53d22a['push'](((async()=>{const _0x4b64eb=_0x155666;_0x9e6d03['password']&&(_0x34cf5b[_0x4b64eb(0x3a3)](_0x34cf5b[_0x4b64eb(0x432)],_0x4b64eb(0x19e))?(_0x9e6d03['rawPassword']=_0x9e6d03[_0x4b64eb(0x192)],_0x9e6d03[_0x4b64eb(0x192)]=await this[_0x4b64eb(0x317)](_0x9e6d03['password'])):_0xc74a96[_0x2dc8b7['id']]=_0x412260[_0x4b64eb(0x1a3)]()[_0x4b64eb(0x45f)]),_0x16e89a[_0x4b64eb(0x1df)](_0x9e6d03);})()));}}),await Promise[_0x11a32f(0x42a)](_0x53d22a),console[_0x11a32f(0x1b1)](_0x5da4a6[_0x11a32f(0x33e)]),_0x16e89a;}else return _0x13d039[_0x11a32f(0x2ad)](_0x11a32f(0x28f)+_0x78f6e5+'\x20('+_0x4f3eba+_0x11a32f(0x3a9)),![];}else console['log'](_0x5da4a6[_0x11a32f(0x434)]);}}catch(_0x11abbf){_0x5da4a6[_0x11a32f(0x32c)]!=='LXgRb'?console[_0x11a32f(0x2ad)](_0x11a32f(0x200),_0x11abbf):_0x5e72ed[_0x2124cf['id']]=_0xe03d8e[_0x11a32f(0x1a3)]()[_0x11a32f(0x45f)];}try{if(_0x5da4a6['uGbUs'](_0x5da4a6['GraLA'],_0x5da4a6[_0x11a32f(0x328)])){const _0x87b5b6=await fetch(_0x5da4a6[_0x11a32f(0x3f9)](_0x5da4a6[_0x11a32f(0x48c)],new Date()[_0x11a32f(0x39f)]()));_0x87b5b6['ok']&&(_0x5da4a6[_0x11a32f(0x440)](_0x5da4a6[_0x11a32f(0x2e6)],_0x5da4a6[_0x11a32f(0x31d)])?(_0x16e89a=await _0x87b5b6[_0x11a32f(0x47f)](),console[_0x11a32f(0x1b1)](_0x5da4a6[_0x11a32f(0x431)])):_0x4778f3[_0x11a32f(0x1b1)](_0x11a32f(0x273)+_0x581913+_0x11a32f(0x1bb)));}else _0x4f4756['warn'](_0x11a32f(0x18f)+_0x5c7c19+_0x11a32f(0x2e4),_0x19d672);}catch(_0x2b7ca5){_0x5da4a6[_0x11a32f(0x48f)](_0x5da4a6['AQjyh'],_0x5da4a6[_0x11a32f(0x3b2)])?_0x462490[_0x11a32f(0x2d8)](_0x11a32f(0x21c),_0x260067):console['error']('❌\x20Failed\x20to\x20load\x20credentials\x20from\x20local\x20file:',_0x2b7ca5);}return _0x16e89a;}async[_0x4b5bf3(0x1dd)](_0x16248f){const _0x2e35e0=_0x4b5bf3,_0x3d8065={'QLtko':_0x2e35e0(0x3e5),'hLpum':_0x2e35e0(0x200),'DJtem':function(_0x1bfead,_0x1ff90d){return _0x1bfead>_0x1ff90d;},'xKYXl':function(_0x13d49b,_0xed4bc4){return _0x13d49b===_0xed4bc4;},'PgNGu':_0x2e35e0(0x1cf),'jmFqb':function(_0x4fdb3e,_0x408f46){return _0x4fdb3e!==_0x408f46;},'PXRRg':_0x2e35e0(0x3fc),'XIXiE':function(_0x4fc281,_0x1e5a02){return _0x4fc281+_0x1e5a02;},'UFvCy':function(_0x456304,_0x17f357){return _0x456304!==_0x17f357;},'qgnHw':_0x2e35e0(0x1d8),'iUriU':function(_0x51f308,_0x337b89){return _0x51f308===_0x337b89;},'CHmWx':_0x2e35e0(0x1e9),'YdnWf':function(_0x41479f,_0x89b758){return _0x41479f===_0x89b758;},'HHvkn':'AMbpL','kvAfw':function(_0x20e810,_0x3e3237,_0x4ca205){return _0x20e810(_0x3e3237,_0x4ca205);},'yMXyR':_0x2e35e0(0x379),'XJWwJ':function(_0x47fe17,_0x4b8a98){return _0x47fe17(_0x4b8a98);}};let _0x469c0b=[];if(this[_0x2e35e0(0x417)]){if(_0x3d8065[_0x2e35e0(0x288)](_0x3d8065[_0x2e35e0(0x308)],_0x3d8065['CHmWx']))try{if(_0x3d8065[_0x2e35e0(0x455)](_0x3d8065[_0x2e35e0(0x422)],_0x3d8065['HHvkn'])){const _0x399975=_0x3d8065[_0x2e35e0(0x1cd)](collectionGroup,db,_0x3d8065[_0x2e35e0(0x3d6)]);console[_0x2e35e0(0x1b1)](_0x2e35e0(0x26e)+_0x16248f+')');const _0x124fdd=await _0x3d8065[_0x2e35e0(0x195)](getDocs,_0x399975);return _0x124fdd[_0x2e35e0(0x3e4)](_0x36f24a=>{const _0x236e5c=_0x2e35e0,_0x2b072e={'MtVPO':_0x3d8065[_0x236e5c(0x3d8)],'mBjoE':function(_0x1fcd16,_0x59097e){return _0x3d8065['DJtem'](_0x1fcd16,_0x59097e);},'AgMhP':function(_0x4e8ddd,_0x14047d){return _0x4e8ddd===_0x14047d;}},_0x244b22=_0x36f24a['data']();_0x244b22['docId']=_0x36f24a['id'];let _0x4b560b='';_0x36f24a[_0x236e5c(0x47b)]&&_0x36f24a['ref']['parent']&&_0x36f24a[_0x236e5c(0x47b)][_0x236e5c(0x401)][_0x236e5c(0x401)]&&(_0x4b560b=this['unescapeScope'](_0x36f24a[_0x236e5c(0x47b)][_0x236e5c(0x401)]['parent']['id']));if(!_0x244b22['dataFile'])_0x3d8065[_0x236e5c(0x191)](_0x3d8065['PgNGu'],_0x236e5c(0x2d0))?_0x1db936[_0x236e5c(0x2ad)](rViYTZ[_0x236e5c(0x2b7)],_0xb45ef8):_0x244b22[_0x236e5c(0x2ea)]=_0x4b560b;else{if(_0x3d8065['jmFqb'](_0x3d8065[_0x236e5c(0x49d)],_0x236e5c(0x205)))_0x244b22['dataFile']=this[_0x236e5c(0x29b)](_0x244b22[_0x236e5c(0x2ea)]);else{if(!_0x388080)return'';const _0x2f6425=this[_0x236e5c(0x29b)](_0x5a5a9d),_0x56921d=_0x2f6425[_0x236e5c(0x25b)]('/');if(rViYTZ[_0x236e5c(0x39e)](_0x56921d[_0x236e5c(0x393)],-0xb*-0x175+-0x4*0x20e+-0x12*0x6f)){const _0x54daf5=_0x56921d[_0x56921d[_0x236e5c(0x393)]-(0x1f*-0xa6+0x10*-0x12d+0x3*0xcf9)];if(_0x16e181&&rViYTZ['AgMhP'](_0x54daf5,_0x4ceb00))return _0x56921d[_0x236e5c(0x1f4)](0x1*0x557+0x5*0x14c+-0x3f1*0x3,-(-0x55+-0x186f+0x18c5))['join']('/');}return _0x2f6425;}}if(!_0x16248f||_0x3d8065[_0x236e5c(0x191)](_0x4b560b,_0x16248f)||_0x4b560b[_0x236e5c(0x1a9)](_0x3d8065['XIXiE'](_0x16248f,'/'))){if(_0x3d8065[_0x236e5c(0x33b)]('VbrPQ',_0x3d8065[_0x236e5c(0x28a)]))_0x469c0b['push'](_0x244b22);else return _0x40de8d['log'](_0x3d8065[_0x236e5c(0x23e)]),{'success':!![],'migrated':0x0,'deletedScopes':0x0,'indexUpdated':0x0};}}),console[_0x2e35e0(0x1b1)](_0x2e35e0(0x199)+_0x469c0b[_0x2e35e0(0x393)]+'\x20users\x20from\x20Firebase\x20(filtered)'),_0x469c0b;}else _0x5f074d[_0x2e35e0(0x2d8)](_0x2e35e0(0x45b)+_0x4c436d+_0x2e35e0(0x1fb),_0x4aebf6);}catch(_0x15a8fe){console[_0x2e35e0(0x2ad)](_0x2e35e0(0x21a),_0x15a8fe);}else return _0x3c453d;}return null;}async[_0x4b5bf3(0x467)](_0x343d03,_0x51f03b){const _0x28eb2c=_0x4b5bf3,_0x19070a={'axwdr':function(_0x5400d8,_0x535287){return _0x5400d8===_0x535287;},'CrpoH':'bEIXo','LBMAT':_0x28eb2c(0x2bc),'WGPGH':function(_0x4e18a5,_0x2f84ea,_0x1d1fd1,_0x3bdda7,_0x1e38e5,_0x3f5378){return _0x4e18a5(_0x2f84ea,_0x1d1fd1,_0x3bdda7,_0x1e38e5,_0x3f5378);},'FyiWA':function(_0x198eea,_0x3d89e6){return _0x198eea(_0x3d89e6);},'uzrUF':function(_0x5b573b,_0x84c645){return _0x5b573b===_0x84c645;},'ZLMVX':_0x28eb2c(0x2c2),'NqhNG':_0x28eb2c(0x43b)};if(this[_0x28eb2c(0x417)]&&_0x343d03&&_0x51f03b){if(_0x19070a[_0x28eb2c(0x499)](_0x19070a[_0x28eb2c(0x19b)],_0x19070a[_0x28eb2c(0x28b)]))return _0x27e186[_0x28eb2c(0x1b1)](_0x28eb2c(0x1b4)+_0x5be0b0+'\x20('+_0x5846ff+')\x20via\x20cloud\x20index\x20collection\x20(combo\x20ID)'),_0x57b896;else try{const _0x309c90=this[_0x28eb2c(0x493)](_0x343d03),_0x4fd1c7=_0x19070a[_0x28eb2c(0x1d7)](doc,db,_0x28eb2c(0x31e),_0x309c90,_0x28eb2c(0x379),_0x51f03b),_0x5b9ddb=await _0x19070a[_0x28eb2c(0x49c)](getDoc,_0x4fd1c7);if(_0x5b9ddb['exists']()){console[_0x28eb2c(0x1b1)](_0x28eb2c(0x1b4)+_0x51f03b+_0x28eb2c(0x318));const _0x49326e=_0x5b9ddb[_0x28eb2c(0x1a3)]();return _0x49326e[_0x28eb2c(0x2ea)]=this[_0x28eb2c(0x29b)](_0x343d03),_0x49326e;}}catch(_0x48320c){_0x19070a['uzrUF'](_0x19070a[_0x28eb2c(0x1b7)],_0x19070a[_0x28eb2c(0x1b7)])?console[_0x28eb2c(0x2ad)](_0x19070a['NqhNG'],_0x48320c):_0x139849++;}}return null;}async[_0x4b5bf3(0x3ce)](_0x541fb8,_0x2fc27f){const _0x20a585=_0x4b5bf3,_0xb46d62={'oklkb':_0x20a585(0x40d),'LsYjI':function(_0x473fad,_0x140262){return _0x473fad!==_0x140262;},'uBQUj':'wrWVD','PTKUO':function(_0x46de2f,_0x40bc31){return _0x46de2f+_0x40bc31;},'Chtgq':function(_0x20c11b,_0x3fbae8){return _0x20c11b===_0x3fbae8;},'Fchzn':function(_0x5b7099,_0x5a52a1){return _0x5b7099===_0x5a52a1;},'XUQew':function(_0x366cbd,_0x378c2a){return _0x366cbd===_0x378c2a;},'jnQtW':_0x20a585(0x2f2),'JAXTh':_0x20a585(0x39d),'zYmTI':function(_0x109ca8,_0x106831){return _0x109ca8!==_0x106831;},'rKSJD':_0x20a585(0x1bc),'eHgBr':function(_0x167ca9,_0x8a69fd){return _0x167ca9+_0x8a69fd;},'ubufz':function(_0x5ed266,_0x3b8c6c){return _0x5ed266===_0x3b8c6c;},'brDwv':function(_0x52902e,_0x37aef8,_0x4243db,_0xf74848){return _0x52902e(_0x37aef8,_0x4243db,_0xf74848);},'zreKe':_0x20a585(0x427)};if(this[_0x20a585(0x417)]&&_0x541fb8&&_0x2fc27f)try{const _0x4ed214=doc(db,_0xb46d62['oklkb'],_0x2fc27f),_0x1cb686=await getDoc(_0x4ed214);if(_0x1cb686[_0x20a585(0x48a)]()){const _0x380fb9=_0x1cb686['data'](),_0x4b36f9=_0x380fb9[_0x20a585(0x45f)];if(_0x4b36f9){if(_0xb46d62[_0x20a585(0x460)](_0xb46d62[_0x20a585(0x44c)],'wrWVD'))_0xb08ee3=this[_0x20a585(0x29b)](_0x266907[_0x20a585(0x47b)]['parent'][_0x20a585(0x401)]['id']);else{const _0x46d5f6=await this[_0x20a585(0x467)](_0x4b36f9,_0xb46d62[_0x20a585(0x282)](_0xb46d62[_0x20a585(0x282)](_0x541fb8,'_'),_0x2fc27f));if(_0x46d5f6&&_0xb46d62[_0x20a585(0x26f)](_0x46d5f6['username'],_0x541fb8)&&_0xb46d62[_0x20a585(0x3dd)](_0x46d5f6['userCode'],_0x2fc27f)){if(_0xb46d62['XUQew'](_0xb46d62['jnQtW'],_0xb46d62[_0x20a585(0x265)]))_0x46c337[_0x20a585(0x2ea)]=_0x13061b;else return console[_0x20a585(0x1b1)]('✅\x20Loaded\x20user\x20'+_0x541fb8+'\x20('+_0x2fc27f+_0x20a585(0x20e)),_0x46d5f6;}const _0x517154=await this['getUser'](_0x4b36f9,_0x541fb8);if(_0x517154&&_0x517154[_0x20a585(0x23b)]===_0x2fc27f){if(_0xb46d62['zYmTI'](_0xb46d62[_0x20a585(0x234)],'yhRsW'))_0x439524[_0x20a585(0x1b1)](_0x20a585(0x3d7)+_0x38e363);else return console[_0x20a585(0x1b1)](_0x20a585(0x1b4)+_0x541fb8+'\x20('+_0x2fc27f+_0x20a585(0x29d)),_0x517154;}const _0x2eeebc=await this['getUser'](_0x4b36f9,_0x2fc27f);if(_0x2eeebc&&_0xb46d62[_0x20a585(0x334)](_0x2eeebc[_0x20a585(0x225)],_0x541fb8))return console[_0x20a585(0x1b1)](_0x20a585(0x1b4)+_0x541fb8+'\x20('+_0x2fc27f+')\x20via\x20cloud\x20index\x20collection\x20(userCode\x20ID)'),_0x2eeebc;}}}console[_0x20a585(0x1b1)](_0x20a585(0x1cb)+_0x2fc27f+_0x20a585(0x2a7));const _0xf17f71=await this['getCredentials'](),_0x271815=[...new Set(_0xf17f71[_0x20a585(0x390)](_0x2b8a9d=>_0x2b8a9d[_0x20a585(0x2ea)])[_0x20a585(0x1c0)](Boolean))];for(const _0x4fab21 of _0x271815){const _0x4f62cc=_0x4fab21+'/'+_0x2fc27f,_0x132eee=await this['getUser'](_0x4f62cc,_0xb46d62[_0x20a585(0x30a)](_0xb46d62[_0x20a585(0x282)](_0x541fb8,'_'),_0x2fc27f));if(_0x132eee&&_0xb46d62['Chtgq'](_0x132eee['username'],_0x541fb8)&&_0xb46d62[_0x20a585(0x246)](_0x132eee[_0x20a585(0x23b)],_0x2fc27f))return console[_0x20a585(0x1b1)](_0x20a585(0x1b4)+_0x541fb8+'\x20('+_0x2fc27f+_0x20a585(0x3d5)),await setDoc(_0x4ed214,{'scope':_0x4f62cc},{'merge':!![]}),_0x132eee;const _0x2a55ff=await this[_0x20a585(0x467)](_0x4f62cc,_0x541fb8);if(_0x2a55ff&&_0x2a55ff[_0x20a585(0x23b)]===_0x2fc27f)return console[_0x20a585(0x1b1)](_0x20a585(0x1b4)+_0x541fb8+'\x20('+_0x2fc27f+')\x20via\x20folders\x20loop\x20lookup'),await _0xb46d62['brDwv'](setDoc,_0x4ed214,{'scope':_0x4f62cc},{'merge':!![]}),_0x2a55ff;}}catch(_0x1b65ce){console[_0x20a585(0x2ad)](_0xb46d62[_0x20a585(0x204)],_0x1b65ce);}return null;}async[_0x4b5bf3(0x408)](_0x3f1cc8,_0xb6af88,_0x5f14ab,_0x50d97a=![]){const _0x5ad464=_0x4b5bf3,_0x313897={'XukJf':_0x5ad464(0x2e9),'VYjzP':function(_0x36ed61,_0x3d77f7){return _0x36ed61===_0x3d77f7;},'lSvDL':_0x5ad464(0x35c),'MlksQ':function(_0x2b8e4b,_0x3ffae0,_0x41f77c,_0x172aac){return _0x2b8e4b(_0x3ffae0,_0x41f77c,_0x172aac);},'rgfnD':'index','RnyHi':_0x5ad464(0x40b),'ASWcR':function(_0x382a3c,_0x2cc8c7){return _0x382a3c!==_0x2cc8c7;},'ZoPdO':'bYdjH','uMnUP':_0x5ad464(0x284),'gfaoJ':function(_0x4f558b,_0x5132a3,_0x370e08,_0x24363b){return _0x4f558b(_0x5132a3,_0x370e08,_0x24363b);},'mkXAq':_0x5ad464(0x1d5),'SzARZ':function(_0x52070d,_0x5aa289){return _0x52070d===_0x5aa289;},'EvhJS':_0x5ad464(0x41b),'SJjpp':_0x5ad464(0x31e),'HHCoh':'gDRgG','SSnIi':function(_0x2f32e5,_0x46f49b,_0x123748,_0x32a01a){return _0x2f32e5(_0x46f49b,_0x123748,_0x32a01a);},'hKEmC':function(_0x1a0983,_0x5aaa68,_0x20779b,_0x37265c){return _0x1a0983(_0x5aaa68,_0x20779b,_0x37265c);},'myXLS':_0x5ad464(0x1f0),'NnYzN':'GWGFy','cdIbw':function(_0x4c6559,_0x101b16){return _0x4c6559!==_0x101b16;},'VKsnc':'SCtwR','ApTjB':_0x5ad464(0x45a)};if(this[_0x5ad464(0x417)]&&_0x3f1cc8&&_0xb6af88)try{if(_0x313897[_0x5ad464(0x34e)](_0x313897['ZoPdO'],_0x313897[_0x5ad464(0x241)])){_0x5f14ab[_0x5ad464(0x2ea)]=this[_0x5ad464(0x29b)](_0x3f1cc8),_0x5f14ab[_0x5ad464(0x259)]=this[_0x5ad464(0x423)](_0x5f14ab[_0x5ad464(0x2ea)],_0x5f14ab[_0x5ad464(0x23b)]);const _0x337e23=this[_0x5ad464(0x493)](_0x3f1cc8);try{await _0x313897[_0x5ad464(0x2bf)](setDoc,_0x313897[_0x5ad464(0x3e8)](doc,db,_0x5ad464(0x31e),_0x337e23),{'type':_0x313897['mkXAq'],'name':_0x5f14ab[_0x5ad464(0x2ea)]},{'merge':!![]}),console[_0x5ad464(0x1b1)]('✅\x20Profiles\x20category\x20document\x20created/updated:\x20profiles/'+_0x337e23);}catch(_0x2235fd){_0x313897['SzARZ']('ukUua',_0x313897['EvhJS'])?console[_0x5ad464(0x2ad)](_0x5ad464(0x293)+_0x337e23+_0x5ad464(0x2e4),_0x2235fd):_0x5c96ed['push'](_0x5912d5);}const _0x29a7c1=doc(db,_0x313897[_0x5ad464(0x3d9)],_0x337e23,'users',_0xb6af88);await _0x313897[_0x5ad464(0x3e8)](setDoc,_0x29a7c1,_0x5f14ab,{'merge':!![]}),console[_0x5ad464(0x1b1)](_0x5ad464(0x1dc)+_0xb6af88+_0x5ad464(0x277));if(_0x5f14ab[_0x5ad464(0x23b)]){if(_0x313897[_0x5ad464(0x34e)](_0x313897[_0x5ad464(0x329)],_0x313897[_0x5ad464(0x329)]))_0x34fd3c++;else try{const _0x30e186=_0x313897[_0x5ad464(0x3ca)](doc,db,_0x313897[_0x5ad464(0x2f3)],_0x5f14ab['userCode']);await _0x313897[_0x5ad464(0x456)](setDoc,_0x30e186,{'scope':_0x5f14ab['dataFile']},{'merge':!![]}),console['log'](_0x5ad464(0x224)+_0x5f14ab[_0x5ad464(0x23b)]+_0x5ad464(0x3af)+_0x5f14ab[_0x5ad464(0x2ea)]);}catch(_0x1bec9e){if(_0x313897['ASWcR'](_0x313897[_0x5ad464(0x40c)],_0x313897[_0x5ad464(0x2e7)]))console[_0x5ad464(0x2ad)](_0x5ad464(0x475)+_0x5f14ab[_0x5ad464(0x23b)]+'\x20(this\x20is\x20expected\x20if\x20you\x20are\x20not\x20an\x20admin):',_0x1bec9e);else{_0x44f39f[_0x5ad464(0x2d8)](_0x313897['XukJf'],_0x2dfdb6);throw _0x9ae281;}}}if(!_0x50d97a)try{_0x313897[_0x5ad464(0x35a)](_0x313897[_0x5ad464(0x222)],_0x313897[_0x5ad464(0x222)])?_0x313897['VYjzP'](_0x592f25['code'],_0x313897[_0x5ad464(0x190)])?_0x2c3137['log'](_0x5ad464(0x464)+_0x288291):_0x433a6f[_0x5ad464(0x2d8)]('⚠️\x20Failed\x20to\x20create\x20Auth\x20user\x20for\x20'+_0x40b290+_0x5ad464(0x1fb),_0x34925b):await this[_0x5ad464(0x349)](_0x3f1cc8);}catch(_0x169661){console[_0x5ad464(0x2ad)](_0x5ad464(0x18f)+_0x3f1cc8+'\x20(this\x20is\x20expected\x20if\x20you\x20are\x20not\x20an\x20admin):',_0x169661);}return!![];}else{const _0x5c1713=_0x313897['MlksQ'](_0x316277,_0x3e98e7,_0x313897[_0x5ad464(0x2f3)],_0xc1b021[_0x5ad464(0x23b)]);_0x47d27d[_0x5ad464(0x400)](_0x5c1713,{'scope':_0xa118c[_0x5ad464(0x2ea)]},{'merge':!![]}),_0x570dbf++;}}catch(_0x390680){if(_0x313897[_0x5ad464(0x2a8)]!==_0x313897['ApTjB']){_0x5d2d47['error'](_0x313897[_0x5ad464(0x302)],_0x3737ce);throw _0x580554;}else{console[_0x5ad464(0x2d8)](_0x5ad464(0x211),_0x390680);throw _0x390680;}}return![];}async[_0x4b5bf3(0x2d5)](_0x5d3bad,_0xefc766,_0x353f2a,_0x5d19c2=![]){const _0x4201ce=_0x4b5bf3,_0x19795f={'HUSoJ':function(_0x3d5025,_0x402537){return _0x3d5025(_0x402537);},'bCJdf':'⚠️\x20Firebase\x20users\x20fetch\x20failed:','jcFHs':_0x4201ce(0x1f3),'sykKj':function(_0x3f8389,_0xf1523f,_0x166578,_0x3c4bb2,_0x3e563a){return _0x3f8389(_0xf1523f,_0x166578,_0x3c4bb2,_0x3e563a);},'kGjjI':_0x4201ce(0x31e),'rmlje':_0x4201ce(0x379),'MXMWU':function(_0x104476,_0x47902e,_0x350fc6,_0x15dcd2){return _0x104476(_0x47902e,_0x350fc6,_0x15dcd2);},'sZuYt':function(_0x456c46,_0xb25bbf,_0x7c7006,_0x328983){return _0x456c46(_0xb25bbf,_0x7c7006,_0x328983);},'aZlgP':_0x4201ce(0x23b),'ifBpx':function(_0x184b38,_0x44a7d8,_0x308875,_0x5de75a){return _0x184b38(_0x44a7d8,_0x308875,_0x5de75a);},'qfDLV':_0x4201ce(0x40d),'zjLSK':function(_0x2b265b,_0x1334cf){return _0x2b265b===_0x1334cf;},'EvGZH':_0x4201ce(0x33d),'BYZmU':_0x4201ce(0x20a),'MHVjZ':_0x4201ce(0x1da),'Hvonv':function(_0x29eddc,_0xb4f13e){return _0x29eddc!==_0xb4f13e;},'xluAw':_0x4201ce(0x435),'TUtff':'UKpWi','ncejn':function(_0x1b30b6,_0x578b13){return _0x1b30b6(_0x578b13);},'LbABn':function(_0x38256a,_0x29ccee,_0x2174d9,_0xd681c3){return _0x38256a(_0x29ccee,_0x2174d9,_0xd681c3);},'BLHfQ':_0x4201ce(0x33c),'FXusl':_0x4201ce(0x448),'FnPts':_0x4201ce(0x3e6)};if(this[_0x4201ce(0x417)]&&_0x5d3bad&&_0xefc766&&_0x353f2a)try{const _0x3ce5f9=this[_0x4201ce(0x493)](_0x5d3bad),_0x1b8197=_0x19795f[_0x4201ce(0x341)](collection,db,_0x19795f[_0x4201ce(0x3c2)],_0x3ce5f9,_0x19795f['rmlje']),_0x2eab7b=query(_0x1b8197,_0x19795f[_0x4201ce(0x386)](where,_0x4201ce(0x225),'==',_0xefc766),_0x19795f[_0x4201ce(0x295)](where,_0x19795f[_0x4201ce(0x479)],'==',_0x353f2a)),_0x4c3a92=await _0x19795f[_0x4201ce(0x3f6)](getDocs,_0x2eab7b);if(!_0x4c3a92[_0x4201ce(0x3ef)]){const _0x5bf456=[];_0x4c3a92[_0x4201ce(0x3e4)](_0x2ba5e8=>{const _0x574cb3=_0x4201ce;_0x5bf456[_0x574cb3(0x1df)](_0x19795f[_0x574cb3(0x3f6)](deleteDoc,_0x2ba5e8[_0x574cb3(0x47b)]));}),await Promise[_0x4201ce(0x42a)](_0x5bf456),console[_0x4201ce(0x1b1)](_0x4201ce(0x312)+_0xefc766+'\x20('+_0x353f2a+_0x4201ce(0x2fe));const _0x4b61a7=_0x19795f['ifBpx'](doc,db,_0x19795f[_0x4201ce(0x438)],_0x353f2a);try{const _0x12b0b4=await getDoc(_0x4b61a7);if(_0x12b0b4[_0x4201ce(0x48a)]()){const _0x1d2a69=_0x12b0b4['data'](),_0x26ff0e=this['unescapeScope'](_0x5d3bad);if(_0x1d2a69&&_0x19795f[_0x4201ce(0x20d)](_0x1d2a69[_0x4201ce(0x45f)],_0x26ff0e))await _0x19795f[_0x4201ce(0x3f6)](deleteDoc,_0x4b61a7),console[_0x4201ce(0x1b1)]('🗑️\x20Code\x20index\x20deleted\x20for\x20userCode:\x20'+_0x353f2a);else{if(_0x19795f[_0x4201ce(0x248)]===_0x19795f[_0x4201ce(0x248)]){if(_0x1d2a69[_0x4201ce(0x45f)]&&_0x1d2a69[_0x4201ce(0x45f)][_0x4201ce(0x3b9)]('/')){if(_0x19795f['BYZmU']!=='eEjAh'){const _0x3e44ad=_0x1d2a69['scope'][_0x4201ce(0x25b)]('/')[0x1ca4+0x626+-0x22ca];_0x19795f[_0x4201ce(0x20d)](_0x3e44ad,_0x26ff0e)&&(await _0x19795f[_0x4201ce(0x3f6)](deleteDoc,_0x4b61a7),console[_0x4201ce(0x1b1)](_0x4201ce(0x418)+_0x353f2a));}else _0x311b3b[_0x4201ce(0x2ad)](gTouYQ[_0x4201ce(0x3a2)],_0x47a482);}else console['log']('ℹ️\x20Code\x20index\x20NOT\x20deleted\x20because\x20its\x20current\x20scope\x20('+_0x1d2a69?.[_0x4201ce(0x45f)]+_0x4201ce(0x2b0)+_0x26ff0e+')');}else _0x3f21aa['error'](_0x4201ce(0x433)+_0x5b23ae+':',_0x582914);}}}catch(_0xeb54c){console[_0x4201ce(0x2d8)](_0x4201ce(0x433)+_0x353f2a+':',_0xeb54c);}try{if(_0x19795f[_0x4201ce(0x20d)](_0x19795f[_0x4201ce(0x2b1)],_0x19795f[_0x4201ce(0x2b1)])){const _0x349ebd=await getCountFromServer(collection(db,_0x19795f[_0x4201ce(0x3c2)],_0x3ce5f9,_0x19795f[_0x4201ce(0x489)]));_0x349ebd['data']()['count']===0x1d*-0xef+0x735+0x13de&&(_0x19795f[_0x4201ce(0x36c)](_0x19795f[_0x4201ce(0x2e2)],_0x19795f[_0x4201ce(0x29e)])?(await _0x19795f[_0x4201ce(0x361)](deleteDoc,_0x19795f[_0x4201ce(0x29f)](doc,db,_0x19795f['kGjjI'],_0x3ce5f9)),console[_0x4201ce(0x1b1)](_0x4201ce(0x45d)+_0x3ce5f9)):_0x47fe3e[_0x4201ce(0x2d8)](_0x19795f[_0x4201ce(0x1a2)],_0x46b7ba));}else _0x1fbdc3[_0x4201ce(0x1df)](_0x32546c);}catch(_0x1e2b7b){console[_0x4201ce(0x2ad)](_0x4201ce(0x2ee)+_0x3ce5f9+':',_0x1e2b7b);}if(!_0x5d19c2)try{await this[_0x4201ce(0x349)](_0x5d3bad);}catch(_0x3bb1ab){console[_0x4201ce(0x2ad)]('⚠️\x20Warning:\x20Failed\x20to\x20update\x20profile\x20count\x20for\x20scope\x20'+_0x5d3bad+_0x4201ce(0x2e4),_0x3bb1ab);}return!![];}else return console[_0x4201ce(0x2ad)](_0x4201ce(0x28f)+_0xefc766+'\x20('+_0x353f2a+_0x4201ce(0x3a9)),![];}catch(_0x2163f9){if(_0x19795f[_0x4201ce(0x447)]===_0x19795f[_0x4201ce(0x3f3)])_0x7dbfc6++;else{console[_0x4201ce(0x2d8)](_0x19795f[_0x4201ce(0x3ed)],_0x2163f9);throw _0x2163f9;}}return![];}async[_0x4b5bf3(0x321)](_0x47ce29,_0x5d722f){const _0xf6617d=_0x4b5bf3,_0x1a0934=await this[_0xf6617d(0x372)](),_0x1e6ca1=_0x1a0934['some'](_0x14ab1c=>_0x14ab1c['username'][_0xf6617d(0x3eb)]()===_0x47ce29[_0xf6617d(0x3eb)]()),_0x3f43be=_0x1a0934[_0xf6617d(0x365)](_0x172582=>_0x172582[_0xf6617d(0x2ea)]&&_0x172582[_0xf6617d(0x2ea)][_0xf6617d(0x3eb)]()===_0x5d722f[_0xf6617d(0x3eb)]());return{'usernameExists':_0x1e6ca1,'dataFileExists':_0x3f43be};}async[_0x4b5bf3(0x300)](_0x5b9a8b){const _0x554edc=_0x4b5bf3,_0x4b9f42={'VXBUw':function(_0x4d43be,_0x58d42f){return _0x4d43be===_0x58d42f;},'leNsT':function(_0x3fbae2,_0x20d704){return _0x3fbae2!==_0x20d704;},'PdQGs':_0x554edc(0x2cb),'fhxdT':_0x554edc(0x2c4),'XIxrI':_0x554edc(0x47d),'xBtwT':_0x554edc(0x452),'cEOYR':_0x554edc(0x37c)};if(!_0x5b9a8b)return'';if(/^[a-f0-9]{64}$/i[_0x554edc(0x310)](_0x5b9a8b)){if(_0x4b9f42['VXBUw'](_0x4b9f42[_0x554edc(0x459)],'xmcxj')){const _0x181354=_0x1c9d3d[_0xfe98fd],_0x18fd05=_0x990b9e(_0x66d975,'index',_0x1e343e);if(_0x4b9f42['VXBUw'](_0x181354,_0x5ab60b))_0x15a468[_0x554edc(0x400)](_0x18fd05,{'scope':_0x1caa48},{'merge':!![]}),_0x42eb24++,_0x528efa=!![];else _0x4b9f42[_0x554edc(0x387)](_0x181354,_0x554f82)?(_0x344230[_0x554edc(0x400)](_0x18fd05,{'scope':_0x229462},{'merge':!![]}),_0x171f76++,_0x3016dc=!![]):_0x3b357a++;}else return _0x5b9a8b;}try{if(_0x4b9f42[_0x554edc(0x197)](_0x554edc(0x452),_0x4b9f42[_0x554edc(0x463)])){const _0x384df8=new TextEncoder()[_0x554edc(0x41f)](_0x5b9a8b),_0x2f1a9a=await crypto[_0x554edc(0x2d6)][_0x554edc(0x34c)](_0x554edc(0x233),_0x384df8),_0x2537af=Array[_0x554edc(0x3e0)](new Uint8Array(_0x2f1a9a));return _0x2537af[_0x554edc(0x390)](_0x525829=>_0x525829[_0x554edc(0x3cf)](0x39d*-0x6+0x8ad*-0x2+0x2718*0x1)['padStart'](0x18ff+0x1*0x637+-0x1f34*0x1,'0'))[_0x554edc(0x48e)]('');}else _0x11826a['error'](_0x4b9f42[_0x554edc(0x364)],_0x58a68f);}catch(_0xb80c3e){if(_0x4b9f42[_0x554edc(0x197)](_0x4b9f42[_0x554edc(0x388)],_0x554edc(0x352))){_0x1d87ef[_0x554edc(0x2d8)](_0x4b9f42['fhxdT'],_0x1dfaf5);throw _0xe0e2a6;}else return console[_0x554edc(0x2d8)](_0x554edc(0x18b),_0xb80c3e),_0x5b9a8b;}}async[_0x4b5bf3(0x268)](_0x553bdb){const _0x3b50ce=_0x4b5bf3,_0xe491e0={'jljsf':'raw','RtlZI':_0x3b50ce(0x24b),'fjCVL':_0x3b50ce(0x27a),'puwMD':'deriveKey','mZRti':_0x3b50ce(0x233),'YuHKy':_0x3b50ce(0x38c),'CxYAv':_0x3b50ce(0x3bf),'baYXS':_0x3b50ce(0x1b5)},_0x428ea4=new TextEncoder(),_0x5bcc5c=await crypto[_0x3b50ce(0x2d6)][_0x3b50ce(0x2c5)](_0xe491e0[_0x3b50ce(0x486)],_0x428ea4[_0x3b50ce(0x41f)](_0x553bdb),{'name':_0xe491e0[_0x3b50ce(0x355)]},![],[_0xe491e0[_0x3b50ce(0x450)],_0xe491e0[_0x3b50ce(0x27e)]]),_0x59692e=_0x428ea4[_0x3b50ce(0x41f)](_0x3b50ce(0x232));return await crypto[_0x3b50ce(0x2d6)][_0x3b50ce(0x1be)]({'name':_0xe491e0[_0x3b50ce(0x355)],'salt':_0x59692e,'iterations':0x3e8,'hash':_0xe491e0['mZRti']},_0x5bcc5c,{'name':_0xe491e0['YuHKy'],'length':0x100},![],[_0xe491e0[_0x3b50ce(0x1c3)],_0xe491e0[_0x3b50ce(0x34a)]]);}async[_0x4b5bf3(0x2ef)](_0xf6969a){const _0x5c0d56=_0x4b5bf3,_0x8d26ed={'iwDaZ':function(_0xcd986f,_0x15faf7){return _0xcd986f(_0x15faf7);},'wLiOC':_0x5c0d56(0x3bb),'ywRHa':'MultiLynkQR-DefaultSecret-54321','cFEcg':'LaKEZ','sfuZK':_0x5c0d56(0x244),'RbuzY':'AES-GCM','YEghJ':function(_0x571e6e,_0x2d0c1f){return _0x571e6e<_0x2d0c1f;},'ZZTnQ':function(_0x2cd4bd,_0x1ed372){return _0x2cd4bd!==_0x1ed372;},'CrMUE':_0x5c0d56(0x2cd),'YdpeO':function(_0x4c1dd7,_0x18c4da){return _0x4c1dd7===_0x18c4da;},'UVHrE':_0x5c0d56(0x2ca),'jhybT':_0x5c0d56(0x426)};if(!_0xf6969a)return'';const _0x313ce8=window['ENCRYPTION_SECRET']||_0x8d26ed[_0x5c0d56(0x3c5)];try{if(_0x8d26ed['cFEcg']===_0x8d26ed[_0x5c0d56(0x3bc)])_0x332f18=this[_0x5c0d56(0x29b)](_0x4eab7c[_0x5c0d56(0x47b)][_0x5c0d56(0x401)]['parent']['id']);else{const _0x1c6500=await this['getCryptoKey'](_0x313ce8),_0x35c7d5=new TextEncoder(),_0x46d78a=crypto[_0x5c0d56(0x40e)](new Uint8Array(-0x5*-0xc9+-0x1*0x61+-0x380)),_0x1f1d18=await crypto[_0x5c0d56(0x2d6)]['encrypt']({'name':_0x8d26ed['RbuzY'],'iv':_0x46d78a},_0x1c6500,_0x35c7d5['encode'](_0xf6969a)),_0x14a79e=new Uint8Array(_0x46d78a['length']+_0x1f1d18[_0x5c0d56(0x1ea)]);_0x14a79e['set'](_0x46d78a,-0x6b+0x16fb+-0x1690),_0x14a79e[_0x5c0d56(0x400)](new Uint8Array(_0x1f1d18),_0x46d78a['length']);let _0x4fd2e4='';const _0x18386e=_0x14a79e[_0x5c0d56(0x1ea)];for(let _0x4a579e=-0x20b*-0x11+-0x1633*0x1+-0xc88;_0x8d26ed[_0x5c0d56(0x24c)](_0x4a579e,_0x18386e);_0x4a579e++){_0x8d26ed[_0x5c0d56(0x49e)](_0x8d26ed[_0x5c0d56(0x49b)],_0x5c0d56(0x2da))?_0x4fd2e4+=String['fromCharCode'](_0x14a79e[_0x4a579e]):(_0x4a615f[_0x5c0d56(0x2d8)](_0x5c0d56(0x491),_0x3052c0),_0x8d26ed['iwDaZ'](_0x11e693,_0x8d26ed['wLiOC']));}return _0x8d26ed[_0x5c0d56(0x373)](btoa,_0x4fd2e4);}}catch(_0x156df5){return _0x8d26ed[_0x5c0d56(0x3c0)](_0x5c0d56(0x2ca),_0x8d26ed[_0x5c0d56(0x29c)])?(console[_0x5c0d56(0x2d8)](_0x8d26ed[_0x5c0d56(0x1ed)],_0x156df5),_0xf6969a):_0x9241f1;}}async[_0x4b5bf3(0x317)](_0x2b0eec){const _0x506dd9=_0x4b5bf3,_0x3b9c02={'dBwsh':_0x506dd9(0x289),'pYFkU':function(_0x143056,_0x5a1e7a){return _0x143056<_0x5a1e7a;},'GUYga':function(_0x39443e,_0x4fa285){return _0x39443e!==_0x4fa285;},'tXlKc':_0x506dd9(0x1c1),'EGQWS':_0x506dd9(0x454),'sbOZl':_0x506dd9(0x24a),'fRWIr':function(_0xe57390,_0x135ac3){return _0xe57390<_0x135ac3;},'tIeHw':'AES-GCM','GKMCC':function(_0x326297,_0x15ee39){return _0x326297!==_0x15ee39;},'EdjBW':_0x506dd9(0x2a2)};if(!_0x2b0eec)return'';if(_0x3b9c02[_0x506dd9(0x1a5)](_0x2b0eec[_0x506dd9(0x393)],0x9a8+-0x25e3*0x1+-0x1*-0x1c4b)||!/^[A-Za-z0-9+/=]+$/['test'](_0x2b0eec))return _0x3b9c02['GUYga'](_0x3b9c02[_0x506dd9(0x1e6)],_0x3b9c02['EGQWS'])?_0x2b0eec:(_0x3baf0a[_0x506dd9(0x2ad)](nmXmiF[_0x506dd9(0x229)],_0x5e928a),[]);const _0x4e73bc=window[_0x506dd9(0x345)]||_0x3b9c02['sbOZl'];try{const _0x2d3f47=await this[_0x506dd9(0x268)](_0x4e73bc),_0xb08ef7=atob(_0x2b0eec),_0x2c7fe4=_0xb08ef7[_0x506dd9(0x393)],_0x3d6167=new Uint8Array(_0x2c7fe4);for(let _0x12d603=-0x1*0x2297+-0x2*0x7+0x22a5;_0x3b9c02[_0x506dd9(0x494)](_0x12d603,_0x2c7fe4);_0x12d603++){_0x3d6167[_0x12d603]=_0xb08ef7[_0x506dd9(0x429)](_0x12d603);}const _0x53d907=_0x3d6167[_0x506dd9(0x1f4)](-0x1*0x14eb+0x2ab*0x2+-0x1*-0xf95,-0x1*0x3b+0x1514+-0x14cd),_0x45e545=_0x3d6167[_0x506dd9(0x1f4)](-0x10*0x92+0x26a3+-0x1d77),_0x5a9631=await crypto[_0x506dd9(0x2d6)]['decrypt']({'name':_0x3b9c02[_0x506dd9(0x47a)],'iv':_0x53d907},_0x2d3f47,_0x45e545);return new TextDecoder()[_0x506dd9(0x24f)](_0x5a9631);}catch(_0xed5997){if(_0x3b9c02[_0x506dd9(0x32e)]('rmurt',_0x3b9c02['EdjBW']))_0x505c64['log']('ℹ️\x20Auth\x20user\x20already\x20exists\x20for\x20'+_0x58264);else return _0x2b0eec;}}async[_0x4b5bf3(0x2f1)](_0x4b030b){const _0x363235=_0x4b5bf3,_0x1b8b40={'iOSrz':function(_0x10b3a0,_0x5ba31b){return _0x10b3a0!==_0x5ba31b;},'xBxIh':_0x363235(0x411),'ppVto':function(_0xc22390){return _0xc22390();},'cvNtL':function(_0x2ff2c4,_0xd49b89){return _0x2ff2c4+_0xd49b89;},'BGroB':_0x363235(0x46d),'uATJn':function(_0x1ebfc4,_0x303926){return _0x1ebfc4===_0x303926;},'njLWQ':'auth/email-already-in-use','CvvSC':_0x363235(0x1d4),'DWMlQ':function(_0x1a3d6d,_0x25dfc7,_0x48e3b4){return _0x1a3d6d(_0x25dfc7,_0x48e3b4);},'LgIee':_0x363235(0x425),'aQOMS':_0x363235(0x367)};if(this[_0x363235(0x417)]){if(_0x1b8b40['iOSrz'](_0x1b8b40[_0x363235(0x36f)],_0x363235(0x411))){if(!_0x81fc51)return'';return _0x142fde[_0x363235(0x420)](/___/g,'/');}else try{const _0x1a9e08=_0x4b030b[_0x363235(0x225)][_0x363235(0x3eb)]()[_0x363235(0x25a)]();let _0x12d5f0='';try{const _0x6466f5=_0x1b8b40[_0x363235(0x26a)](getSecondaryAuth),_0x185e74=await createUserWithEmailAndPassword(_0x6466f5,_0x1b8b40[_0x363235(0x419)](_0x1a9e08,_0x1b8b40[_0x363235(0x238)]),_0x4b030b[_0x363235(0x192)]);_0x12d5f0=_0x185e74[_0x363235(0x298)]['uid'],await _0x6466f5[_0x363235(0x3f4)]();}catch(_0x4abf17){if(_0x1b8b40[_0x363235(0x35e)](_0x4abf17[_0x363235(0x21d)],_0x1b8b40[_0x363235(0x35f)]))console['warn']('⚠️\x20Firebase\x20Auth\x20account\x20already\x20exists\x20for\x20'+_0x1a9e08);else throw _0x4abf17;}_0x4b030b['password']&&(_0x4b030b['password']=await this['encryptPassword'](_0x4b030b[_0x363235(0x192)]));_0x12d5f0&&(_0x4b030b[_0x363235(0x41c)]=_0x12d5f0);_0x4b030b['username']=_0x1a9e08;const _0x23d538=doc(db,_0x1b8b40['CvvSC'],_0x1a9e08);return await _0x1b8b40['DWMlQ'](setDoc,_0x23d538,_0x4b030b),console[_0x363235(0x1b1)]('✅\x20Firebase:\x20Added\x20credential\x20and\x20Auth\x20user\x20for\x20'+_0x1a9e08),_0x4b030b[_0x363235(0x2ea)]&&await this['updateProfileCountInFirestore'](_0x4b030b[_0x363235(0x2ea)]),!![];}catch(_0x2e2ff7){if(_0x1b8b40[_0x363235(0x3a6)]===_0x1b8b40[_0x363235(0x3a6)]){console['error'](_0x1b8b40[_0x363235(0x374)],_0x2e2ff7);throw _0x2e2ff7;}else _0x1a003b=this['unescapeScope'](_0x160332[_0x363235(0x47b)][_0x363235(0x401)][_0x363235(0x401)]['id']);}}return console[_0x363235(0x2ad)](_0x363235(0x3e3)),![];}async[_0x4b5bf3(0x26c)](_0x3d9155,_0x6bba29){const _0x501781=_0x4b5bf3,_0x25ed28={'xBvef':_0x501781(0x18b),'jyFuU':function(_0x1330ab,_0x1471e6){return _0x1330ab!==_0x1471e6;},'EYRtp':_0x501781(0x38a),'GnGdx':'lBxpn','KfMqI':function(_0xdd9ab9,_0x164e24,_0x57436c,_0x433283){return _0xdd9ab9(_0x164e24,_0x57436c,_0x433283);},'chpZb':function(_0xe62834,_0x205425){return _0xe62834(_0x205425);},'QtlfZ':'rNeoK','RjiqT':_0x501781(0x3d3),'uSoDR':function(_0x45e977){return _0x45e977();},'PLSDw':function(_0x200721,_0x44c86d,_0x431a09,_0x36d966){return _0x200721(_0x44c86d,_0x431a09,_0x36d966);},'njALd':function(_0x3b1006,_0x591cda){return _0x3b1006+_0x591cda;},'vFzHX':_0x501781(0x46d),'uvGNl':function(_0x14563a,_0x7a94cf,_0x153cd8){return _0x14563a(_0x7a94cf,_0x153cd8);},'OIsKo':function(_0x8d85b7,_0x1c285a){return _0x8d85b7===_0x1c285a;},'KTWTt':_0x501781(0x214),'WjJRB':_0x501781(0x31a),'dnYLY':function(_0x89126e,_0x52b2b1){return _0x89126e===_0x52b2b1;},'tNzar':_0x501781(0x1a7),'VQSMA':function(_0x27c195,_0x275d67){return _0x27c195===_0x275d67;},'lWwdH':_0x501781(0x286),'eqavp':_0x501781(0x1af),'MVWBp':function(_0xa84e30,_0x16694a,_0x400e15,_0x16567e){return _0xa84e30(_0x16694a,_0x400e15,_0x16567e);},'Uldpf':function(_0x513cbe,_0xf9535){return _0x513cbe!==_0xf9535;},'upcVl':_0x501781(0x1e7),'ivkVs':_0x501781(0x290),'BNhoS':'⚠️\x20Local:\x20Cannot\x20update\x20credential\x20in\x20static\x20JSON\x20file.'};if(this['useFirebase']){if(_0x25ed28[_0x501781(0x3fe)](_0x25ed28[_0x501781(0x226)],_0x25ed28[_0x501781(0x383)]))try{const _0x563c36=_0x3d9155[_0x501781(0x3eb)]()[_0x501781(0x25a)](),_0x5ec5a4=_0x25ed28[_0x501781(0x369)](doc,db,_0x501781(0x1d4),_0x563c36),_0x1108fb=await _0x25ed28[_0x501781(0x360)](getDoc,_0x5ec5a4),_0x431313=_0x1108fb['exists']()?_0x1108fb[_0x501781(0x1a3)]():null,_0x20afa3=_0x431313?_0x431313[_0x501781(0x2ea)]:null;if(_0x6bba29[_0x501781(0x192)]&&_0x431313){if(_0x25ed28[_0x501781(0x396)]===_0x25ed28[_0x501781(0x235)])return _0x3737a2[_0x501781(0x1b1)](_0x501781(0x1b4)+_0x544cd7+'\x20('+_0x2771cf+_0x501781(0x29d)),_0x45a757;else{try{const _0x33248a=_0x431313[_0x501781(0x192)],_0x539f68=await this[_0x501781(0x317)](_0x33248a),_0xa6ba89=_0x25ed28['uSoDR'](getSecondaryAuth);await _0x25ed28[_0x501781(0x1c6)](signInWithEmailAndPassword,_0xa6ba89,_0x25ed28[_0x501781(0x319)](_0x563c36,_0x25ed28[_0x501781(0x255)]),_0x539f68),_0xa6ba89[_0x501781(0x44e)]&&await _0x25ed28[_0x501781(0x457)](updatePassword,_0xa6ba89[_0x501781(0x44e)],_0x6bba29[_0x501781(0x192)]),await _0xa6ba89[_0x501781(0x3f4)](),console['log'](_0x501781(0x38f)+_0x563c36);}catch(_0x5d7a95){if(_0x25ed28[_0x501781(0x306)](_0x25ed28['KTWTt'],_0x25ed28[_0x501781(0x462)]))return _0x5f4262;else{console[_0x501781(0x2d8)](_0x501781(0x1e5)+_0x563c36+':',_0x5d7a95);if(_0x25ed28['dnYLY'](_0x5d7a95[_0x501781(0x21d)],_0x25ed28[_0x501781(0x20c)])||_0x25ed28[_0x501781(0x218)](_0x5d7a95[_0x501781(0x21d)],_0x25ed28[_0x501781(0x27b)]))try{console[_0x501781(0x1b1)]('🔄\x20Attempting\x20to\x20create\x20missing\x20Auth\x20user\x20for\x20'+_0x563c36+_0x501781(0x2fc));const _0x2fa6f3=getSecondaryAuth();await _0x25ed28[_0x501781(0x369)](createUserWithEmailAndPassword,_0x2fa6f3,_0x563c36+'@multilynkqr.local',_0x6bba29[_0x501781(0x192)]),await _0x2fa6f3[_0x501781(0x3f4)](),console['log'](_0x501781(0x303)+_0x563c36);}catch(_0x26b17b){_0x25ed28[_0x501781(0x3da)]===_0x25ed28['eqavp']?console[_0x501781(0x2d8)](_0x501781(0x2cc)+_0x563c36+':',_0x26b17b):_0x418f13[_0x501781(0x41c)]=_0x266403;}}}_0x6bba29[_0x501781(0x192)]=await this[_0x501781(0x2ef)](_0x6bba29[_0x501781(0x192)]);}}_0x6bba29[_0x501781(0x225)]&&(_0x6bba29[_0x501781(0x225)]=_0x6bba29[_0x501781(0x225)]['toLowerCase']());await _0x25ed28[_0x501781(0x201)](setDoc,_0x5ec5a4,_0x6bba29,{'merge':!![]}),console[_0x501781(0x1b1)]('✅\x20Firebase:\x20Updated\x20credential\x20document\x20for\x20'+_0x563c36);if(_0x6bba29[_0x501781(0x2ea)]){if(_0x25ed28['VQSMA']('OYfIZ',_0x501781(0x3f7)))return _0x475094['slice'](0x9dc*0x2+-0x1fa+0x8df*-0x2,-(0xf8a+0x1*-0xc73+-0x316))[_0x501781(0x48e)]('/');else await this[_0x501781(0x349)](_0x6bba29['dataFile']);}else _0x20afa3&&await this[_0x501781(0x349)](_0x20afa3);return _0x6bba29['dataFile']&&_0x20afa3&&_0x25ed28[_0x501781(0x3fe)](_0x6bba29[_0x501781(0x2ea)],_0x20afa3)&&(_0x25ed28[_0x501781(0x399)](_0x25ed28[_0x501781(0x19d)],_0x25ed28['ivkVs'])?await this[_0x501781(0x349)](_0x20afa3):_0x425639[_0x501781(0x2ad)](_0x501781(0x293)+_0x4c19e3+_0x501781(0x2e4),_0x53a16a)),!![];}catch(_0xcdaaf2){console[_0x501781(0x2d8)](_0x501781(0x3b5),_0xcdaaf2);throw _0xcdaaf2;}else return _0x1f2cf6[_0x501781(0x2d8)](ttKazI['xBvef'],_0x4f3676),_0x1c259d;}return console[_0x501781(0x2ad)](_0x25ed28['BNhoS']),![];}async[_0x4b5bf3(0x446)](_0x1eb2bf){const _0x553246=_0x4b5bf3,_0x258502={'YdovJ':'.json','bpVdQ':_0x553246(0x472),'linwO':_0x553246(0x211),'CAlZS':function(_0x2c9ce0,_0x3b73c8){return _0x2c9ce0!==_0x3b73c8;},'qERbP':'coOLF','beUIt':function(_0x7d46f6,_0x5b1d88){return _0x7d46f6===_0x5b1d88;},'KqucQ':_0x553246(0x474),'uprax':function(_0x29e78f,_0x51e4fb,_0x1413fa,_0x394789){return _0x29e78f(_0x51e4fb,_0x1413fa,_0x394789);},'GXZEQ':'credentials','DSFED':function(_0x44f1fa,_0x3b8c07){return _0x44f1fa(_0x3b8c07);},'KBzcJ':_0x553246(0x481),'AgdNm':'pDBua','RzViX':_0x553246(0x1b2),'ikGSs':_0x553246(0x291)};if(this['useFirebase']){if(_0x258502[_0x553246(0x3b7)](_0x553246(0x3f2),_0x258502[_0x553246(0x301)]))try{if(_0x258502[_0x553246(0x41e)](_0x258502[_0x553246(0x30f)],_0x258502[_0x553246(0x30f)])){const _0x9a670b=_0x258502[_0x553246(0x1a8)](doc,db,_0x258502[_0x553246(0x368)],_0x1eb2bf);return await _0x258502[_0x553246(0x492)](deleteDoc,_0x9a670b),console[_0x553246(0x1b1)](_0x553246(0x371)+_0x1eb2bf),!![];}else _0x2a4bbf=_0x428785[_0x553246(0x420)](_0x258502['YdovJ'],'');}catch(_0x53dc93){if(_0x258502[_0x553246(0x41e)](_0x258502[_0x553246(0x496)],_0x258502[_0x553246(0x3ff)])){if(!_0x5e70ae)return'';return _0x37ad85[_0x553246(0x420)](/\//g,WqKWUJ[_0x553246(0x490)]);}else{console['error'](_0x258502[_0x553246(0x470)],_0x53dc93);throw _0x53dc93;}}else{_0x324a21[_0x553246(0x2d8)](WqKWUJ['linwO'],_0x65ffe0);throw _0x1787a1;}}return console[_0x553246(0x2ad)](_0x258502['ikGSs']),![];}async[_0x4b5bf3(0x349)](_0x38e1cd){const _0x30cc9c=_0x4b5bf3,_0x44251c={'QRmbN':_0x30cc9c(0x430),'DqWCb':function(_0x3d9b67,_0x226f16){return _0x3d9b67(_0x226f16);},'XCXzZ':function(_0x54b531,_0x5b43b8,_0x5bbab9,_0x27d913,_0x238bf4){return _0x54b531(_0x5b43b8,_0x5bbab9,_0x27d913,_0x238bf4);},'jXpzb':_0x30cc9c(0x31e),'ZLfhI':_0x30cc9c(0x379),'ovCRU':_0x30cc9c(0x3bd),'CnrRy':_0x30cc9c(0x2f8),'vUxSS':'super_admin','xLJpB':function(_0x86bad8,_0x132edc){return _0x86bad8===_0x132edc;},'PNktR':_0x30cc9c(0x25e),'AgIns':function(_0xd884b,_0x3dbc17,_0x13bc7c){return _0xd884b(_0x3dbc17,_0x13bc7c);},'ovvyk':_0x30cc9c(0x1d4),'mTgcl':function(_0x3dd501,_0x1220de){return _0x3dd501(_0x1220de);},'tDNew':function(_0x1dd36d,_0x22ef5a){return _0x1dd36d(_0x22ef5a);},'FmnAH':function(_0x2ed56b,_0x24a620,_0x10d89a){return _0x2ed56b(_0x24a620,_0x10d89a);},'Fbhvj':_0x30cc9c(0x498),'ZyYFP':'VvgSz','mBAom':function(_0x516cd6,_0x2eb4ad){return _0x516cd6===_0x2eb4ad;},'eLzON':_0x30cc9c(0x3cd),'kXAHG':function(_0x1a17bf,_0x266801,_0x277cc8,_0x502b6b){return _0x1a17bf(_0x266801,_0x277cc8,_0x502b6b);},'zoFGg':function(_0x25d2f8,_0x292ef4,_0x3e6d70,_0x30cad6,_0x3c9bd8){return _0x25d2f8(_0x292ef4,_0x3e6d70,_0x30cad6,_0x3c9bd8);},'jsGAn':function(_0x1ce5cc,_0x2f5fcf,_0x2804e0,_0x4a2722){return _0x1ce5cc(_0x2f5fcf,_0x2804e0,_0x4a2722);}};if(!this[_0x30cc9c(0x417)]||!_0x38e1cd)return;try{const _0x579bff=this['unescapeScope'](_0x38e1cd),_0x20cb9c=localStorage['getItem'](_0x44251c[_0x30cc9c(0x1ef)]),_0x344a75=localStorage[_0x30cc9c(0x2df)](_0x44251c[_0x30cc9c(0x354)]);if(_0x20cb9c===_0x44251c[_0x30cc9c(0x2f4)]||_0x44251c[_0x30cc9c(0x287)](_0x20cb9c,_0x44251c['PNktR'])){const _0x10e8fe=_0x44251c[_0x30cc9c(0x22e)](collection,db,_0x44251c[_0x30cc9c(0x405)]),_0x25b7f2=await _0x44251c[_0x30cc9c(0x2db)](getDocs,_0x10e8fe),_0x13f18f=await _0x44251c['tDNew'](getDocs,_0x44251c[_0x30cc9c(0x26d)](collection,db,_0x30cc9c(0x31e))),_0x424022=_0x13f18f[_0x30cc9c(0x415)];for(const _0x49018f of _0x25b7f2[_0x30cc9c(0x415)]){if(_0x44251c[_0x30cc9c(0x287)](_0x44251c[_0x30cc9c(0x2af)],_0x44251c[_0x30cc9c(0x305)]))_0x481d16[_0x30cc9c(0x2d8)](_0x44251c[_0x30cc9c(0x36b)],_0x5283b0);else{const _0xdc0475=_0x49018f[_0x30cc9c(0x1a3)](),_0x16d74c=_0xdc0475['dataFile'];if(!_0x16d74c)continue;const _0x4803b7=_0x16d74c===_0x579bff;if(_0x4803b7){let _0x10d988=0x858*-0x2+-0x2090+-0xc50*-0x4;const _0x1d0f54=[];for(const _0x8b7124 of _0x424022){if(_0x44251c[_0x30cc9c(0x22c)](_0x44251c[_0x30cc9c(0x3b4)],_0x30cc9c(0x3cd))){const _0x17b24e=this['unescapeScope'](_0x8b7124['id']);_0x44251c[_0x30cc9c(0x22c)](_0x17b24e,_0x16d74c)&&_0x1d0f54[_0x30cc9c(0x1df)](((async()=>{const _0x13399e=_0x30cc9c,_0x4a416=await _0x44251c['DqWCb'](getCountFromServer,_0x44251c[_0x13399e(0x283)](collection,db,_0x44251c['jXpzb'],_0x8b7124['id'],_0x44251c[_0x13399e(0x3db)]));return _0x4a416[_0x13399e(0x1a3)]()['count'];})()));}else _0x579b44[_0x30cc9c(0x262)](_0x263cb0[_0x30cc9c(0x47b)][_0x30cc9c(0x401)][_0x30cc9c(0x401)]['id']);}const _0x34a04d=await Promise[_0x30cc9c(0x42a)](_0x1d0f54);_0x10d988=_0x34a04d[_0x30cc9c(0x209)]((_0x5f464c,_0x4cd212)=>_0x5f464c+_0x4cd212,-0x1cee+-0x1*-0x100a+0xce4),await setDoc(_0x49018f[_0x30cc9c(0x47b)],{'profileCount':_0x10d988},{'merge':!![]});}}}}else{if(_0x344a75){const _0x3a7113=_0x344a75[_0x30cc9c(0x3eb)]()[_0x30cc9c(0x25a)](),_0x4cfbfb=_0x44251c[_0x30cc9c(0x366)](doc,db,_0x30cc9c(0x1d4),_0x3a7113),_0x37e36d=await _0x44251c[_0x30cc9c(0x44f)](getDoc,_0x4cfbfb);if(_0x37e36d[_0x30cc9c(0x48a)]()){const _0x11e470=_0x37e36d[_0x30cc9c(0x1a3)]();if(_0x44251c[_0x30cc9c(0x22c)](_0x11e470[_0x30cc9c(0x2ea)],_0x579bff)){const _0x3717a5=this[_0x30cc9c(0x493)](_0x579bff),_0x41fe16=await _0x44251c['DqWCb'](getCountFromServer,_0x44251c[_0x30cc9c(0x412)](collection,db,_0x44251c['jXpzb'],_0x3717a5,_0x30cc9c(0x379))),_0x19061f=_0x41fe16['data']()[_0x30cc9c(0x245)];await _0x44251c['jsGAn'](setDoc,_0x4cfbfb,{'profileCount':_0x19061f},{'merge':!![]});}}}}}catch(_0x228792){}}async['backfillParentFolder'](){const _0x5cebca=_0x4b5bf3,_0x41fa78={'YLqtH':function(_0x3f85b2,_0xf98d64){return _0x3f85b2!==_0xf98d64;},'igQDz':function(_0x54b56d,_0x4573ef){return _0x54b56d===_0x4573ef;},'MWgzP':_0x5cebca(0x2ab),'rnrTE':_0x5cebca(0x379),'PkdYu':'hUUhn','qUMzR':function(_0x4e5ac8,_0x67bca){return _0x4e5ac8%_0x67bca;},'jVzfE':function(_0x1ec8ad,_0x201985){return _0x1ec8ad!==_0x201985;},'AjDIa':_0x5cebca(0x18a),'MdHtj':function(_0x2cc145,_0x59cf5e){return _0x2cc145(_0x59cf5e);},'WzRRo':function(_0x2a8d09,_0x346913){return _0x2a8d09>_0x346913;},'XSFVu':'FFTQc','QltJZ':_0x5cebca(0x392),'HQHwl':_0x5cebca(0x1f3)};if(!this[_0x5cebca(0x417)])return;try{if(_0x41fa78[_0x5cebca(0x30e)]===_0x41fa78[_0x5cebca(0x30e)]){console['log']('🔄\x20Starting\x20backfill\x20of\x20parentFolder\x20field\x20for\x20all\x20user\x20documents\x20(fully\x20optimized)...');let _0x373fe7=-0x1*-0x20f5+-0x698+-0x1*0x1a5d;const _0x5a7a25=-0x252*-0x2+-0x22c5+0x2015;let _0x383c96=writeBatch(db);const _0x4215a9=collectionGroup(db,_0x41fa78['rnrTE']),_0x1881d4=await getDocs(_0x4215a9);for(const _0xf1c4b4 of _0x1881d4[_0x5cebca(0x415)]){const _0x541204=_0xf1c4b4[_0x5cebca(0x1a3)]();let _0x147b7f='';_0xf1c4b4[_0x5cebca(0x47b)]&&_0xf1c4b4[_0x5cebca(0x47b)][_0x5cebca(0x401)]&&_0xf1c4b4[_0x5cebca(0x47b)]['parent']['parent']&&(_0x41fa78['igQDz'](_0x41fa78[_0x5cebca(0x2ff)],_0x41fa78[_0x5cebca(0x2ff)])?_0x147b7f=this[_0x5cebca(0x29b)](_0xf1c4b4[_0x5cebca(0x47b)][_0x5cebca(0x401)][_0x5cebca(0x401)]['id']):_0x19a15c++);if(_0x147b7f){const _0x1a1370=this[_0x5cebca(0x423)](_0x147b7f,_0x541204[_0x5cebca(0x23b)]);if(_0x541204[_0x5cebca(0x259)]!==_0x1a1370||!_0x541204['dataFile']){const _0x484022={'parentFolder':_0x1a1370,'dataFile':_0x147b7f};_0x383c96['set'](_0xf1c4b4[_0x5cebca(0x47b)],_0x484022,{'merge':!![]}),_0x373fe7++;if(_0x41fa78[_0x5cebca(0x24d)](_0x41fa78['qUMzR'](_0x373fe7,_0x5a7a25),-0x1ca6+-0xe5*-0x7+0x1663*0x1)){if(_0x41fa78['jVzfE'](_0x5cebca(0x18d),_0x41fa78[_0x5cebca(0x338)]))await _0x383c96[_0x5cebca(0x482)](),_0x383c96=_0x41fa78[_0x5cebca(0x3c9)](writeBatch,db);else{if(SHUjVl[_0x5cebca(0x458)](_0x1123e1['stringify'](_0x37898b),_0x362b8e[_0x5cebca(0x325)](_0x4236e4)))return![];}}}}}_0x41fa78[_0x5cebca(0x358)](_0x373fe7,-0x1257+-0x2d9*0x2+0x1809)&&_0x373fe7%_0x5a7a25!==0x12d3*0x1+-0x1*-0xf58+-0x1*0x222b&&await _0x383c96[_0x5cebca(0x482)](),console[_0x5cebca(0x1b1)](_0x5cebca(0x271)+_0x373fe7+_0x5cebca(0x2cf));}else{const _0x42c51b=_0x4fed2f[_0x5cebca(0x25b)]('/'),_0x4773b=_0x42c51b[_0x42c51b['length']-(-0x1*0x2447+0xb*0x1c1+-0x10fd*-0x1)];(_0x41fa78[_0x5cebca(0x24d)](_0x4773b,_0x5af68c)||_0x41fa78[_0x5cebca(0x24d)](_0x4773b,_0x427b46))&&(_0x506240=_0x42c51b['slice'](0x1080+-0x279+-0x85*0x1b,-(-0xe18+0x1*-0x1d29+0x2b42))[_0x5cebca(0x48e)]('/'));}}catch(_0x279148){_0x41fa78['YLqtH'](_0x41fa78[_0x5cebca(0x231)],_0x41fa78[_0x5cebca(0x236)])?console[_0x5cebca(0x2d8)](_0x41fa78[_0x5cebca(0x1d6)],_0x279148):_0x4fd7af['warn']('⚠️\x20Warning:\x20Failed\x20to\x20update\x20profile\x20count\x20for\x20scope\x20'+_0x6967bc+_0x5cebca(0x2e4),_0x18ebd4);}}async[_0x4b5bf3(0x357)](_0x51f1e0){const _0x356bc3=_0x4b5bf3,_0x3a242e={'sVHQG':function(_0x3318af,_0x4ba261){return _0x3318af(_0x4ba261);},'wAHWM':_0x356bc3(0x2ba),'mrHIY':_0x356bc3(0x37e),'rCiML':function(_0x4950c8,_0xa12846,_0x49245e){return _0x4950c8(_0xa12846,_0x49245e);},'KzeLD':function(_0x5626eb,_0x4e090f,_0x240a2a){return _0x5626eb(_0x4e090f,_0x240a2a);},'ClMAu':_0x356bc3(0x379),'SnMOq':function(_0x56053d,_0x5d1bf8){return _0x56053d<_0x5d1bf8;},'NEDHV':function(_0x4933a9,_0x598e4d){return _0x4933a9===_0x598e4d;},'zDGvL':_0x356bc3(0x3df),'CCyYb':function(_0xa8f9f,_0x208dd8){return _0xa8f9f(_0x208dd8);},'yEMjy':function(_0x57179c,_0x16d132){return _0x57179c+_0x16d132;},'tgkUs':function(_0x2bb4da,_0x322970){return _0x2bb4da+_0x322970;},'kyRge':_0x356bc3(0x2dc),'MOPEI':function(_0x4f93b5,_0x1e2e85,_0x17da70,_0x17be38){return _0x4f93b5(_0x1e2e85,_0x17da70,_0x17be38);},'skWJC':'category','yrntz':function(_0x111fa8,_0x390d46){return _0x111fa8+_0x390d46;},'HyEZR':_0x356bc3(0x42f),'pJkZi':function(_0x3e8f30,_0x100ead){return _0x3e8f30!==_0x100ead;},'EoAmV':'oyMGR','eQheU':_0x356bc3(0x1e2)};if(!this[_0x356bc3(0x417)])return;try{if(_0x51f1e0)_0x51f1e0(_0x3a242e[_0x356bc3(0x339)]);console[_0x356bc3(0x1b1)](_0x3a242e[_0x356bc3(0x2a5)]);const _0x4aa0c7=await _0x3a242e[_0x356bc3(0x3fa)](getDocs,_0x3a242e[_0x356bc3(0x3c4)](collection,db,_0x356bc3(0x31e))),_0x45ccb6=new Set(_0x4aa0c7[_0x356bc3(0x415)]['map'](_0x4cbcca=>_0x4cbcca['id'])),_0x3bc79b=_0x3a242e[_0x356bc3(0x2d4)](collectionGroup,db,_0x3a242e[_0x356bc3(0x193)]),_0xec135e=await _0x3a242e[_0x356bc3(0x3fa)](getDocs,_0x3bc79b),_0x5ab9ee=new Set();_0xec135e[_0x356bc3(0x3e4)](_0x1fb095=>{const _0x3cf19c=_0x356bc3;_0x1fb095['ref']&&_0x1fb095['ref']['parent']&&_0x1fb095[_0x3cf19c(0x47b)][_0x3cf19c(0x401)][_0x3cf19c(0x401)]&&_0x5ab9ee[_0x3cf19c(0x262)](_0x1fb095[_0x3cf19c(0x47b)][_0x3cf19c(0x401)][_0x3cf19c(0x401)]['id']);}),console['log'](_0x356bc3(0x320)+_0x5ab9ee[_0x356bc3(0x216)]+_0x356bc3(0x389));const _0x10cd43=Array['from'](_0x5ab9ee);let _0x9e315b=-0x13*-0x18+-0x6b6*-0x5+-0x2356,_0x59d424=0x719+-0x244a+0x1d31;for(let _0x5824e9=-0xd*0x2bd+0x1e72+-0x527*-0x1;_0x3a242e[_0x356bc3(0x480)](_0x5824e9,_0x10cd43['length']);_0x5824e9++){const _0x4d1599=_0x10cd43[_0x5824e9];if(_0x45ccb6[_0x356bc3(0x439)](_0x4d1599)){if(_0x3a242e[_0x356bc3(0x304)]('mItrS',_0x3a242e[_0x356bc3(0x2f7)]))_0x423182['push'](xtvkQq[_0x356bc3(0x3fa)](_0x735c56,_0x547094[_0x356bc3(0x47b)]));else{_0x9e315b++;continue;}}_0x59d424++;if(_0x51f1e0)_0x3a242e[_0x356bc3(0x395)](_0x51f1e0,_0x3a242e[_0x356bc3(0x3c1)](_0x3a242e[_0x356bc3(0x397)](_0x356bc3(0x2b6),_0x59d424),_0x3a242e[_0x356bc3(0x239)]));const _0x382b9c=this[_0x356bc3(0x29b)](_0x4d1599),_0x32f554=doc(db,'profiles',_0x4d1599);await _0x3a242e[_0x356bc3(0x406)](setDoc,_0x32f554,{'type':_0x3a242e[_0x356bc3(0x31f)],'name':_0x382b9c},{'merge':!![]}),console[_0x356bc3(0x1b1)](_0x3a242e[_0x356bc3(0x324)](_0x3a242e[_0x356bc3(0x1ad)],_0x4d1599));}console['log']('ℹ️\x20ensureParentProfilesExist:\x20Checked\x20'+_0x10cd43[_0x356bc3(0x393)]+_0x356bc3(0x2d2)+_0x9e315b+'\x20existing,\x20repaired\x20'+_0x59d424+_0x356bc3(0x42c));}catch(_0xefb291){_0x3a242e[_0x356bc3(0x1f8)](_0x3a242e[_0x356bc3(0x250)],_0x3a242e[_0x356bc3(0x2e3)])?console['error']('❌\x20Failed\x20to\x20ensure\x20parent\x20profile\x20documents\x20exist:',_0xefb291):_0x47971f++;}}async[_0x4b5bf3(0x46f)](_0xcbd748){const _0x3e0176=_0x4b5bf3,_0x4cc1fc={'cbnrc':_0x3e0176(0x27c),'Cqedn':function(_0x1deea7,_0x26735f){return _0x1deea7(_0x26735f);},'zkilL':_0x3e0176(0x476),'pgLaw':function(_0x2cc406,_0x6f35a8){return _0x2cc406(_0x6f35a8);},'DQEYf':function(_0x12ac2a,_0x194ca5,_0x548175){return _0x12ac2a(_0x194ca5,_0x548175);},'qghAi':_0x3e0176(0x1d4),'eWeib':'mhzgp','LwMIi':_0x3e0176(0x344),'aZdbX':function(_0x57795a,_0x658935){return _0x57795a+_0x658935;},'RtRpb':_0x3e0176(0x461),'aRdZo':_0x3e0176(0x31e),'yMPei':function(_0x380eb7,_0x306d03,_0x4952f4,_0x470209,_0x258d05){return _0x380eb7(_0x306d03,_0x4952f4,_0x470209,_0x258d05);},'DOpMK':'users','QCOgg':function(_0x44389c,_0x20e863){return _0x44389c===_0x20e863;},'BJbBP':function(_0x113d32,_0x3ab635){return _0x113d32!==_0x3ab635;},'pDhKv':'iCcIK','Fkqht':_0x3e0176(0x21c),'iMXCA':_0x3e0176(0x2f9),'uAsOZ':function(_0x2b6e17,_0x111a1d){return _0x2b6e17!==_0x111a1d;},'dQEgR':_0x3e0176(0x473)};if(!this[_0x3e0176(0x417)])return;try{await this['ensureParentProfilesExist'](_0xcbd748);if(_0xcbd748)_0x4cc1fc['Cqedn'](_0xcbd748,_0x4cc1fc['zkilL']);await this['backfillParentFolder']();if(_0xcbd748)_0x4cc1fc['Cqedn'](_0xcbd748,'Recalculating\x20profile\x20counts...');const _0x210f9d=await _0x4cc1fc[_0x3e0176(0x251)](getDocs,_0x4cc1fc['DQEYf'](collection,db,_0x4cc1fc[_0x3e0176(0x3d1)])),_0x12339a=_0x210f9d[_0x3e0176(0x415)];for(let _0x34aa16=-0x9*-0x207+-0x1c5c+-0x1*-0xa1d;_0x34aa16<_0x12339a[_0x3e0176(0x393)];_0x34aa16++){if(_0x4cc1fc[_0x3e0176(0x3f5)]===_0x4cc1fc[_0x3e0176(0x410)]){_0x54cecb[_0x3e0176(0x2d8)](_0x4cc1fc[_0x3e0176(0x1aa)],_0x3900fb);throw _0x1db93e;}else{const _0xec8a01=_0x12339a[_0x34aa16],_0x2bea94=_0xec8a01[_0x3e0176(0x1a3)]();if(_0x2bea94[_0x3e0176(0x2ea)]){if(_0xcbd748)_0x4cc1fc[_0x3e0176(0x251)](_0xcbd748,'Updating\x20counts:\x20'+_0x2bea94['username']+'\x20('+_0x4cc1fc[_0x3e0176(0x263)](_0x34aa16,0x721*-0x3+0x3*0xbe+0x132a*0x1)+'/'+_0x12339a[_0x3e0176(0x393)]+')...');await this[_0x3e0176(0x349)](_0x2bea94[_0x3e0176(0x2ea)]);}}}if(_0xcbd748)_0x4cc1fc[_0x3e0176(0x469)](_0xcbd748,_0x4cc1fc['RtRpb']);try{const _0x64725c=await _0x4cc1fc[_0x3e0176(0x251)](getDocs,_0x4cc1fc[_0x3e0176(0x223)](collection,db,_0x4cc1fc[_0x3e0176(0x1e4)]));for(const _0x493d9e of _0x64725c['docs']){const _0x15684e=await _0x4cc1fc[_0x3e0176(0x251)](getCountFromServer,_0x4cc1fc[_0x3e0176(0x3f8)](collection,db,_0x4cc1fc[_0x3e0176(0x1e4)],_0x493d9e['id'],_0x4cc1fc[_0x3e0176(0x346)]));_0x4cc1fc[_0x3e0176(0x1eb)](_0x15684e[_0x3e0176(0x1a3)]()['count'],0x1c73+-0x13*0x14b+0x8e*-0x7)&&(_0x4cc1fc[_0x3e0176(0x31c)](_0x4cc1fc['pDhKv'],_0x4cc1fc[_0x3e0176(0x2d3)])?_0x203253=![]:(await _0x4cc1fc['Cqedn'](deleteDoc,_0x493d9e[_0x3e0176(0x47b)]),console['log'](_0x3e0176(0x45d)+_0x493d9e['id'])));}}catch(_0x3809cd){console['error'](_0x4cc1fc[_0x3e0176(0x335)],_0x3809cd);}console['log'](_0x4cc1fc[_0x3e0176(0x28e)]);}catch(_0x2dc60a){if(_0x4cc1fc[_0x3e0176(0x33f)](_0x3e0176(0x1de),_0x4cc1fc['dQEgR']))console[_0x3e0176(0x2d8)](_0x3e0176(0x41d),_0x2dc60a);else throw _0x55263b;}}async['deleteScope'](_0x173767){const _0x442fd7=_0x4b5bf3,_0x29a657={'tbbcg':function(_0x2aaeea,_0x302bca){return _0x2aaeea+_0x302bca;},'tkvoR':_0x442fd7(0x32d),'eSpWO':_0x442fd7(0x35c),'aDljq':function(_0x1f0ece,_0x4e27d7){return _0x1f0ece-_0x4e27d7;},'OmBZF':function(_0x448820,_0x30a2aa){return _0x448820===_0x30a2aa;},'xjUtW':function(_0xeb919,_0x5c4cc3,_0x263ad5,_0x119935,_0x1811b9){return _0xeb919(_0x5c4cc3,_0x263ad5,_0x119935,_0x1811b9);},'BKVzM':_0x442fd7(0x31e),'yQrNr':function(_0x49cbcc,_0x4a055f){return _0x49cbcc(_0x4a055f);},'QxKSH':function(_0xcd1d50,_0xa1cb6b){return _0xcd1d50===_0xa1cb6b;},'nkHRd':_0x442fd7(0x3c8),'nvVBP':function(_0x9a5e97,_0x5b27a1,_0x4e77f2,_0x3bf645){return _0x9a5e97(_0x5b27a1,_0x4e77f2,_0x3bf645);},'UNjWy':'index','nVyiz':function(_0x59dd84,_0x2f6185){return _0x59dd84===_0x2f6185;},'nCKDu':function(_0x5c7aff,_0x59636d){return _0x5c7aff%_0x59636d;},'iDQgw':_0x442fd7(0x266),'THEXB':function(_0x109343,_0xea7382){return _0x109343(_0xea7382);},'LjrCA':function(_0x5594a1,_0x2c8302){return _0x5594a1!==_0x2c8302;},'riPZT':function(_0x550a56,_0x52809a){return _0x550a56%_0x52809a;},'RvGeR':function(_0x37dd7f,_0x581ba3){return _0x37dd7f===_0x581ba3;},'rFHve':_0x442fd7(0x46e),'EwPEE':function(_0x115d8b,_0x573754,_0x3a6ccb,_0x55cf2d){return _0x115d8b(_0x573754,_0x3a6ccb,_0x55cf2d);},'STFyA':_0x442fd7(0x1ee),'GoIEu':_0x442fd7(0x40b)};if(!this['useFirebase']||!_0x173767)return![];try{const _0x3bb0c4=this[_0x442fd7(0x493)](_0x173767),_0x5347a7=_0x29a657['xjUtW'](collection,db,_0x29a657[_0x442fd7(0x353)],_0x3bb0c4,_0x442fd7(0x379)),_0x315456=await getDocs(_0x5347a7),_0x30758b=-0x80c+0xacf*0x1+-0x3*0x45;let _0x3c772f=_0x29a657[_0x442fd7(0x43a)](writeBatch,db),_0x21e4e9=0x1dd0+-0x5b3*-0x4+-0xd27*0x4;for(const _0x28039c of _0x315456[_0x442fd7(0x415)]){if(_0x29a657[_0x442fd7(0x26b)](_0x29a657[_0x442fd7(0x194)],_0x29a657['nkHRd'])){_0x3c772f[_0x442fd7(0x34b)](_0x28039c[_0x442fd7(0x47b)]);const _0x2c4e99=_0x28039c[_0x442fd7(0x1a3)]();if(_0x2c4e99&&_0x2c4e99[_0x442fd7(0x23b)]){const _0x5e5154=_0x29a657[_0x442fd7(0x424)](doc,db,_0x29a657[_0x442fd7(0x2c1)],_0x2c4e99[_0x442fd7(0x23b)]);_0x3c772f[_0x442fd7(0x34b)](_0x5e5154);}_0x21e4e9++,_0x29a657[_0x442fd7(0x19f)](_0x29a657[_0x442fd7(0x35d)](_0x21e4e9,_0x30758b),0x1d41+0x18dc+0x361d*-0x1)&&(_0x29a657['nVyiz'](_0x29a657[_0x442fd7(0x3de)],_0x442fd7(0x266))?(await _0x3c772f['commit'](),_0x3c772f=_0x29a657[_0x442fd7(0x196)](writeBatch,db)):_0x3f7285['error'](_0x29a657[_0x442fd7(0x1e8)](_0x29a657[_0x442fd7(0x28d)],_0x4cdc23),_0x25cc92));}else{if(_0x522d29['code']===XjjQDP[_0x442fd7(0x444)])_0x2b2e9f[_0x442fd7(0x2ad)](_0x442fd7(0x22f)+_0x5d270e);else throw _0x150a72;}}return _0x29a657[_0x442fd7(0x247)](_0x29a657[_0x442fd7(0x1f5)](_0x21e4e9,_0x30758b),-0xa93*-0x2+0x80d*-0x3+0x301)&&(_0x29a657[_0x442fd7(0x2a6)](_0x29a657[_0x442fd7(0x1e3)],_0x442fd7(0x46e))?await _0x3c772f[_0x442fd7(0x482)]():this[_0x442fd7(0x417)]=!![]),console['log'](_0x442fd7(0x326)+_0x21e4e9+_0x442fd7(0x2b9)+_0x173767+'\x22'),await deleteDoc(_0x29a657[_0x442fd7(0x340)](doc,db,_0x29a657[_0x442fd7(0x353)],_0x3bb0c4)),console[_0x442fd7(0x1b1)](_0x442fd7(0x3d4)+_0x3bb0c4+'\x22'),await this[_0x442fd7(0x349)](_0x173767),!![];}catch(_0x19253c){if(_0x29a657[_0x442fd7(0x19f)](_0x29a657['STFyA'],_0x442fd7(0x1ee))){console['error'](_0x29a657[_0x442fd7(0x471)],_0x19253c);throw _0x19253c;}else{const _0x30b49e=_0xf35964[XjjQDP['aDljq'](_0x484e32[_0x442fd7(0x393)],-0x25*0x31+-0x1*-0x1c3a+-0x1c3*0xc)];if(_0x381dc1&&XjjQDP['OmBZF'](_0x30b49e,_0x2d93bd))return _0x3c845b['slice'](0x1512+-0x1b12+0x600,-(-0x11*-0x62+-0x25f4+0x1f73))[_0x442fd7(0x48e)]('/');}}}async['syncToFirebase'](_0x387b1c){const _0x3a930d=_0x4b5bf3,_0x28395f={'hdUSn':_0x3a930d(0x3b5),'LFjUf':_0x3a930d(0x3e6),'zAUlK':_0x3a930d(0x367),'zxwhy':_0x3a930d(0x421),'hqmLw':function(_0x5118ca,_0x41994c){return _0x5118ca(_0x41994c);},'DUUxn':_0x3a930d(0x43f),'sOpcR':_0x3a930d(0x3ae),'tLoow':function(_0x498b54,_0x58db5f){return _0x498b54<_0x58db5f;},'rnKGW':function(_0x3124ca,_0x5a8632){return _0x3124ca!==_0x5a8632;},'zYUlL':_0x3a930d(0x280),'WnUyD':function(_0x44661a,_0x349c1f){return _0x44661a+_0x349c1f;},'aOZQj':function(_0x76c2e8,_0x3d395a,_0x47874b,_0x599c8d){return _0x76c2e8(_0x3d395a,_0x47874b,_0x599c8d);},'mDQcr':function(_0x3f4be7,_0x580096){return _0x3f4be7===_0x580096;},'byaGC':_0x3a930d(0x3b8),'JwkQc':'krijt','QTCRE':_0x3a930d(0x33a),'CRPBb':function(_0x3adf32,_0x4802f5){return _0x3adf32!==_0x4802f5;},'vgHZt':'EZSbr','UFVTs':_0x3a930d(0x313),'OJqPy':function(_0x82b2ba){return _0x82b2ba();},'JHJvU':function(_0xb77882,_0x553a05){return _0xb77882===_0x553a05;},'KrZIB':function(_0x38fd82,_0x41de7e){return _0x38fd82===_0x41de7e;},'QyyTY':function(_0x1f4563,_0x327a93){return _0x1f4563!==_0x327a93;},'Qhlew':_0x3a930d(0x2f6),'ohlhx':_0x3a930d(0x453),'bcrwM':_0x3a930d(0x264),'GWjRK':_0x3a930d(0x1f9),'DKEMk':_0x3a930d(0x27d),'JkzBd':'credentials','ELrYw':function(_0x55e2b1,_0x51e412){return _0x55e2b1+_0x51e412;},'WjNqg':function(_0x2a390e,_0x504f6e){return _0x2a390e+_0x504f6e;},'LwEZj':'@multilynkqr.local','gRYHm':function(_0x5e2bcb,_0x50a8bd){return _0x5e2bcb===_0x50a8bd;},'AuQOh':'auth/email-already-in-use','IELPd':_0x3a930d(0x261),'OoPch':function(_0x100c70,_0xa57967){return _0x100c70+_0xa57967;},'wpbgF':function(_0x4bb8d1,_0xebe760,_0x80e3e5,_0x1d3661){return _0x4bb8d1(_0xebe760,_0x80e3e5,_0x1d3661);},'YWwya':function(_0x4f7260,_0xb0428e){return _0x4f7260!==_0xb0428e;},'SsdOh':'ypoAG','MrgTe':_0x3a930d(0x394),'QIMKY':'./data/index.json','gtRfT':function(_0x3c6c2d,_0x30e0c2,_0x3c158b){return _0x3c6c2d(_0x30e0c2,_0x3c158b);},'QWHxg':'profiles','gRSqX':function(_0x5cd9b0,_0x239c36){return _0x5cd9b0===_0x239c36;},'KWlHS':'SaewX','pnVuo':_0x3a930d(0x2dd),'fGawB':_0x3a930d(0x3a5),'ACMxd':function(_0x14aa09,_0x27239b){return _0x14aa09===_0x27239b;},'bciZQ':_0x3a930d(0x227),'YmbHN':function(_0xc455c1,_0x40cd41,_0xacf1c4,_0x96d8ed){return _0xc455c1(_0x40cd41,_0xacf1c4,_0x96d8ed);},'hmdcU':_0x3a930d(0x1d5),'VQFnf':function(_0x21c71a,_0x47d9ec){return _0x21c71a+_0x47d9ec;},'LqaIx':'unknown_','xDjDY':_0x3a930d(0x379),'tsCcS':function(_0x57dddf,_0x4d24ce){return _0x57dddf+_0x4d24ce;},'MXkfc':_0x3a930d(0x25f),'aMshz':function(_0x1ccf1e,_0x5928fc){return _0x1ccf1e(_0x5928fc);},'kouaS':'Cloud\x20Index:\x20Rebuilt\x20successfully.','ceSbT':function(_0x3fec28,_0x2b36ff){return _0x3fec28(_0x2b36ff);},'ZOcRv':function(_0x563085,_0x1d0bfa){return _0x563085!==_0x1d0bfa;},'aWWPk':'lsqpr','zPehM':_0x3a930d(0x253),'qRYwt':_0x3a930d(0x336),'fIFgr':_0x3a930d(0x3e9),'ZQmKc':function(_0x4d78f1,_0x12dd22){return _0x4d78f1>_0x12dd22;},'Kxdaf':function(_0x2973c6,_0x4a8281){return _0x2973c6!==_0x4a8281;},'tSZTC':'YwKfR','SpzeM':function(_0x7e0c6f,_0xff609){return _0x7e0c6f(_0xff609);},'cOZYA':'❌\x20Failed\x20to\x20sync\x20profiles:','QhEvl':function(_0xec2b18,_0x2a4486){return _0xec2b18(_0x2a4486);},'tvbtL':_0x3a930d(0x3bb)};console['log'](_0x3a930d(0x2d9));if(_0x387b1c)_0x28395f[_0x3a930d(0x1ae)](_0x387b1c,_0x28395f[_0x3a930d(0x24e)]);let _0xb86b0b=-0x14aa+0x229f*0x1+0x1*-0xdf5,_0xf3ee14=0x1*0x11d0+-0x102d*0x1+-0x1a3;try{const _0x1f5538=await fetch(_0x28395f[_0x3a930d(0x3ea)]);if(_0x1f5538['ok']){const _0x3cac69=await _0x1f5538[_0x3a930d(0x47f)]();for(let _0x16f6a1=0x5e2*0x1+0x118d+-0x359*0x7;_0x28395f['tLoow'](_0x16f6a1,_0x3cac69[_0x3a930d(0x393)]);_0x16f6a1++){if(_0x28395f[_0x3a930d(0x275)](_0x28395f[_0x3a930d(0x1c2)],_0x28395f[_0x3a930d(0x1c2)]))_0x31ff65['warn'](_0x3a930d(0x43b),_0x4a199a);else{const _0xdeb059=_0x3cac69[_0x16f6a1],_0x45f0af=_0xdeb059[_0x3a930d(0x225)]['toLowerCase']()[_0x3a930d(0x25a)]();if(_0x387b1c)_0x28395f['hqmLw'](_0x387b1c,_0x3a930d(0x314)+_0x45f0af+'\x20('+_0x28395f['WnUyD'](_0x16f6a1,0x1b42+-0x21e3+0x11b*0x6)+'/'+_0x3cac69[_0x3a930d(0x393)]+_0x3a930d(0x2dc));const _0x2f8208=_0x28395f[_0x3a930d(0x221)](doc,db,_0x3a930d(0x1d4),_0x45f0af),_0x3605f0=await getDoc(_0x2f8208);let _0x2d0a9a=!![];if(_0x3605f0['exists']()){if(_0x28395f[_0x3a930d(0x1a6)](_0x28395f['byaGC'],_0x28395f[_0x3a930d(0x348)]))_0x1f61ba[_0x3a930d(0x400)](_0x3ca5b7,{'scope':_0x478c24},{'merge':!![]}),_0x324f99++,_0x3c6550=!![];else{const _0x1b2b8c=_0x3605f0['data'](),_0x136ae0=_0x1b2b8c[_0x3a930d(0x192)]?await this[_0x3a930d(0x317)](_0x1b2b8c[_0x3a930d(0x192)]):'',_0x117a2b={..._0x1b2b8c,'password':_0x136ae0};this[_0x3a930d(0x3d0)](_0x117a2b,_0xdeb059)&&(_0x2d0a9a=![]);}}if(_0x2d0a9a){if(_0xdeb059[_0x3a930d(0x192)]){if(_0x28395f[_0x3a930d(0x1a6)](_0x28395f[_0x3a930d(0x22d)],_0x28395f[_0x3a930d(0x22d)])){try{if(_0x28395f[_0x3a930d(0x203)](_0x28395f[_0x3a930d(0x1ce)],_0x28395f['UFVTs'])){const _0x1ddf22=_0x28395f[_0x3a930d(0x23d)](getSecondaryAuth),_0x4f7f33=await createUserWithEmailAndPassword(_0x1ddf22,_0x28395f[_0x3a930d(0x269)](_0x45f0af,'@multilynkqr.local'),_0xdeb059[_0x3a930d(0x192)]);_0xdeb059[_0x3a930d(0x41c)]=_0x4f7f33[_0x3a930d(0x298)][_0x3a930d(0x41c)],await _0x1ddf22['signOut'](),console[_0x3a930d(0x1b1)]('✅\x20Auth\x20user\x20created\x20during\x20sync\x20for\x20'+_0x45f0af);}else _0x4528f8[_0x3a930d(0x2d8)](_0x3a930d(0x41d),_0xcc8952);}catch(_0x2b316e){_0x28395f[_0x3a930d(0x37d)](_0x2b316e[_0x3a930d(0x21d)],_0x3a930d(0x35c))?console[_0x3a930d(0x1b1)](_0x3a930d(0x464)+_0x45f0af):_0x28395f[_0x3a930d(0x2fd)](_0x3a930d(0x495),_0x3a930d(0x40a))?_0x465449[_0x3a930d(0x2d8)](_0x3a930d(0x2cc)+_0x578d8e+':',_0x384584):console[_0x3a930d(0x2d8)]('⚠️\x20Failed\x20to\x20create\x20Auth\x20user\x20for\x20'+_0x45f0af+_0x3a930d(0x1fb),_0x2b316e);}_0xdeb059[_0x3a930d(0x192)]=await this[_0x3a930d(0x2ef)](_0xdeb059[_0x3a930d(0x192)]);}else _0x143bfe[_0x3a930d(0x2ad)](_0x3a930d(0x2ee)+_0x43914a+':',_0xb3efac);}_0xdeb059[_0x3a930d(0x225)]=_0x45f0af,await setDoc(_0x2f8208,_0xdeb059);if(!_0x3605f0['exists']()){if(_0x28395f[_0x3a930d(0x3d2)](_0x28395f[_0x3a930d(0x1b0)],_0x28395f[_0x3a930d(0x1b3)]))_0xb86b0b++;else{_0x1f59f0['error'](Stzngi['hdUSn'],_0x38f9c3);throw _0x3ba2c8;}}else{if(_0x3a930d(0x25d)===_0x3a930d(0x25d))_0xf3ee14++;else{_0x3bbd1e[_0x3a930d(0x2d8)](Stzngi[_0x3a930d(0x1b9)],_0x228f30);throw _0x3790fc;}}}else console[_0x3a930d(0x1b1)]('ℹ️\x20Credential\x20Sync\x20Skip:\x20Unchanged\x20login\x20account\x20'+_0x45f0af);}}console[_0x3a930d(0x1b1)](_0x3a930d(0x39b)+_0xb86b0b+',\x20Updated\x20'+_0xf3ee14);}}catch(_0x1f64a8){console[_0x3a930d(0x2d8)](_0x3a930d(0x430),_0x1f64a8);}try{if(_0x28395f[_0x3a930d(0x3d2)](_0x28395f[_0x3a930d(0x2e1)],_0x28395f['bcrwM']))_0x3453bc++;else{if(_0x387b1c)_0x387b1c(_0x28395f['GWjRK']);console[_0x3a930d(0x1b1)](_0x28395f[_0x3a930d(0x2d1)]);const _0x48f439=await _0x28395f[_0x3a930d(0x1ae)](getDocs,collection(db,_0x28395f[_0x3a930d(0x363)]));let _0x381f82=0x9da*0x1+0x5c0+-0xf9a;const _0xda9136=_0x48f439[_0x3a930d(0x415)];for(let _0x581962=0x99a*0x1+-0x13bd*-0x1+-0x1d57*0x1;_0x581962<_0xda9136['length'];_0x581962++){const _0x3d8f9b=_0xda9136[_0x581962],_0x31615d=_0x3d8f9b[_0x3a930d(0x1a3)](),_0x557abe=_0x3d8f9b['id']['toLowerCase']()[_0x3a930d(0x25a)]();if(_0x387b1c)_0x28395f[_0x3a930d(0x1ae)](_0x387b1c,'Verifying\x20Auth:\x20'+_0x557abe+'\x20('+_0x28395f[_0x3a930d(0x3b3)](_0x581962,-0x28*0xae+-0xacf*-0x3+0x53c*-0x1)+'/'+_0xda9136['length']+_0x3a930d(0x2dc));if(_0x31615d[_0x3a930d(0x192)])try{const _0x5d0b63=await this[_0x3a930d(0x317)](_0x31615d[_0x3a930d(0x192)]),_0x11863a=_0x28395f['OJqPy'](getSecondaryAuth);let _0x197286=_0x31615d['uid']||'',_0x1752ae=![];try{const _0xd9e334=await _0x28395f['aOZQj'](createUserWithEmailAndPassword,_0x11863a,_0x28395f[_0x3a930d(0x31b)](_0x557abe,_0x28395f[_0x3a930d(0x2ce)]),_0x5d0b63);_0x197286=_0xd9e334[_0x3a930d(0x298)][_0x3a930d(0x41c)],_0x1752ae=!![],await _0x11863a[_0x3a930d(0x3f4)](),console[_0x3a930d(0x1b1)](_0x3a930d(0x43c)+_0x557abe);}catch(_0x25545f){if(_0x28395f[_0x3a930d(0x43e)](_0x25545f[_0x3a930d(0x21d)],_0x28395f[_0x3a930d(0x42e)])){if(_0x28395f[_0x3a930d(0x3d2)]('Pmkdi',_0x28395f['IELPd']))_0x2f4f6f[_0x3a930d(0x2ad)](_0x3a930d(0x2ee)+_0xfedf98+':',_0xc73f65);else try{const _0x26fff6=await signInWithEmailAndPassword(_0x11863a,_0x28395f[_0x3a930d(0x307)](_0x557abe,_0x28395f[_0x3a930d(0x2ce)]),_0x5d0b63);_0x197286=_0x26fff6[_0x3a930d(0x298)][_0x3a930d(0x41c)],await _0x11863a[_0x3a930d(0x3f4)](),console[_0x3a930d(0x1b1)]('ℹ️\x20Auth\x20user\x20already\x20registered\x20and\x20password\x20verified:\x20'+_0x557abe);}catch(_0x5e82e1){console[_0x3a930d(0x2d8)](_0x3a930d(0x3b0)+_0x557abe+':',_0x5e82e1);}}else throw _0x25545f;}_0x197286&&_0x28395f[_0x3a930d(0x203)](_0x31615d[_0x3a930d(0x41c)],_0x197286)&&(await _0x28395f['wpbgF'](setDoc,_0x3d8f9b[_0x3a930d(0x47b)],{'uid':_0x197286},{'merge':!![]}),console[_0x3a930d(0x1b1)](_0x3a930d(0x1fd)+_0x557abe)),_0x1752ae&&_0x381f82++;}catch(_0x15d8b9){console[_0x3a930d(0x2d8)](_0x3a930d(0x228)+_0x557abe+'\x20in\x20Auth:',_0x15d8b9);}}console[_0x3a930d(0x1b1)](_0x3a930d(0x2be)+_0x381f82+_0x3a930d(0x359));}}catch(_0x4a38a3){_0x28395f[_0x3a930d(0x1d3)](_0x3a930d(0x32b),_0x28395f['SsdOh'])?(_0x2552ae['set'](_0x5a6141,{'scope':_0x26049c},{'merge':!![]}),_0x4ef334++,_0x25029c=!![]):console['error'](_0x28395f[_0x3a930d(0x45c)],_0x4a38a3);}try{if(_0x387b1c)_0x28395f['hqmLw'](_0x387b1c,_0x28395f[_0x3a930d(0x210)]);const _0x481124=await this[_0x3a930d(0x3ad)](_0x387b1c);if(_0x387b1c)_0x28395f[_0x3a930d(0x1ae)](_0x387b1c,_0x3a930d(0x3ee));const _0x1a71e3=await fetch(_0x28395f[_0x3a930d(0x2bb)]);if(_0x1a71e3['ok']){const _0x19485e=await _0x1a71e3['json'](),_0x2b9c49=[...new Set(Object[_0x3a930d(0x274)](_0x19485e))];let _0x49948e=-0x9fa+0x11*-0x1b7+-0x15*-0x1dd,_0x1ba912=-0x230a+-0x1887+-0x187*-0x27;const _0x1e2d4e=new Set();let _0x185510=0x724*-0x2+-0x1b5*-0xa+-0x2ca*0x1;const _0x3cde7c=await _0x28395f[_0x3a930d(0x1ae)](getDocs,_0x28395f[_0x3a930d(0x1c8)](collection,db,_0x28395f[_0x3a930d(0x213)])),_0x4a5441=new Set(_0x3cde7c[_0x3a930d(0x415)][_0x3a930d(0x390)](_0x4cf6cd=>_0x4cf6cd['id']));for(let _0x5a70e1=0x1*0x1ed1+-0x622+-0x18af;_0x5a70e1<_0x2b9c49[_0x3a930d(0x393)];_0x5a70e1++){const _0x2cbc8a=_0x2b9c49[_0x5a70e1];if(_0x387b1c)_0x387b1c(_0x3a930d(0x202)+_0x2cbc8a+'\x20('+_0x28395f[_0x3a930d(0x3b3)](_0x5a70e1,-0x109d*-0x1+0x3ce+-0x146a)+'/'+_0x2b9c49['length']+_0x3a930d(0x2dc));try{const _0x4f8057=await fetch(_0x3a930d(0x42b)+_0x2cbc8a);if(_0x4f8057['ok']){if(_0x28395f[_0x3a930d(0x407)](_0x28395f[_0x3a930d(0x3cc)],_0x28395f[_0x3a930d(0x281)])){_0x440a3f[_0x3a930d(0x2d8)](Stzngi['zAUlK'],_0x24318c);throw _0x1959ec;}else{const _0x159b15=await _0x4f8057[_0x3a930d(0x47f)]();let _0x7759e=_0x2cbc8a[_0x3a930d(0x25b)]('/')[0x1*-0x2de+-0x16b2+0x1990];_0x7759e[_0x3a930d(0x20b)](_0x28395f[_0x3a930d(0x2a3)])&&(_0x7759e=_0x7759e[_0x3a930d(0x420)](_0x28395f['fGawB'],''));_0x1e2d4e['add'](_0x7759e),console['log'](_0x3a930d(0x2c0)+_0x2cbc8a+_0x3a930d(0x3a7)+_0x7759e);const _0x1d980d=this[_0x3a930d(0x493)](_0x7759e);!_0x4a5441[_0x3a930d(0x439)](_0x1d980d)&&(_0x28395f[_0x3a930d(0x380)](_0x28395f[_0x3a930d(0x215)],_0x28395f[_0x3a930d(0x215)])?(await setDoc(_0x28395f[_0x3a930d(0x2e8)](doc,db,_0x3a930d(0x31e),_0x1d980d),{'type':_0x28395f[_0x3a930d(0x1a0)],'name':_0x7759e},{'merge':!![]}),_0x4a5441['add'](_0x1d980d)):_0x466e5e['error'](_0x28395f[_0x3a930d(0x45c)],_0x564953));for(const _0x55791 of _0x159b15){let _0x5daa7c=_0x7759e;_0x55791[_0x3a930d(0x2ea)]=_0x5daa7c,_0x55791[_0x3a930d(0x259)]=this[_0x3a930d(0x423)](_0x55791[_0x3a930d(0x2ea)],_0x55791[_0x3a930d(0x23b)]);const _0x2f74cd=_0x55791[_0x3a930d(0x225)]||_0x55791[_0x3a930d(0x23b)]||_0x28395f[_0x3a930d(0x3b6)](_0x28395f[_0x3a930d(0x48d)],Date[_0x3a930d(0x2a0)]()),_0x3c8c6b=this['escapeScope'](_0x5daa7c);!_0x4a5441[_0x3a930d(0x439)](_0x3c8c6b)&&(await _0x28395f[_0x3a930d(0x221)](setDoc,_0x28395f[_0x3a930d(0x356)](doc,db,_0x3a930d(0x31e),_0x3c8c6b),{'type':_0x28395f[_0x3a930d(0x1a0)],'name':_0x5daa7c},{'merge':!![]}),_0x4a5441[_0x3a930d(0x262)](_0x3c8c6b));const _0x4dcb53=doc(db,_0x28395f[_0x3a930d(0x213)],_0x3c8c6b,_0x28395f['xDjDY'],_0x2f74cd),_0x414f6a=await getDoc(_0x4dcb53);let _0x3be39e=!![];_0x414f6a[_0x3a930d(0x48a)]()&&(_0x3be39e=!this[_0x3a930d(0x3d0)](_0x414f6a[_0x3a930d(0x1a3)](),_0x55791)),_0x3be39e?(await setDoc(_0x4dcb53,_0x55791),!_0x414f6a[_0x3a930d(0x48a)]()?_0x49948e++:_0x1ba912++):_0x185510++;}}}}catch(_0xf44a84){console[_0x3a930d(0x2d8)](_0x28395f[_0x3a930d(0x342)](_0x3a930d(0x32d),_0x2cbc8a),_0xf44a84);}}console[_0x3a930d(0x1b1)](_0x3a930d(0x1fa)+_0x185510+_0x3a930d(0x3e2));let _0x5ba42e=0x12b7+-0x739+-0xb7e;for(const _0xee07f9 of _0x1e2d4e){if(_0x28395f['JHJvU'](_0x28395f['MXkfc'],_0x3a930d(0x25f))){_0x5ba42e++;if(_0x387b1c)_0x28395f[_0x3a930d(0x270)](_0x387b1c,_0x3a930d(0x285)+_0xee07f9+'\x20('+_0x5ba42e+'/'+_0x1e2d4e[_0x3a930d(0x216)]+_0x3a930d(0x2dc));await this[_0x3a930d(0x349)](_0xee07f9);}else _0x491ebb+=_0x328f0f[_0x3a930d(0x1ff)](_0x78651b[_0x1d78ce]);}await this['syncAllProfileCounts'](_0x387b1c);let _0x25195a=_0x28395f[_0x3a930d(0x403)];try{if(_0x387b1c)_0x28395f[_0x3a930d(0x2c7)](_0x387b1c,_0x3a930d(0x2c9));const _0x41c559=await this[_0x3a930d(0x21b)]();if(_0x41c559&&_0x41c559[_0x3a930d(0x3fd)]){if(_0x28395f[_0x3a930d(0x3dc)](_0x3a930d(0x19a),_0x28395f[_0x3a930d(0x44a)]))_0x25195a=_0x3a930d(0x243)+_0x41c559[_0x3a930d(0x212)]+_0x3a930d(0x2b5)+_0x41c559['updated']+_0x3a930d(0x3ba)+_0x41c559[_0x3a930d(0x237)]+(_0x41c559[_0x3a930d(0x2a4)]?_0x3a930d(0x2aa)+_0x41c559[_0x3a930d(0x2a4)]:'')+'.';else throw _0x1ff74c;}}catch(_0x4c07ec){if(_0x28395f[_0x3a930d(0x279)]===_0x28395f[_0x3a930d(0x279)])console[_0x3a930d(0x2d8)](_0x28395f[_0x3a930d(0x409)],_0x4c07ec),_0x25195a=_0x28395f['fIFgr'];else return![];}console[_0x3a930d(0x1b1)](_0x3a930d(0x258)+_0x49948e+_0x3a930d(0x30c)+_0x1ba912);let _0x5d554d='';_0x481124&&_0x481124[_0x3a930d(0x3fd)]&&_0x28395f[_0x3a930d(0x1c7)](_0x481124[_0x3a930d(0x1a1)],-0x2*0x22b+0x569*0x3+-0xbe5)&&(_0x28395f[_0x3a930d(0x442)](_0x28395f[_0x3a930d(0x3a0)],_0x28395f[_0x3a930d(0x3a0)])?_0x41e63f[_0x2b7125]=_0xecdec6[_0x3a930d(0x429)](_0x2ee3e7):_0x5d554d='Migration:\x20Moved\x20'+_0x481124['migrated']+_0x3a930d(0x3ec)+_0x481124[_0x3a930d(0x22b)]+'\x20old\x20folder(s).\x0a\x0a'),_0x28395f['SpzeM'](alert,'Sync\x20Complete!\x0a\x0a'+_0x5d554d+'Credentials:\x20Added\x20'+_0xb86b0b+_0x3a930d(0x30c)+_0xf3ee14+_0x3a930d(0x333)+_0x49948e+_0x3a930d(0x2b5)+_0x1ba912+_0x3a930d(0x2ec)+_0x25195a);}}catch(_0x1e8e72){console['error'](_0x28395f[_0x3a930d(0x378)],_0x1e8e72),_0x28395f['QhEvl'](alert,_0x28395f[_0x3a930d(0x1b6)]);}}async[_0x4b5bf3(0x21b)](){const _0x388e4e=_0x4b5bf3,_0x56f83b={'jGWHS':function(_0x4551fa,_0x8d621c){return _0x4551fa===_0x8d621c;},'Jcefv':_0x388e4e(0x1e0),'hTDQr':function(_0x106767,_0x3f015a){return _0x106767&&_0x3f015a;},'lAcAC':_0x388e4e(0x40d),'yNYfg':function(_0x291cfa,_0x543376){return _0x291cfa!==_0x543376;},'GOIin':_0x388e4e(0x466),'RAGzP':_0x388e4e(0x1b8),'XtLBe':'wKtcO','qZejv':_0x388e4e(0x47c),'lzvIP':_0x388e4e(0x296),'QsqEc':function(_0x55de0c,_0x76d5e2){return _0x55de0c(_0x76d5e2);},'PyyVj':function(_0x486a14,_0x2087a6,_0x4e8db7){return _0x486a14(_0x2087a6,_0x4e8db7);},'nRxvh':_0x388e4e(0x379),'KCzDV':function(_0x17cadf,_0xbec6a1){return _0x17cadf(_0xbec6a1);},'srCDR':_0x388e4e(0x2c4)};if(!this[_0x388e4e(0x417)])return{'success':![],'error':_0x56f83b['qZejv']};console[_0x388e4e(0x1b1)](_0x56f83b['lzvIP']);try{let _0x4cc0b6=0x1241*-0x1+0x135+-0x886*-0x2,_0x2c3ab0=0x6ce*-0x3+0x19ac+0x2a1*-0x2,_0x4d8716=-0x1d74+0xa*0x158+0x1004*0x1,_0x37ef89=-0x1d*-0xfb+0x37*0xd+0x476*-0x7;const _0x5c966a=_0x56f83b['QsqEc'](writeBatch,db);let _0x25833d=![];const _0x40e959=await getDocs(_0x56f83b[_0x388e4e(0x23c)](collection,db,_0x388e4e(0x40d))),_0x1e28ba={};_0x40e959['forEach'](_0x5ecbfb=>{const _0x4f49e4=_0x388e4e;_0x1e28ba[_0x5ecbfb['id']]=_0x5ecbfb[_0x4f49e4(0x1a3)]()[_0x4f49e4(0x45f)];});const _0x4371a8=_0x56f83b['PyyVj'](collectionGroup,db,_0x56f83b['nRxvh']),_0x458485=await _0x56f83b[_0x388e4e(0x332)](getDocs,_0x4371a8);return _0x458485[_0x388e4e(0x3e4)](_0x417256=>{const _0xe8461a=_0x388e4e;if(_0x56f83b['jGWHS'](_0x56f83b[_0xe8461a(0x37b)],_0x56f83b[_0xe8461a(0x37b)])){const _0x4869e5=_0x417256['data'](),_0x525fcd=_0x4869e5[_0xe8461a(0x23b)];let _0x53e5de='';_0x417256[_0xe8461a(0x47b)]&&_0x417256[_0xe8461a(0x47b)][_0xe8461a(0x401)]&&_0x417256[_0xe8461a(0x47b)][_0xe8461a(0x401)][_0xe8461a(0x401)]&&(_0x53e5de=this[_0xe8461a(0x29b)](_0x417256[_0xe8461a(0x47b)]['parent'][_0xe8461a(0x401)]['id']));if(_0x56f83b[_0xe8461a(0x2e0)](_0x525fcd,_0x53e5de)){const _0x4a0191=_0x1e28ba[_0x525fcd],_0x31c704=doc(db,_0x56f83b[_0xe8461a(0x2d7)],_0x525fcd);if(_0x4a0191===undefined)_0x5c966a[_0xe8461a(0x400)](_0x31c704,{'scope':_0x53e5de},{'merge':!![]}),_0x4cc0b6++,_0x25833d=!![];else _0x56f83b[_0xe8461a(0x22a)](_0x4a0191,_0x53e5de)?_0x56f83b['jGWHS'](_0x56f83b['GOIin'],_0x56f83b[_0xe8461a(0x484)])?_0x17fa83['warn']('⚠️\x20Firebase\x20Auth\x20account\x20already\x20exists\x20for\x20'+_0x10c148):(_0x5c966a[_0xe8461a(0x400)](_0x31c704,{'scope':_0x53e5de},{'merge':!![]}),_0x2c3ab0++,_0x25833d=!![]):_0x4d8716++;}else{if(_0xe8461a(0x257)!==_0x56f83b[_0xe8461a(0x1f1)])return _0x21a2c5[_0xe8461a(0x1b1)](_0xe8461a(0x1b4)+_0x8ea3f6+'\x20('+_0x52297a+_0xe8461a(0x3e7)),_0xedd3c0;else _0x37ef89++;}}else _0x38e425[_0xe8461a(0x2d8)]('⚠️\x20Failed\x20to\x20auto-register/verify\x20'+_0x31edf0+'\x20in\x20Auth:',_0x519dbd);}),_0x25833d&&await _0x5c966a['commit'](),console[_0x388e4e(0x1b1)](_0x388e4e(0x2f0)+_0x4cc0b6+_0x388e4e(0x18c)+_0x2c3ab0+',\x20Up-to-date:\x20'+_0x4d8716+',\x20Failed:\x20'+_0x37ef89),{'success':!![],'created':_0x4cc0b6,'updated':_0x2c3ab0,'upToDate':_0x4d8716,'failed':_0x37ef89};}catch(_0x589209){console[_0x388e4e(0x2d8)](_0x56f83b[_0x388e4e(0x2b4)],_0x589209);throw _0x589209;}}async['migrateUserProfilesInBatch'](_0x1d5c2f,_0x1c74c2,_0x10ebc2){const _0x197944=_0x4b5bf3,_0x12aeba={'SeJRd':_0x197944(0x40f),'HzVEg':function(_0x5487c6,_0x31069){return _0x5487c6===_0x31069;},'gpRdf':function(_0x4abe97,_0x383fc2,_0x1d411e,_0x402418){return _0x4abe97(_0x383fc2,_0x1d411e,_0x402418);},'QhLkN':_0x197944(0x31e),'MrXRV':function(_0x427ce3,_0x181321){return _0x427ce3(_0x181321);},'RCFtO':_0x197944(0x2a9),'RLPtO':_0x197944(0x1bf),'PQYUl':function(_0x22f29a,_0x325af1,_0x53450d,_0x2b602b,_0x48f484,_0x165ec4){return _0x22f29a(_0x325af1,_0x53450d,_0x2b602b,_0x48f484,_0x165ec4);},'rNBVZ':_0x197944(0x379),'yAatY':_0x197944(0x3cb),'awqHh':function(_0x52fe63,_0x39aae6,_0x2a7585,_0x21b86d){return _0x52fe63(_0x39aae6,_0x2a7585,_0x21b86d);},'RdDwh':_0x197944(0x40d),'dHSCX':function(_0x5558a2,_0xafa719){return _0x5558a2>=_0xafa719;},'booZN':function(_0x41799c,_0x1b7a59){return _0x41799c-_0x1b7a59;},'lFwlp':function(_0x24dd1f,_0x1077c6){return _0x24dd1f>_0x1077c6;},'VlgOo':_0x197944(0x322),'tsVuY':_0x197944(0x36d),'oQxZk':function(_0x5bf537,_0x11bd05,_0x45eed1,_0x1d072b,_0x437b28){return _0x5bf537(_0x11bd05,_0x45eed1,_0x1d072b,_0x437b28);},'BfKmq':function(_0x59cf5f,_0x4fe328){return _0x59cf5f===_0x4fe328;},'wOuTh':function(_0x5e9605,_0x3488a9){return _0x5e9605===_0x3488a9;},'hTjnu':'uUQzV','SqwuM':_0x197944(0x465),'gjeLZ':_0x197944(0x483),'IGsNO':_0x197944(0x27c)};if(!this[_0x197944(0x417)]||!_0x1d5c2f||!_0x1c74c2||!_0x10ebc2||_0x12aeba[_0x197944(0x3f0)](_0x10ebc2[_0x197944(0x393)],-0x19*-0x25+0x5*-0x7c9+-0x8d4*-0x4))return{'success':![],'migrated':0x0};try{const _0x29a2a3=this[_0x197944(0x493)](_0x1d5c2f),_0x1bb74f=this[_0x197944(0x493)](_0x1c74c2);await _0x12aeba[_0x197944(0x487)](setDoc,_0x12aeba[_0x197944(0x487)](doc,db,_0x12aeba[_0x197944(0x198)],_0x1bb74f),{'type':_0x197944(0x1d5),'name':this[_0x197944(0x29b)](_0x1c74c2)},{'merge':!![]});const _0x3a417f=[];let _0x8b78c8=_0x12aeba[_0x197944(0x48b)](writeBatch,db),_0x3949bc=0xb5f+0x1c*0x13d+-0x2e0b;const _0x3f4e7e=-0x1*-0x1b37+0x31d*0x1+-0x1c60;for(const _0x53093b of _0x10ebc2){if(_0x12aeba[_0x197944(0x3f0)](_0x12aeba[_0x197944(0x437)],_0x12aeba[_0x197944(0x437)])){const _0x19cb28=_0x53093b[_0x197944(0x44d)]||(_0x53093b['username']&&_0x53093b[_0x197944(0x23b)]?_0x53093b[_0x197944(0x225)]+'_'+_0x53093b[_0x197944(0x23b)]:_0x53093b['username']||_0x53093b[_0x197944(0x23b)]||_0x12aeba[_0x197944(0x1c5)]);if(!_0x19cb28||_0x12aeba['HzVEg'](_0x19cb28,_0x197944(0x1bf)))continue;const _0x3cd668=_0x12aeba[_0x197944(0x1ab)](doc,db,_0x12aeba[_0x197944(0x198)],_0x29a2a3,_0x12aeba['rNBVZ'],_0x19cb28),_0x20ad95=doc(db,_0x12aeba[_0x197944(0x198)],_0x1bb74f,'users',_0x19cb28),_0x53bedd={..._0x53093b};_0x53bedd['dataFile']=this[_0x197944(0x29b)](_0x1c74c2),_0x53bedd['parentFolder']=this[_0x197944(0x423)](_0x53bedd[_0x197944(0x2ea)],_0x53093b[_0x197944(0x23b)]),delete _0x53bedd[_0x197944(0x44d)],_0x8b78c8[_0x197944(0x400)](_0x20ad95,_0x53bedd,{'merge':!![]}),_0x3949bc++,_0x8b78c8['delete'](_0x3cd668),_0x3949bc++;if(_0x53093b[_0x197944(0x23b)]){if(_0x12aeba['HzVEg'](_0x12aeba[_0x197944(0x2ac)],'iNrcC')){const _0x12944a=_0x12aeba[_0x197944(0x2fa)](doc,db,_0x12aeba['RdDwh'],_0x53093b[_0x197944(0x23b)]);_0x8b78c8[_0x197944(0x400)](_0x12944a,{'scope':_0x53bedd[_0x197944(0x2ea)]},{'merge':!![]}),_0x3949bc++;}else _0x43e809[_0x197944(0x1b1)](jisTaK[_0x197944(0x28c)]);}_0x12aeba[_0x197944(0x443)](_0x3949bc,_0x12aeba[_0x197944(0x36e)](_0x3f4e7e,-0xa88*-0x1+0x13*-0x7d+-0x137))&&(_0x3a417f[_0x197944(0x1df)](_0x8b78c8),_0x8b78c8=writeBatch(db),_0x3949bc=0x6ba*0x3+0x915+0x3*-0x9c1);}else _0x5f0ae9[_0x197944(0x2ad)]('⚠️\x20Firebase\x20credential\x20fetch\x20failed\x20for\x20'+_0x5b73e2+':',_0x23b4e9);}_0x12aeba['lFwlp'](_0x3949bc,-0xe1d*0x1+0x1*-0x22dc+-0x1053*-0x3)&&(_0x12aeba[_0x197944(0x1c9)]!==_0x12aeba['VlgOo']?_0x1302c3++:_0x3a417f[_0x197944(0x1df)](_0x8b78c8));for(const _0x320827 of _0x3a417f){await _0x320827[_0x197944(0x482)]();}console['log'](_0x197944(0x375)+_0x10ebc2[_0x197944(0x393)]+_0x197944(0x267)+_0x1c74c2);try{if(_0x12aeba['HzVEg'](_0x12aeba[_0x197944(0x382)],_0x197944(0x36d))){const _0xcfe5cc=await _0x12aeba['MrXRV'](getCountFromServer,_0x12aeba[_0x197944(0x30d)](collection,db,_0x197944(0x31e),_0x29a2a3,_0x12aeba[_0x197944(0x34f)]));_0x12aeba[_0x197944(0x441)](_0xcfe5cc[_0x197944(0x1a3)]()['count'],0x7cf*0x5+0x1190+-0x389b*0x1)&&(await deleteDoc(_0x12aeba[_0x197944(0x2fa)](doc,db,_0x12aeba[_0x197944(0x198)],_0x29a2a3)),console['log']('🗑️\x20Deleted\x20empty\x20category\x20document:\x20profiles/'+_0x29a2a3));}else{_0x196a05[_0x197944(0x1b1)](_0x197944(0x1b4)+_0x14b8bb+_0x197944(0x318));const _0x232aeb=_0x55215b[_0x197944(0x1a3)]();return _0x232aeb['dataFile']=this[_0x197944(0x29b)](_0x2d08fc),_0x232aeb;}}catch(_0x2fc04b){_0x12aeba[_0x197944(0x217)](_0x12aeba[_0x197944(0x249)],_0x12aeba[_0x197944(0x249)])?console[_0x197944(0x2ad)](_0x197944(0x2ee)+_0x29a2a3+':',_0x2fc04b):_0x4ec681=_0x197944(0x3f1)+_0x1164f6[_0x197944(0x1a1)]+_0x197944(0x3ec)+_0x3d6a0e[_0x197944(0x22b)]+_0x197944(0x1ec);}return{'success':!![],'migrated':_0x10ebc2[_0x197944(0x393)]};}catch(_0x218e9e){if(_0x12aeba['HzVEg'](_0x12aeba[_0x197944(0x1ac)],_0x12aeba['gjeLZ']))_0x27cb41[_0x197944(0x2ad)](_0x197944(0x475)+_0x13d11d[_0x197944(0x23b)]+_0x197944(0x2e4),_0x5ae5ba);else{console['error'](_0x12aeba[_0x197944(0x347)],_0x218e9e);throw _0x218e9e;}}}async[_0x4b5bf3(0x3ad)](_0x228054){const _0x18ac5b=_0x4b5bf3,_0x3bee0c={'wCFyL':function(_0x3ef484,_0x4cde12){return _0x3ef484(_0x4cde12);},'JGtcT':_0x18ac5b(0x1b2),'jIXbP':function(_0x41d73c,_0x149a16){return _0x41d73c||_0x149a16;},'VLHBp':function(_0xc5d868,_0x45ee2d){return _0xc5d868===_0x45ee2d;},'RFFGn':'object','WBThb':function(_0x432766,_0x1607ea){return _0x432766!==_0x1607ea;},'ilmly':function(_0x59bdc1,_0x37e931){return _0x59bdc1===_0x37e931;},'RpDKa':function(_0x3d8a12,_0x49afd6){return _0x3d8a12!==_0x49afd6;},'qUdrI':function(_0x2027dc,_0x58039d){return _0x2027dc!==_0x58039d;},'PrNBp':_0x18ac5b(0x43d),'vZtHR':_0x18ac5b(0x427),'XatID':_0x18ac5b(0x336),'JFqBr':_0x18ac5b(0x3e9),'YZtzF':'Firebase\x20not\x20enabled','hvPSr':'🔄\x20Starting\x20database\x20migration\x20for\x20old\x20scope\x20paths...','WrmdZ':function(_0x187f63,_0xc0396f){return _0x187f63(_0xc0396f);},'rcYVj':_0x18ac5b(0x2fb),'zegBp':function(_0x24d567,_0x11f428){return _0x24d567===_0x11f428;},'OhQyY':_0x18ac5b(0x485),'VihpN':function(_0x20d185,_0x44fc23,_0x180e57){return _0x20d185(_0x44fc23,_0x180e57);},'AOTnd':_0x18ac5b(0x379),'WXMvR':function(_0x451ad2,_0x38b083){return _0x451ad2!==_0x38b083;},'nAtRt':_0x18ac5b(0x370),'pwQCz':function(_0x42af6a,_0x346794){return _0x42af6a===_0x346794;},'bMgXb':_0x18ac5b(0x42d),'OAiIo':_0x18ac5b(0x46b),'iJpQi':function(_0x121fae,_0x18b62d){return _0x121fae===_0x18b62d;},'ICTTx':'kYsnH','EzHta':'⚡\x20Database\x20is\x20already\x20fully\x20migrated.\x20Skipping\x20migration\x20step.','unPnV':'bxOIk','CUSSw':function(_0x57dd7c,_0x5e5bd4){return _0x57dd7c-_0x5e5bd4;},'XUXIo':function(_0x5ec65d,_0x168883){return _0x5ec65d===_0x168883;},'mnWjG':function(_0x4b4bfe,_0x368f1a){return _0x4b4bfe&&_0x368f1a;},'ivCEd':function(_0x450750,_0x2a5777,_0xa98994,_0xe188e,_0xdefef9,_0x2b9eaa){return _0x450750(_0x2a5777,_0xa98994,_0xe188e,_0xdefef9,_0x2b9eaa);},'PHUcW':_0x18ac5b(0x31e),'UHaye':function(_0x2f2052,_0x528b53,_0x467d26,_0x107e08){return _0x2f2052(_0x528b53,_0x467d26,_0x107e08);},'INTOV':_0x18ac5b(0x38d),'aIySz':function(_0x4cb16c,_0x1b6cae,_0x5c9ca1,_0xa5f98e){return _0x4cb16c(_0x1b6cae,_0x5c9ca1,_0xa5f98e);},'ObkJs':_0x18ac5b(0x40d),'KxOKm':'VgKsE','ukALQ':_0x18ac5b(0x294),'SjbUx':function(_0x1c4d97,_0x571739){return _0x1c4d97===_0x571739;},'RFgfb':function(_0x304f65,_0x330468){return _0x304f65===_0x330468;},'BJlLF':_0x18ac5b(0x309),'KPkGP':function(_0x93a3e6,_0x7cdd95){return _0x93a3e6(_0x7cdd95);},'JwXZV':function(_0x5dd860,_0x3345b8,_0x1ca5a8,_0x5509c3,_0x1aeebf){return _0x5dd860(_0x3345b8,_0x1ca5a8,_0x5509c3,_0x1aeebf);},'LKwHx':function(_0x1dc46a,_0x400750){return _0x1dc46a===_0x400750;},'IGefZ':_0x18ac5b(0x1d2),'ZLbmr':'PrRfN','nGLDZ':function(_0x5380bb,_0x4616a3,_0x46f237,_0x14fa3d){return _0x5380bb(_0x4616a3,_0x46f237,_0x14fa3d);},'KxOqn':'dYXaK','nYOVH':_0x18ac5b(0x2e9)};if(!this['useFirebase'])return{'success':![],'error':_0x3bee0c[_0x18ac5b(0x278)]};console[_0x18ac5b(0x1b1)](_0x3bee0c['hvPSr']);if(_0x228054)_0x3bee0c[_0x18ac5b(0x292)](_0x228054,_0x3bee0c[_0x18ac5b(0x337)]);try{if(_0x3bee0c[_0x18ac5b(0x2c8)](_0x18ac5b(0x485),_0x3bee0c[_0x18ac5b(0x1d1)])){const _0x28477d=await getDocs(collection(db,_0x18ac5b(0x40d))),_0x5e5fcc={};_0x28477d[_0x18ac5b(0x3e4)](_0x19909e=>{const _0x551e04=_0x18ac5b;_0x5e5fcc[_0x19909e['id']]=_0x19909e[_0x551e04(0x1a3)]()['scope'];});const _0x14e999=_0x3bee0c[_0x18ac5b(0x350)](collectionGroup,db,_0x3bee0c[_0x18ac5b(0x1f7)]),_0x21806=await getDocs(_0x14e999);console[_0x18ac5b(0x1b1)]('🔍\x20Found\x20total\x20'+_0x21806[_0x18ac5b(0x216)]+_0x18ac5b(0x416));let _0x3c0f18=![];for(const _0x247d4c in _0x5e5fcc){if(_0x3bee0c[_0x18ac5b(0x39c)](_0x18ac5b(0x370),_0x3bee0c[_0x18ac5b(0x32f)]))_0x4ec251[_0x18ac5b(0x2d8)](_0x18ac5b(0x3b0)+_0x55d548+':',_0x485e06);else{if(_0x5e5fcc[_0x247d4c]&&_0x5e5fcc[_0x247d4c][_0x18ac5b(0x3b9)]('/')){if(_0x3bee0c[_0x18ac5b(0x1fc)](_0x3bee0c[_0x18ac5b(0x3c7)],_0x3bee0c[_0x18ac5b(0x436)]))_0x47288e=_0x5d80d6[_0x18ac5b(0x1f4)](-0xab9+0x184e+0x487*-0x3,-(-0xb07+0x1a47+0x515*-0x3))['join']('/');else{_0x3c0f18=!![];break;}}}}if(!_0x3c0f18){if(_0x3bee0c['iJpQi'](_0x18ac5b(0x46a),_0x18ac5b(0x46a)))for(const _0x18f88c of _0x21806[_0x18ac5b(0x415)]){if(_0x18f88c['ref']&&_0x18f88c[_0x18ac5b(0x47b)][_0x18ac5b(0x401)]&&_0x18f88c['ref'][_0x18ac5b(0x401)][_0x18ac5b(0x401)]){if(_0x3bee0c[_0x18ac5b(0x39a)](_0x18ac5b(0x19c),'zmLru'))_0x34f7d0='Cloud\x20Index:\x20Created\x20'+_0x5dbfed[_0x18ac5b(0x212)]+_0x18ac5b(0x2b5)+_0x19a65a[_0x18ac5b(0x1d0)]+_0x18ac5b(0x3ba)+_0x5e89b8[_0x18ac5b(0x237)]+(_0x3add9f[_0x18ac5b(0x2a4)]?_0x18ac5b(0x2aa)+_0xf1763c[_0x18ac5b(0x2a4)]:'')+'.';else{const _0x3112ac=this[_0x18ac5b(0x29b)](_0x18f88c[_0x18ac5b(0x47b)][_0x18ac5b(0x401)][_0x18ac5b(0x401)]['id']);if(_0x3112ac[_0x18ac5b(0x3b9)]('/')){_0x3c0f18=!![];break;}}}}else _0x887e50['push'](_0x18043b),_0x233c01=mpRQGL[_0x18ac5b(0x414)](_0x3e24a9,_0x5f55bd),_0x386762=-0x2119*0x1+-0x1*0x1bea+-0x1*-0x3d03;}if(!_0x3c0f18){if(_0x3bee0c['ICTTx']!==_0x3bee0c[_0x18ac5b(0x23a)]){_0x39f622[_0x18ac5b(0x2d8)](mpRQGL[_0x18ac5b(0x2c6)],_0x1997bc);throw _0x44e9e9;}else return console[_0x18ac5b(0x1b1)](_0x3bee0c[_0x18ac5b(0x45e)]),{'success':!![],'migrated':0x0,'deletedScopes':0x0,'indexUpdated':0x0};}let _0xdc198=-0xe99+0x1*0x2201+0x6c*-0x2e,_0xd7f3cb=0x14c6+-0x2*-0x703+-0x22cc,_0x52e05d=0x5*-0x282+-0x1d81+0x2a0b;const _0x28047f=new Set();for(const _0x189613 of _0x21806[_0x18ac5b(0x415)]){if('bxOIk'===_0x3bee0c[_0x18ac5b(0x3e1)]){const _0x954e1a=_0x189613[_0x18ac5b(0x1a3)](),_0x566f07=_0x954e1a[_0x18ac5b(0x23b)],_0x219358=_0x954e1a[_0x18ac5b(0x225)];let _0x125803='';_0x189613[_0x18ac5b(0x47b)]&&_0x189613[_0x18ac5b(0x47b)][_0x18ac5b(0x401)]&&_0x189613[_0x18ac5b(0x47b)][_0x18ac5b(0x401)]['parent']&&(_0x125803=_0x189613[_0x18ac5b(0x47b)][_0x18ac5b(0x401)][_0x18ac5b(0x401)]['id']);if(!_0x125803)continue;const _0x1132f3=this[_0x18ac5b(0x29b)](_0x125803);if(_0x1132f3['includes']('/')){const _0x31681c=_0x1132f3[_0x18ac5b(0x25b)]('/'),_0x4e5bd0=_0x31681c[_0x3bee0c[_0x18ac5b(0x32a)](_0x31681c[_0x18ac5b(0x393)],-0x1*-0x95f+0xb*-0x2a9+0x13e5)];if(_0x3bee0c[_0x18ac5b(0x1d9)](_0x4e5bd0,_0x566f07)||_0x3bee0c['XUXIo'](_0x4e5bd0,_0x219358)){const _0x158b70=_0x31681c[_0x18ac5b(0x1f4)](0x20eb+-0x5*-0x661+-0x40d0,-(-0x1769+0x2443+-0xcd9))['join']('/'),_0x102031=this[_0x18ac5b(0x493)](_0x158b70);if(_0x228054)_0x228054(_0x18ac5b(0x3aa)+(_0x219358||_0x566f07)+_0x18ac5b(0x478)+_0x158b70+_0x18ac5b(0x2fc));const _0x35642d=_0x3bee0c[_0x18ac5b(0x41a)](_0x219358,_0x566f07)?_0x219358+'_'+_0x566f07:_0x566f07||_0x189613['id'],_0x26962a={..._0x954e1a,'dataFile':_0x158b70,'parentFolder':_0x158b70},_0x82c702=_0x3bee0c[_0x18ac5b(0x402)](doc,db,_0x3bee0c[_0x18ac5b(0x240)],_0x102031,_0x3bee0c[_0x18ac5b(0x1f7)],_0x35642d);await _0x3bee0c[_0x18ac5b(0x381)](setDoc,_0x82c702,_0x26962a,{'merge':!![]}),console[_0x18ac5b(0x1b1)](_0x18ac5b(0x34d)+_0x102031+'/users/'+_0x35642d),await deleteDoc(_0x189613[_0x18ac5b(0x47b)]),console[_0x18ac5b(0x1b1)](_0x18ac5b(0x488)+_0x189613['ref']['path']),_0x28047f[_0x18ac5b(0x262)](_0x125803),_0xdc198++;}}if(_0x566f07){if(_0x3bee0c[_0x18ac5b(0x299)](_0x3bee0c[_0x18ac5b(0x398)],_0x18ac5b(0x38d)))_0x47f003['dataFile']=this[_0x18ac5b(0x29b)](_0x40d579[_0x18ac5b(0x2ea)]);else{const _0x109e1f=_0x3bee0c[_0x18ac5b(0x2de)](doc,db,_0x3bee0c[_0x18ac5b(0x376)],_0x566f07),_0x20ec29=_0x5e5fcc[_0x566f07];if(_0x3bee0c[_0x18ac5b(0x39c)](_0x20ec29,undefined)){if(_0x20ec29&&_0x20ec29['includes']('/')){const _0x4063cb=_0x20ec29[_0x18ac5b(0x25b)]('/'),_0x59bb32=_0x4063cb[_0x4063cb[_0x18ac5b(0x393)]-(-0x22*0x3a+-0x2033*-0x1+-0x187e)];if(_0x59bb32===_0x566f07||_0x59bb32===_0x219358){const _0x2a9e38=_0x4063cb[_0x18ac5b(0x1f4)](0x63d+-0x707*-0x1+0x236*-0x6,-(0x1cc5+0x2148+-0x3e0c))['join']('/');await _0x3bee0c['UHaye'](setDoc,_0x109e1f,{'scope':_0x2a9e38},{'merge':!![]}),console[_0x18ac5b(0x1b1)](_0x18ac5b(0x2ed)+_0x566f07+_0x18ac5b(0x327)+_0x2a9e38),_0x52e05d++;}}}else{if(_0x3bee0c['KxOKm']!==_0x3bee0c['ukALQ']){let _0x345bca=_0x1132f3;if(_0x1132f3[_0x18ac5b(0x3b9)]('/')){const _0x225a1b=_0x1132f3[_0x18ac5b(0x25b)]('/'),_0x3ed76e=_0x225a1b[_0x3bee0c[_0x18ac5b(0x32a)](_0x225a1b[_0x18ac5b(0x393)],-0x21e6+0x10b4+0x1133)];(_0x3bee0c[_0x18ac5b(0x3c6)](_0x3ed76e,_0x566f07)||_0x3bee0c[_0x18ac5b(0x3ab)](_0x3ed76e,_0x219358))&&(_0x345bca=_0x225a1b[_0x18ac5b(0x1f4)](-0x5*-0x224+-0x122e*0x1+0x77a,-(-0x431+-0x49*0x72+0x24b4))[_0x18ac5b(0x48e)]('/'));}await _0x3bee0c[_0x18ac5b(0x381)](setDoc,_0x109e1f,{'scope':_0x345bca},{'merge':!![]}),console['log']('✅\x20Index\x20recreated:\x20index/'+_0x566f07+'\x20->\x20scope:\x20'+_0x345bca),_0x52e05d++;}else{if(mpRQGL[_0x18ac5b(0x272)](!_0x57884e,!_0x25d7de))return mpRQGL[_0x18ac5b(0x39a)](_0x17804b,_0x29e71e);for(const _0x259654 of _0x5af9ae['keys'](_0x2f5d18)){const _0x1128f1=_0x1c1ec9[_0x259654],_0x11450c=_0x1b31d0[_0x259654];if(typeof _0x11450c===mpRQGL[_0x18ac5b(0x2eb)]&&mpRQGL['WBThb'](_0x11450c,null)&&mpRQGL['ilmly'](typeof _0x1128f1,mpRQGL[_0x18ac5b(0x2eb)])&&mpRQGL['RpDKa'](_0x1128f1,null)){if(_0x673892[_0x18ac5b(0x325)](_0x1128f1)!==_0x47433a[_0x18ac5b(0x325)](_0x11450c))return![];}else{if(mpRQGL[_0x18ac5b(0x3a1)](_0x1128f1,_0x11450c))return![];}}return!![];}}}}}else _0x14307a++;}for(const _0xe17807 of _0x28047f){if(_0x3bee0c[_0x18ac5b(0x1a4)](_0x18ac5b(0x206),_0x3bee0c[_0x18ac5b(0x2b8)]))_0x8558e5['error'](mpRQGL['PrNBp'],_0x1f8804);else{if(_0x228054)_0x3bee0c['KPkGP'](_0x228054,_0x18ac5b(0x44b)+this['unescapeScope'](_0xe17807)+_0x18ac5b(0x2fc));const _0x325686=_0x3bee0c[_0x18ac5b(0x1e1)](collection,db,_0x18ac5b(0x31e),_0xe17807,_0x18ac5b(0x379)),_0x34a00c=await _0x3bee0c[_0x18ac5b(0x292)](getDocs,_0x325686);_0x34a00c['empty']?_0x3bee0c[_0x18ac5b(0x260)](_0x3bee0c[_0x18ac5b(0x1db)],_0x3bee0c[_0x18ac5b(0x276)])?_0x20c712=_0x54daf8[_0x18ac5b(0x47b)][_0x18ac5b(0x401)]['parent']['id']:(await _0x3bee0c[_0x18ac5b(0x23f)](deleteDoc,_0x3bee0c[_0x18ac5b(0x377)](doc,db,_0x3bee0c[_0x18ac5b(0x240)],_0xe17807)),console[_0x18ac5b(0x1b1)](_0x18ac5b(0x45d)+_0xe17807),_0xd7f3cb++):_0x3bee0c['VLHBp'](_0x3bee0c[_0x18ac5b(0x449)],_0x18ac5b(0x242))?console[_0x18ac5b(0x1b1)]('ℹ️\x20Category\x20profiles/'+_0xe17807+_0x18ac5b(0x1bb)):_0x531d84[_0x18ac5b(0x2ad)](mpRQGL[_0x18ac5b(0x2bd)],_0x3b8365);}}return console[_0x18ac5b(0x1b1)]('✅\x20Migration\x20complete.\x20Migrated:\x20'+_0xdc198+_0x18ac5b(0x351)+_0xd7f3cb+_0x18ac5b(0x311)+_0x52e05d),{'success':!![],'migrated':_0xdc198,'deletedScopes':_0xd7f3cb,'indexUpdated':_0x52e05d};}else _0x154272[_0x18ac5b(0x2d8)](mpRQGL[_0x18ac5b(0x384)],_0x247874),_0x5a9952=mpRQGL[_0x18ac5b(0x2a1)];}catch(_0x23e735){console[_0x18ac5b(0x2d8)](_0x3bee0c[_0x18ac5b(0x331)],_0x23e735);throw _0x23e735;}}}const dataService=new DataService();window[_0x4b5bf3(0x385)]=dataService;export{dataService};
+import { db, auth, getSecondaryAuth } from './firebase-config.js';
+import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch, collectionGroup, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updatePassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+
+class DataService {
+    constructor() {
+        this.useFirebase = true; // Default to trying Firebase first
+    }
+
+    async login(username, password) {
+        if (!username || !password) throw new Error("Username and password are required");
+        const normalizedUsername = username.toLowerCase().trim();
+        
+        // Sign in using Firebase Auth Email/Password
+        const userCred = await signInWithEmailAndPassword(auth, normalizedUsername + '@multilynkqr.local', password);
+        
+        // Fetch credential details from Firestore
+        const docRef = doc(db, "credentials", normalizedUsername);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            throw new Error("User credentials document not found in Firestore.");
+        }
+        
+        const cred = docSnap.data();
+        if (cred.isActive !== true) {
+            await signOut(auth);
+            throw new Error("Account is inactive. Please contact admin.");
+        }
+        
+        if (cred.password) {
+            cred.rawPassword = cred.password;
+            cred.password = await this.decryptPassword(cred.password);
+        }
+        return cred;
+    }
+
+    async logout() {
+        await signOut(auth);
+        localStorage.clear();
+    }
+
+
+    // Checks if the second object's properties match the first object's properties (dirty check)
+    isEquivalent(obj1, obj2) {
+        if (!obj1 || !obj2) return obj1 === obj2;
+        for (const key of Object.keys(obj2)) {
+            const val1 = obj1[key];
+            const val2 = obj2[key];
+            if (typeof val2 === 'object' && val2 !== null && typeof val1 === 'object' && val1 !== null) {
+                if (JSON.stringify(val1) !== JSON.stringify(val2)) return false;
+            } else if (val1 !== val2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Helper functions to escape/unescape slashes in Firebase paths (Firestore document paths must have an even number of segments, so slashes in scope names are escaped to keep the structure flat)
+    escapeScope(scope) {
+        if (!scope) return '';
+        return scope.replace(/\//g, '___');
+    }
+
+    unescapeScope(scope) {
+        if (!scope) return '';
+        return scope.replace(/___/g, '/');
+    }
+
+    getParentFolderOfScope(scope, userCode) {
+        if (!scope) return '';
+        const unescaped = this.unescapeScope(scope);
+        const parts = unescaped.split('/');
+        if (parts.length > 1) {
+            const lastPart = parts[parts.length - 1];
+            if (userCode && lastPart === userCode) {
+                return parts.slice(0, -1).join('/');
+            }
+        }
+        return unescaped;
+    }
+
+    // --- Credentials ---
+    async getCredential(username) {
+        if (!username) return null;
+        if (this.useFirebase) {
+            try {
+                const docRef = doc(db, "credentials", username);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const cred = docSnap.data();
+                    if (cred.password) {
+                        cred.rawPassword = cred.password;
+                        cred.password = await this.decryptPassword(cred.password);
+                    }
+                    return cred;
+                }
+            } catch (error) {
+                console.warn(`⚠️ Firebase credential fetch failed for ${username}:`, error);
+            }
+        }
+        // Fallback to local
+        const credentials = await this.getCredentials();
+        return credentials.find(c => c.username === username) || null;
+    }
+
+    async getCredentials() {
+        const userRole = localStorage.getItem('adminRole');
+        if (userRole !== 'super_admin' && userRole !== 'main_admin') {
+            console.warn("🚫 Security Block: getCredentials() called by unauthorized role:", userRole);
+            return [];
+        }
+
+        let credentials = [];
+        if (this.useFirebase) {
+            try {
+                const querySnapshot = await getDocs(collection(db, "credentials"));
+                if (!querySnapshot.empty) {
+                    const decryptPromises = [];
+                    querySnapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        decryptPromises.push((async () => {
+                            if (data.password) {
+                                data.rawPassword = data.password;
+                                data.password = await this.decryptPassword(data.password);
+                            }
+                            credentials.push(data);
+                        })());
+                    });
+                    await Promise.all(decryptPromises);
+                    console.log("✅ Loaded credentials from Firebase");
+                    return credentials;
+                } else {
+                    console.log("⚠️ No credentials in Firebase, falling back to local file");
+                }
+            } catch (error) {
+                console.warn("⚠️ Firebase credentials fetch failed:", error);
+            }
+        }
+
+        // Fallback to local
+        try {
+            const response = await fetch('./credentials/login_credentials.json?t=' + new Date().getTime());
+            if (response.ok) {
+                credentials = await response.json();
+                console.log("✅ Loaded credentials from local file");
+            }
+        } catch (error) {
+            console.error("❌ Failed to load credentials from local file:", error);
+        }
+        return credentials;
+    }
+
+    // --- User Profiles ---
+
+    async getUsers(dataFile) {
+        let users = [];
+
+        // Structure: profiles (col) -> {dataFile} (doc) -> users (subcol) -> {userId} (doc)
+
+        if (this.useFirebase) {
+            try {
+                // To support nested scopes (e.g., "user1/user2") and parent folder reads (e.g. "user1" reads all subfolders),
+                // we query all users via Collection Group and filter in memory by scope path structure.
+                const q = collectionGroup(db, "users");
+                console.log(`🔍 Fetching users from collection group (filter dataFile: ${dataFile})`);
+                const querySnapshot = await getDocs(q);
+
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    userData.docId = doc.id;
+
+                    // Retrieve parent scope from document path
+                    let scope = '';
+                    if (doc.ref && doc.ref.parent && doc.ref.parent.parent) {
+                        scope = this.unescapeScope(doc.ref.parent.parent.id);
+                    }
+
+                    if (!userData.dataFile) {
+                        userData.dataFile = scope;
+                    } else {
+                        // Ensure it matches unescaped scope
+                        userData.dataFile = this.unescapeScope(userData.dataFile);
+                    }
+
+                    // Filtering rules:
+                    // - If no dataFile specified (Super Admin), return all profiles.
+                    // - Otherwise, return profiles that match the dataFile scope directly or as a sub-folder.
+                    if (!dataFile || scope === dataFile || scope.startsWith(dataFile + "/")) {
+                        users.push(userData);
+                    }
+                });
+
+                console.log(`✅ Loaded ${users.length} users from Firebase (filtered)`);
+                return users;
+
+            } catch (error) {
+                console.warn("⚠️ Firebase users fetch failed:", error);
+            }
+        }
+
+        return null; // Fallback to local
+    }
+
+    // Get specific user by ID (for Edit page)
+    async getUser(scope, docId) {
+        if (this.useFirebase && scope && docId) {
+            try {
+                const escapedScope = this.escapeScope(scope);
+                // Path: profiles/{escapedScope}/users/{docId}
+                const docRef = doc(db, "profiles", escapedScope, "users", docId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    console.log(`✅ Loaded user ${docId} from Firebase`);
+                    const userData = docSnap.data();
+                    userData.dataFile = this.unescapeScope(scope); // Normalize scope to unescaped form
+                    return userData;
+                }
+            } catch (error) {
+                console.warn("⚠️ Firebase user fetch failed:", error);
+            }
+        }
+        return null;
+    }
+
+    // Get specific user by username and userCode across all scopes using a Cloud Index Collection lookup
+    async getUserByCode(username, userCode) {
+        if (this.useFirebase && username && userCode) {
+            try {
+                // 1. Fetch code mapping index directly from index collection (exactly 1 read)
+                const codeRef = doc(db, "index", userCode);
+                const codeSnap = await getDoc(codeRef);
+
+                if (codeSnap.exists()) {
+                    const indexData = codeSnap.data();
+                    const scope = indexData.scope;
+                    if (scope) {
+                        // Try combo ID first
+                        const fbUserCombo = await this.getUser(scope, username + '_' + userCode);
+                        if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
+                            console.log(`✅ Loaded user ${username} (${userCode}) via cloud index collection (combo ID)`);
+                            return fbUserCombo;
+                        }
+                        // Fallback to username ID
+                        const fbUser = await this.getUser(scope, username);
+                        if (fbUser && fbUser.userCode === userCode) {
+                            console.log(`✅ Loaded user ${username} (${userCode}) via cloud index collection`);
+                            return fbUser;
+                        }
+                        // Fallback to userCode ID
+                        const fbUserCode = await this.getUser(scope, userCode);
+                        if (fbUserCode && fbUserCode.username === username) {
+                            console.log(`✅ Loaded user ${username} (${userCode}) via cloud index collection (userCode ID)`);
+                            return fbUserCode;
+                        }
+                    }
+                }
+
+                // 2. Fallback: If not found in codes collection, try credentials folders loop lookup
+                console.log(`🔍 UserCode ${userCode} not found in cloud codes index. Falling back to active folders lookup...`);
+                const credentials = await this.getCredentials();
+                const folders = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
+
+                for (const folder of folders) {
+                    const scope = `${folder}/${userCode}`;
+                    // Try the standard {username}_{userCode} format first
+                    const fbUserCombo = await this.getUser(scope, username + '_' + userCode);
+                    if (fbUserCombo && fbUserCombo.username === username && fbUserCombo.userCode === userCode) {
+                        console.log(`✅ Loaded user ${username} (${userCode}) via folders loop lookup`);
+                        // Auto-repair/populate the missing index mapping in codes collection
+                        await setDoc(codeRef, { scope: scope }, { merge: true });
+                        return fbUserCombo;
+                    }
+
+                    // Fallback to username only (older format)
+                    const fbUser = await this.getUser(scope, username);
+                    if (fbUser && fbUser.userCode === userCode) {
+                        console.log(`✅ Loaded user ${username} (${userCode}) via folders loop lookup`);
+                        await setDoc(codeRef, { scope: scope }, { merge: true });
+                        return fbUser;
+                    }
+                }
+            } catch (error) {
+                console.warn("⚠️ Firebase query by username and userCode failed:", error);
+            }
+        }
+        return null;
+    }
+
+    // Update User
+    async updateUser(scope, docId, userData, skipCountUpdate = false) {
+        if (this.useFirebase && scope && docId) {
+            try {
+                // Ensure the unescaped scope name is explicitly stored in dataFile field
+                userData.dataFile = this.unescapeScope(scope);
+                userData.parentFolder = this.getParentFolderOfScope(userData.dataFile, userData.userCode);
+
+                const escapedScope = this.escapeScope(scope);
+
+                // Ensure the parent category document exists in Firestore
+                try {
+                    await setDoc(doc(db, "profiles", escapedScope), {
+                        type: 'category',
+                        name: userData.dataFile
+                    }, { merge: true });
+                    console.log(`✅ Profiles category document created/updated: profiles/${escapedScope}`);
+                } catch (catErr) {
+                    console.warn(`⚠️ Warning: Failed to create/update parent category document profiles/${escapedScope} (this is expected if you are not an admin):`, catErr);
+                }
+
+                const docRef = doc(db, "profiles", escapedScope, "users", docId);
+                await setDoc(docRef, userData, { merge: true });
+                console.log(`✅ User ${docId} updated in Firebase`);
+
+                // Also update/write the userCode index mapping under index collection
+                if (userData.userCode) {
+                    try {
+                        const codeRef = doc(db, "index", userData.userCode);
+                        await setDoc(codeRef, { scope: userData.dataFile }, { merge: true });
+                        console.log(`✅ Code index created: ${userData.userCode} -> ${userData.dataFile}`);
+                    } catch (indexErr) {
+                        console.warn(`⚠️ Warning: Failed to create/update code index for userCode ${userData.userCode} (this is expected if you are not an admin):`, indexErr);
+                    }
+                }
+
+                if (!skipCountUpdate) {
+                    try {
+                        await this.updateProfileCountInFirestore(scope);
+                    } catch (countErr) {
+                        console.warn(`⚠️ Warning: Failed to update profile count for scope ${scope} (this is expected if you are not an admin):`, countErr);
+                    }
+                }
+                return true;
+            } catch (error) {
+                console.error("❌ Failed to update user:", error);
+                throw error;
+            }
+        }
+        return false;
+    }
+
+    // Delete User
+    async deleteUser(scope, username, userCode, skipCountUpdate = false) {
+        if (this.useFirebase && scope && username && userCode) {
+            try {
+                const escapedScope = this.escapeScope(scope);
+                // Find the exact document to delete using both username and userCode to prevent incorrect deletion of new profiles
+                const usersRef = collection(db, "profiles", escapedScope, "users");
+                const q = query(usersRef, where("username", "==", username), where("userCode", "==", userCode));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    const deletePromises = [];
+                    querySnapshot.forEach((docSnap) => {
+                        deletePromises.push(deleteDoc(docSnap.ref));
+                    });
+                    await Promise.all(deletePromises);
+                    console.log(`🗑️ User ${username} (${userCode}) deleted from Firebase`);
+
+                    // Also delete the index mapping under index collection only if it matches the scope of the deleted document
+                    const codeRef = doc(db, "index", userCode);
+                    try {
+                        const codeSnap = await getDoc(codeRef);
+                        if (codeSnap.exists()) {
+                            const indexData = codeSnap.data();
+                            const unescapedDeletedScope = this.unescapeScope(scope);
+                            if (indexData && indexData.scope === unescapedDeletedScope) {
+                                await deleteDoc(codeRef);
+                                console.log(`🗑️ Code index deleted for userCode: ${userCode}`);
+                            } else {
+                                // If the current index mapping scope matches the old nested scope containing slash, we delete it too
+                                if (indexData.scope && indexData.scope.includes('/')) {
+                                    const parentFolder = indexData.scope.split('/')[0];
+                                    if (parentFolder === unescapedDeletedScope) {
+                                        await deleteDoc(codeRef);
+                                        console.log(`🗑️ Old nested code index deleted for userCode: ${userCode}`);
+                                    }
+                                } else {
+                                    console.log(`ℹ️ Code index NOT deleted because its current scope (${indexData?.scope}) does not match the deleted scope (${unescapedDeletedScope})`);
+                                }
+                            }
+                        }
+                    } catch (indexErr) {
+                        console.error(`⚠️ Failed to check/delete index mapping for userCode ${userCode}:`, indexErr);
+                    }
+
+                    // Clean up empty category document if there are no users left under it
+                    try {
+                        const countSnapshot = await getCountFromServer(collection(db, "profiles", escapedScope, "users"));
+                        if (countSnapshot.data().count === 0) {
+                            await deleteDoc(doc(db, "profiles", escapedScope));
+                            console.log(`🗑️ Deleted empty category document: profiles/${escapedScope}`);
+                        }
+                    } catch (cleanErr) {
+                        console.warn(`⚠️ Warning: Failed to check/delete empty category document profiles/${escapedScope}:`, cleanErr);
+                    }
+
+                    if (!skipCountUpdate) {
+                        try {
+                            await this.updateProfileCountInFirestore(scope);
+                        } catch (countErr) {
+                            console.warn(`⚠️ Warning: Failed to update profile count for scope ${scope} (this is expected if you are not an admin):`, countErr);
+                        }
+                    }
+                    return true;
+                } else {
+                    console.warn(`❌ No matching user found to delete: ${username} (${userCode}). Was it already deleted?`);
+                    return false;
+                }
+            } catch (error) {
+                console.error("❌ Failed to delete user:", error);
+                throw error;
+            }
+        }
+        return false;
+    }
+
+
+    // Check if credential exists (username or dataFile)
+    async checkCredentialUniqueness(username, dataFile) {
+        const credentials = await this.getCredentials();
+
+        const usernameExists = credentials.some(cred => cred.username.toLowerCase() === username.toLowerCase());
+        const dataFileExists = credentials.some(cred => cred.dataFile && cred.dataFile.toLowerCase() === dataFile.toLowerCase());
+
+        return { usernameExists, dataFileExists };
+    }
+
+    async hashPassword(password) {
+        if (!password) return '';
+        // If password is already a SHA-256 hash (64 hex characters), don't hash it again
+        if (/^[a-f0-9]{64}$/i.test(password)) {
+            return password;
+        }
+        try {
+            const msgUint8 = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (error) {
+            console.error('Cryptographic hashing failed, falling back to plaintext:', error);
+            return password;
+        }
+    }
+
+    async getCryptoKey(passphrase) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+            "raw",
+            enc.encode(passphrase),
+            { name: "PBKDF2" },
+            false,
+            ["deriveBits", "deriveKey"]
+        );
+        const salt = enc.encode("MultiLynkQR-Salt-123");
+        return await crypto.subtle.deriveKey(
+            {
+                name: "PBKDF2",
+                salt: salt,
+                iterations: 1000,
+                hash: "SHA-256"
+            },
+            keyMaterial,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["encrypt", "decrypt"]
+        );
+    }
+
+    async encryptPassword(password) {
+        if (!password) return '';
+        const secret = window.ENCRYPTION_SECRET;
+        try {
+            const key = await this.getCryptoKey(secret);
+            const enc = new TextEncoder();
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const ciphertext = await crypto.subtle.encrypt(
+                { name: "AES-GCM", iv: iv },
+                key,
+                enc.encode(password)
+            );
+            const combined = new Uint8Array(iv.length + ciphertext.byteLength);
+            combined.set(iv, 0);
+            combined.set(new Uint8Array(ciphertext), iv.length);
+            
+            let binary = '';
+            const len = combined.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(combined[i]);
+            }
+            return btoa(binary);
+        } catch (error) {
+            console.error('Encryption failed, using plaintext:', error);
+            return password;
+        }
+    }
+
+    async decryptPassword(encryptedBase64) {
+        if (!encryptedBase64) return '';
+        // If it doesn't look like base64 or is too short, return as-is
+        if (encryptedBase64.length < 16 || !/^[A-Za-z0-9+/=]+$/.test(encryptedBase64)) {
+            return encryptedBase64;
+        }
+        const secret = window.ENCRYPTION_SECRET;
+        try {
+            const key = await this.getCryptoKey(secret);
+            const binaryString = atob(encryptedBase64);
+            const len = binaryString.length;
+            const combined = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                combined[i] = binaryString.charCodeAt(i);
+            }
+            const iv = combined.slice(0, 12);
+            const ciphertext = combined.slice(12);
+            const decrypted = await crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: iv },
+                key,
+                ciphertext
+            );
+            return new TextDecoder().decode(decrypted);
+        } catch (e) {
+            return encryptedBase64;
+        }
+    }
+
+    // Add new credential (Login Account)
+    async addCredential(credentialData) {
+        if (this.useFirebase) {
+            try {
+                const usernameLower = credentialData.username.toLowerCase().trim();
+                let uid = '';
+
+                // Create in Firebase Auth
+                try {
+                    const secAuth = getSecondaryAuth();
+                    const userCred = await createUserWithEmailAndPassword(secAuth, usernameLower + '@multilynkqr.local', credentialData.password);
+                    uid = userCred.user.uid;
+                    await secAuth.signOut();
+                } catch (authErr) {
+                    if (authErr.code === 'auth/email-already-in-use') {
+                        console.warn(`⚠️ Firebase Auth account already exists for ${usernameLower}`);
+                    } else {
+                        throw authErr;
+                    }
+                }
+
+                if (credentialData.password) {
+                    credentialData.password = await this.encryptPassword(credentialData.password);
+                }
+                
+                if (uid) {
+                    credentialData.uid = uid;
+                }
+                credentialData.username = usernameLower;
+
+                // We use username as document ID for credentials for uniqueness and easy lookup
+                const docRef = doc(db, "credentials", usernameLower);
+                await setDoc(docRef, credentialData);
+                console.log(`✅ Firebase: Added credential and Auth user for ${usernameLower}`);
+                if (credentialData.dataFile) {
+                    await this.updateProfileCountInFirestore(credentialData.dataFile);
+                }
+                return true;
+            } catch (error) {
+                console.error("❌ Firebase: Add credential failed:", error);
+                throw error;
+            }
+        }
+        console.warn("⚠️ Local: Cannot add credential to static JSON file.");
+        return false;
+    }
+
+
+    // Update credential (e.g. toggle status)
+    async updateCredential(username, updateData) {
+        if (this.useFirebase) {
+            try {
+                const usernameLower = username.toLowerCase().trim();
+                const docRef = doc(db, "credentials", usernameLower);
+                const docSnap = await getDoc(docRef);
+                const oldCred = docSnap.exists() ? docSnap.data() : null;
+                const oldDataFile = oldCred ? oldCred.dataFile : null;
+
+                if (updateData.password && oldCred) {
+                    // Update password in Firebase Auth
+                    try {
+                        const oldEncrypted = oldCred.password;
+                        const oldDecrypted = await this.decryptPassword(oldEncrypted);
+                        const secAuth = getSecondaryAuth();
+                        
+                        // Sign in as this user on secondary auth to update their password
+                        await signInWithEmailAndPassword(secAuth, usernameLower + '@multilynkqr.local', oldDecrypted);
+                        if (secAuth.currentUser) {
+                            await updatePassword(secAuth.currentUser, updateData.password);
+                        }
+                        await secAuth.signOut();
+                        console.log(`✅ Firebase Auth: Password updated for ${usernameLower}`);
+                    } catch (authErr) {
+                        console.error(`⚠️ Firebase Auth: Failed to update password for ${usernameLower}:`, authErr);
+                        // Auto-create missing Auth account if needed
+                        if (authErr.code === 'auth/user-not-found' || authErr.code === 'auth/invalid-credential') {
+                            try {
+                                console.log(`🔄 Attempting to create missing Auth user for ${usernameLower}...`);
+                                const secAuth = getSecondaryAuth();
+                                await createUserWithEmailAndPassword(secAuth, usernameLower + '@multilynkqr.local', updateData.password);
+                                await secAuth.signOut();
+                                console.log(`✅ Created missing Auth user for ${usernameLower}`);
+                            } catch (createErr) {
+                                console.error(`❌ Failed to create missing Auth user for ${usernameLower}:`, createErr);
+                            }
+                        }
+                    }
+                    
+                    updateData.password = await this.encryptPassword(updateData.password);
+                }
+
+                if (updateData.username) {
+                    updateData.username = updateData.username.toLowerCase();
+                }
+
+                await setDoc(docRef, updateData, { merge: true });
+                console.log(`✅ Firebase: Updated credential document for ${usernameLower}`);
+
+                // Update profile count for the new dataFile scope
+                if (updateData.dataFile) {
+                    await this.updateProfileCountInFirestore(updateData.dataFile);
+                } else if (oldDataFile) {
+                    await this.updateProfileCountInFirestore(oldDataFile);
+                }
+
+                // If the dataFile changed, update the profile count for the old dataFile scope too!
+                if (updateData.dataFile && oldDataFile && updateData.dataFile !== oldDataFile) {
+                    await this.updateProfileCountInFirestore(oldDataFile);
+                }
+
+                return true;
+            } catch (error) {
+                console.error("❌ Firebase: Update credential failed:", error);
+                throw error;
+            }
+        }
+        console.warn("⚠️ Local: Cannot update credential in static JSON file.");
+        return false;
+    }
+
+    // Delete credential
+    async deleteCredential(username) {
+        if (this.useFirebase) {
+            try {
+                const docRef = doc(db, "credentials", username);
+                await deleteDoc(docRef);
+                console.log(`🗑️ Firebase: Deleted credential for ${username}`);
+                return true;
+            } catch (error) {
+                console.error("❌ Firebase: Delete credential failed:", error);
+                throw error;
+            }
+        }
+        console.warn("⚠️ Local: Cannot delete credential from static JSON file.");
+        return false;
+    }
+
+    // Helper to calculate and update real-time user profile count in credentials in Firestore
+    async updateProfileCountInFirestore(scope) {
+        if (!this.useFirebase || !scope) return;
+        try {
+            const unescapedScope = this.unescapeScope(scope);
+            const userRole = localStorage.getItem('adminRole');
+            const loggedInUsername = localStorage.getItem('adminUsername');
+
+            if (userRole === 'super_admin' || userRole === 'main_admin') {
+                // Fetch all credentials in Firestore
+                const credsCol = collection(db, "credentials");
+                const credsSnapshot = await getDocs(credsCol);
+
+                // Fetch all profiles in Firestore once
+                const profilesSnapshot = await getDocs(collection(db, "profiles"));
+                const profileDocs = profilesSnapshot.docs;
+
+                for (const credDoc of credsSnapshot.docs) {
+                    const cred = credDoc.data();
+                    const credDataFile = cred.dataFile;
+                    if (!credDataFile) continue;
+
+                    // Check if this credential's scope is affected by the changed scope (EXACT MATCH ONLY)
+                    const isAffected = (credDataFile === unescapedScope);
+
+                    if (isAffected) {
+                        let count = 0;
+                        const countPromises = [];
+
+                        for (const profileDoc of profileDocs) {
+                            const scopeName = this.unescapeScope(profileDoc.id);
+                            if (scopeName === credDataFile) {
+                                countPromises.push((async () => {
+                                    const countSnapshot = await getCountFromServer(collection(db, "profiles", profileDoc.id, "users"));
+                                    return countSnapshot.data().count;
+                                })());
+                            }
+                        }
+
+                        const counts = await Promise.all(countPromises);
+                        count = counts.reduce((sum, val) => sum + val, 0);
+
+                        await setDoc(credDoc.ref, { profileCount: count }, { merge: true });
+                    }
+                }
+            } else if (loggedInUsername) {
+                // Regular user can ONLY update their own credential document count
+                const usernameLower = loggedInUsername.toLowerCase().trim();
+                const credDocRef = doc(db, "credentials", usernameLower);
+                const credSnap = await getDoc(credDocRef);
+                if (credSnap.exists()) {
+                    const cred = credSnap.data();
+                    if (cred.dataFile === unescapedScope) {
+                        const escapedScope = this.escapeScope(unescapedScope);
+                        const countSnapshot = await getCountFromServer(collection(db, "profiles", escapedScope, "users"));
+                        const count = countSnapshot.data().count;
+                        await setDoc(credDocRef, { profileCount: count }, { merge: true });
+                    }
+                }
+            }
+        } catch (error) {
+            // Run silently as requested, do not log console warnings/errors
+        }
+    }
+
+    // Safely backfills parentFolder and normalized dataFile fields for all users in Firestore
+    async backfillParentFolder() {
+        if (!this.useFirebase) return;
+        try {
+            console.log("🔄 Starting backfill of parentFolder field for all user documents (fully optimized)...");
+            
+            let count = 0;
+            const batchSize = 500;
+            let batch = writeBatch(db);
+
+            // Fetch all users in exactly 1 single read query instead of looping 75+ subcollections
+            const q = collectionGroup(db, "users");
+            const usersSnapshot = await getDocs(q);
+            
+            for (const docSnap of usersSnapshot.docs) {
+                const userData = docSnap.data();
+                
+                // Get the scope from the document reference parent parent
+                let unescapedScope = '';
+                if (docSnap.ref && docSnap.ref.parent && docSnap.ref.parent.parent) {
+                    unescapedScope = this.unescapeScope(docSnap.ref.parent.parent.id);
+                }
+                
+                if (unescapedScope) {
+                    const parentFolder = this.getParentFolderOfScope(unescapedScope, userData.userCode);
+
+                    if (userData.parentFolder !== parentFolder || !userData.dataFile) {
+                        const updates = {
+                            parentFolder: parentFolder,
+                            dataFile: unescapedScope
+                        };
+                        batch.set(docSnap.ref, updates, { merge: true });
+                        count++;
+
+                        if (count % batchSize === 0) {
+                            await batch.commit();
+                            batch = writeBatch(db);
+                        }
+                    }
+                }
+            }
+            
+            if (count > 0 && count % batchSize !== 0) {
+                await batch.commit();
+            }
+            console.log(`✅ Backfilled parentFolder for ${count} user document(s).`);
+        } catch (error) {
+            console.error("❌ Failed to backfill parentFolder:", error);
+        }
+    }
+
+    // Ensure parent profiles category documents exist for all users in Firestore
+    async ensureParentProfilesExist(onProgress) {
+        if (!this.useFirebase) return;
+        try {
+            if (onProgress) onProgress("Scanning profiles in database...");
+            console.log("🔄 Checking and ensuring all parent profiles category documents exist...");
+            
+            // Fetch existing category documents to skip redundant writes
+            const profilesSnapshot = await getDocs(collection(db, "profiles"));
+            const existingProfileIds = new Set(profilesSnapshot.docs.map(d => d.id));
+
+            const q = collectionGroup(db, "users");
+            const querySnapshot = await getDocs(q);
+            const uniqueEscapedScopes = new Set();
+
+            querySnapshot.forEach((docSnap) => {
+                if (docSnap.ref && docSnap.ref.parent && docSnap.ref.parent.parent) {
+                    uniqueEscapedScopes.add(docSnap.ref.parent.parent.id);
+                }
+            });
+
+            console.log(`🔍 Found ${uniqueEscapedScopes.size} unique profile scope(s) from users subcollections.`);
+
+            const escapedScopesList = Array.from(uniqueEscapedScopes);
+            let skipCount = 0;
+            let checkCount = 0;
+            for (let i = 0; i < escapedScopesList.length; i++) {
+                const escapedScope = escapedScopesList[i];
+                
+                // If it already exists physically in Firestore, skip writing
+                if (existingProfileIds.has(escapedScope)) {
+                    skipCount++;
+                    continue;
+                }
+
+                checkCount++;
+                if (onProgress) onProgress("Repairing folders (" + checkCount + ")...");
+                const unescapedScope = this.unescapeScope(escapedScope);
+                const docRef = doc(db, "profiles", escapedScope);
+                await setDoc(docRef, {
+                    type: 'category',
+                    name: unescapedScope
+                }, { merge: true });
+                console.log("✅ Ensured parent profile document exists: profiles/" + escapedScope);
+            }
+            console.log(`ℹ️ ensureParentProfilesExist: Checked ${escapedScopesList.length} folders, skipped ${skipCount} existing, repaired ${checkCount} missing.`);
+        } catch (error) {
+            console.error("❌ Failed to ensure parent profile documents exist:", error);
+        }
+    }
+
+    // Sync all profile counts for all credentials
+    async syncAllProfileCounts(onProgress) {
+        if (!this.useFirebase) return;
+        try {
+            // First ensure all parent profile documents exist so getDocs(collection(db, "profiles")) returns them
+            await this.ensureParentProfilesExist(onProgress);
+
+            // Perform parentFolder backfill first to ensure count query matches documents correctly
+            if (onProgress) onProgress("Backfilling folder links...");
+            await this.backfillParentFolder();
+
+            if (onProgress) onProgress("Recalculating profile counts...");
+            const querySnapshot = await getDocs(collection(db, "credentials"));
+            const docsList = querySnapshot.docs;
+            for (let i = 0; i < docsList.length; i++) {
+                const docSnap = docsList[i];
+                const cred = docSnap.data();
+                if (cred.dataFile) {
+                    if (onProgress) onProgress(`Updating counts: ${cred.username} (${i + 1}/${docsList.length})...`);
+                    await this.updateProfileCountInFirestore(cred.dataFile);
+                }
+            }
+            // Clean up any empty category documents in the profiles collection
+            if (onProgress) onProgress("Cleaning up empty category folders...");
+            try {
+                const profilesSnapshot = await getDocs(collection(db, "profiles"));
+                for (const profileDoc of profilesSnapshot.docs) {
+                    const countSnapshot = await getCountFromServer(collection(db, "profiles", profileDoc.id, "users"));
+                    if (countSnapshot.data().count === 0) {
+                        await deleteDoc(profileDoc.ref);
+                        console.log(`🗑️ Deleted empty category document: profiles/${profileDoc.id}`);
+                    }
+                }
+            } catch (cleanErr) {
+                console.error("❌ Failed to clean up empty categories:", cleanErr);
+            }
+
+            console.log("✅ All credential profile counts backfilled successfully");
+        } catch (error) {
+            console.error("❌ Backfilling profile counts failed:", error);
+        }
+    }
+
+    // Delete all user profiles for a scope (dataFile) and the scope doc itself
+    async deleteScope(scope) {
+        if (!this.useFirebase || !scope) return false;
+        try {
+            const escapedScope = this.escapeScope(scope);
+            // 1. Get all user docs under profiles/{escapedScope}/users
+            const usersCol = collection(db, "profiles", escapedScope, "users");
+            const snapshot = await getDocs(usersCol);
+
+            // 2. Delete in batches of 500 (Firestore limit)
+            const batchSize = 500;
+            let batch = writeBatch(db);
+            let count = 0;
+
+            for (const userDoc of snapshot.docs) {
+                batch.delete(userDoc.ref);
+                // Also delete their corresponding userCode index mapping under the index collection
+                const userData = userDoc.data();
+                if (userData && userData.userCode) {
+                    const codeRef = doc(db, "index", userData.userCode);
+                    batch.delete(codeRef);
+                }
+                count++;
+                if (count % batchSize === 0) {
+                    await batch.commit();
+                    batch = writeBatch(db);
+                }
+            }
+            if (count % batchSize !== 0) {
+                await batch.commit();
+            }
+
+            console.log(`🗑️ Firebase: Deleted ${count} user(s) from scope "${scope}"`);
+
+            // 3. Delete the parent scope doc (profiles/{escapedScope})
+            await deleteDoc(doc(db, "profiles", escapedScope));
+            console.log(`🗑️ Firebase: Deleted scope document "profiles/${escapedScope}"`);
+
+            // Update profileCount for this scope in Firestore
+            await this.updateProfileCountInFirestore(scope);
+
+            return true;
+        } catch (error) {
+            console.error("❌ Firebase: Delete scope failed:", error);
+            throw error;
+        }
+    }
+
+    // --- Sync (Admin Only) ---
+
+    async syncToFirebase(onProgress) {
+        console.log("🔄 Starting Overwrite Sync to Firebase (Update & Add) -> Subcollections...");
+        if (onProgress) onProgress("Loading login credentials...");
+
+        // 1. Sync Credentials
+        let credAddedCount = 0;
+        let credUpdatedCount = 0;
+        try {
+            const credRes = await fetch('./credentials/login_credentials.json');
+            if (credRes.ok) {
+                const credentials = await credRes.json();
+
+                for (let i = 0; i < credentials.length; i++) {
+                    const cred = credentials[i];
+                    const usernameLower = cred.username.toLowerCase().trim();
+                    if (onProgress) onProgress(`Syncing credential: ${usernameLower} (${i + 1}/${credentials.length})...`);
+                    const docRef = doc(db, "credentials", usernameLower);
+                    const docSnap = await getDoc(docRef);
+
+                    let credChanged = true;
+                    if (docSnap.exists()) {
+                        const existingCred = docSnap.data();
+                        const decPassword = existingCred.password ? await this.decryptPassword(existingCred.password) : '';
+                        const existingCompare = { ...existingCred, password: decPassword };
+                        if (this.isEquivalent(existingCompare, cred)) {
+                            credChanged = false;
+                        }
+                    }
+
+                    if (credChanged) {
+                        // Register in Firebase Auth first
+                        if (cred.password) {
+                            try {
+                                const secAuth = getSecondaryAuth();
+                                const userCred = await createUserWithEmailAndPassword(secAuth, usernameLower + '@multilynkqr.local', cred.password);
+                                cred.uid = userCred.user.uid;
+                                await secAuth.signOut();
+                                console.log(`✅ Auth user created during sync for ${usernameLower}`);
+                            } catch (authErr) {
+                                if (authErr.code === 'auth/email-already-in-use') {
+                                    console.log(`ℹ️ Auth user already exists for ${usernameLower}`);
+                                } else {
+                                    console.error(`⚠️ Failed to create Auth user for ${usernameLower} during sync:`, authErr);
+                                }
+                            }
+                            
+                            // Encrypt password for Firestore document storage
+                            cred.password = await this.encryptPassword(cred.password);
+                        }
+
+                        cred.username = usernameLower;
+                        await setDoc(docRef, cred);
+                        if (!docSnap.exists()) {
+                            credAddedCount++;
+                        } else {
+                            credUpdatedCount++;
+                        }
+                    } else {
+                        console.log(`ℹ️ Credential Sync Skip: Unchanged login account ${usernameLower}`);
+                    }
+                }
+                console.log(`✅ Credentials Sync: Added ${credAddedCount}, Updated ${credUpdatedCount}`);
+            }
+        } catch (e) {
+            console.error("❌ Failed to sync credentials:", e);
+        }
+
+        // 1b. Auto-register all Firestore credentials in Firebase Auth
+        try {
+            if (onProgress) onProgress("Verifying Firebase Auth accounts...");
+            console.log("🔄 Auto-registering Firestore credentials in Firebase Auth...");
+            const querySnapshot = await getDocs(collection(db, "credentials"));
+            let authRegisteredCount = 0;
+            const docsList = querySnapshot.docs;
+            
+            for (let i = 0; i < docsList.length; i++) {
+                const docSnap = docsList[i];
+                const cred = docSnap.data();
+                const usernameLower = docSnap.id.toLowerCase().trim();
+                if (onProgress) onProgress(`Verifying Auth: ${usernameLower} (${i + 1}/${docsList.length})...`);
+                
+                if (cred.password) {
+                    try {
+                        const decryptedPassword = await this.decryptPassword(cred.password);
+                        const secAuth = getSecondaryAuth();
+                        
+                        let uid = cred.uid || '';
+                        let createdNew = false;
+                        
+                        try {
+                            const userCred = await createUserWithEmailAndPassword(secAuth, usernameLower + '@multilynkqr.local', decryptedPassword);
+                            uid = userCred.user.uid;
+                            createdNew = true;
+                            await secAuth.signOut();
+                            console.log(`✅ Auth user auto-created from Firestore: ${usernameLower}`);
+                        } catch (authErr) {
+                            if (authErr.code === 'auth/email-already-in-use') {
+                                // User already registered. Let's log in to verify password and retrieve/confirm UID
+                                try {
+                                    const userCred = await signInWithEmailAndPassword(secAuth, usernameLower + '@multilynkqr.local', decryptedPassword);
+                                    uid = userCred.user.uid;
+                                    await secAuth.signOut();
+                                    console.log(`ℹ️ Auth user already registered and password verified: ${usernameLower}`);
+                                } catch (loginErr) {
+                                    console.error(`⚠️ Auth user already exists but password verification failed for ${usernameLower}:`, loginErr);
+                                }
+                            } else {
+                                throw authErr;
+                            }
+                        }
+                        
+                        // If we retrieved a UID (either from new creation or verifying sign-in), and it's different/missing in Firestore, update it!
+                        if (uid && cred.uid !== uid) {
+                            await setDoc(docSnap.ref, { uid: uid }, { merge: true });
+                            console.log(`✅ Updated UID in Firestore for ${usernameLower}`);
+                        }
+                        
+                        if (createdNew) {
+                            authRegisteredCount++;
+                        }
+                    } catch (authErr) {
+                        console.error(`⚠️ Failed to auto-register/verify ${usernameLower} in Auth:`, authErr);
+                    }
+                }
+            }
+            console.log(`✅ Auth Auto-Registration complete. Registered ${authRegisteredCount} user(s).`);
+        } catch (authSyncErr) {
+            console.error("❌ Failed to auto-register Firestore credentials in Firebase Auth:", authSyncErr);
+        }
+
+        // 2. Sync Profiles
+        try {
+            // Run old scopes migration first to clean and align Firestore
+            if (onProgress) onProgress("Migrating old nested database scopes...");
+            const migrationResult = await this.migrateOldScopes(onProgress);
+
+            if (onProgress) onProgress("Loading profiles index...");
+            const indexRes = await fetch('./data/index.json');
+            if (indexRes.ok) {
+                const index = await indexRes.json();
+                const files = [...new Set(Object.values(index))];
+
+                let profileAddedCount = 0;
+                let profileUpdatedCount = 0;
+                const uniqueScopes = new Set();
+                let skipWriteCount = 0;
+
+                // Fetch existing profile categories to avoid redundant writes
+                const profilesSnapshot = await getDocs(collection(db, "profiles"));
+                const existingProfileIds = new Set(profilesSnapshot.docs.map(d => d.id));
+
+                for (let fIdx = 0; fIdx < files.length; fIdx++) {
+                    const file = files[fIdx];
+                    if (onProgress) onProgress(`Syncing profiles file: ${file} (${fIdx + 1}/${files.length})...`);
+                    try {
+                        const fileRes = await fetch(`./data/${file}`);
+                        if (fileRes.ok) {
+                            const users = await fileRes.json();
+
+                            // Determine Scope from folder name in path
+                            let scope = file.split('/')[0];
+                            if (scope.endsWith('.json')) {
+                                scope = scope.replace('.json', ''); // Fallback for root files
+                            }
+                            uniqueScopes.add(scope);
+
+                            console.log(`📂 Processing ${file} -> Scope: ${scope}`);
+
+                            const escapedScope = this.escapeScope(scope);
+                            
+                            // Only write scope category if it doesn't already exist
+                            if (!existingProfileIds.has(escapedScope)) {
+                                await setDoc(doc(db, "profiles", escapedScope), {
+                                    type: 'category',
+                                    name: scope
+                                }, { merge: true });
+                                existingProfileIds.add(escapedScope);
+                            }
+
+                            for (const user of users) {
+                                // Determine the nested scope: e.g. "clients"
+                                let profileScope = scope;
+
+                                // Inject 'dataFile' property for consistency
+                                user.dataFile = profileScope;
+                                user.parentFolder = this.getParentFolderOfScope(user.dataFile, user.userCode);
+
+                                // Use username or userCode as Key
+                                const docId = user.username || user.userCode || 'unknown_' + Date.now();
+
+                                // Path: profiles/{escapedScope}/users/{docId}
+                                const escapedProfileScope = this.escapeScope(profileScope);
+
+                                // Ensure parent profiles category document exists for this scope only if it doesn't already exist
+                                if (!existingProfileIds.has(escapedProfileScope)) {
+                                    await setDoc(doc(db, "profiles", escapedProfileScope), {
+                                        type: 'category',
+                                        name: profileScope
+                                    }, { merge: true });
+                                    existingProfileIds.add(escapedProfileScope);
+                                }
+
+                                const docRef = doc(db, "profiles", escapedProfileScope, "users", docId);
+                                const docSnap = await getDoc(docRef);
+                                
+                                // Clean dirty check: only write user profile if it has changed
+                                let hasChanged = true;
+                                if (docSnap.exists()) {
+                                    hasChanged = !this.isEquivalent(docSnap.data(), user);
+                                }
+
+                                if (hasChanged) {
+                                    await setDoc(docRef, user);
+                                    if (!docSnap.exists()) {
+                                        profileAddedCount++;
+                                    } else {
+                                        profileUpdatedCount++;
+                                    }
+                                } else {
+                                    skipWriteCount++;
+                                }
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Failed to load file for sync: " + file, err);
+                    }
+                }
+                console.log(`ℹ️ Profiles Sync Skip: Avoided writing ${skipWriteCount} unchanged user profile document(s).`);
+
+                // Update profileCount in Firestore for all processed unique scopes
+                let sIdx = 0;
+                for (const scope of uniqueScopes) {
+                    sIdx++;
+                    if (onProgress) onProgress(`Updating folder counts: ${scope} (${sIdx}/${uniqueScopes.size})...`);
+                    await this.updateProfileCountInFirestore(scope);
+                }
+
+                // Also run a full scan of all credentials in Firestore to make sure everything is completely up-to-date
+                await this.syncAllProfileCounts(onProgress);
+
+                // Rebuild index collection in Firestore
+                let indexInfo = "Cloud Index: Rebuilt successfully.";
+                try {
+                    if (onProgress) onProgress("Rebuilding search indexes...");
+                    const idxResult = await this.rebuildCloudIndex();
+                    if (idxResult && idxResult.success) {
+                        indexInfo = `Cloud Index: Created ${idxResult.created} new, Updated ${idxResult.updated}, Up-to-date ${idxResult.upToDate}${idxResult.failed ? `, Failed ${idxResult.failed}` : ''}.`;
+                    }
+                } catch (idxErr) {
+                    console.error("⚠️ Failed to rebuild Firestore index during sync:", idxErr);
+                    indexInfo = "Cloud Index: Failed to rebuild index.";
+                }
+
+                console.log(`✅ Profiles Sync: Added ${profileAddedCount}, Updated ${profileUpdatedCount}`);
+
+                let migrationInfo = "";
+                if (migrationResult && migrationResult.success && migrationResult.migrated > 0) {
+                    migrationInfo = `Migration: Moved ${migrationResult.migrated} profile(s) to parent scopes & cleaned ${migrationResult.deletedScopes} old folder(s).\n\n`;
+                }
+
+                alert(`Sync Complete!\n\n${migrationInfo}Credentials: Added ${credAddedCount}, Updated ${credUpdatedCount} (Passwords Encrypted).\nProfiles: Added ${profileAddedCount} new, Updated ${profileUpdatedCount} existing.\nAuto-Repair: Verified all parent folder documents & recalculated all client user counts in Firestore.\nStructure: profiles/{scope}/users\n${indexInfo}`);
+            }
+        } catch (e) {
+            console.error("❌ Failed to sync profiles:", e);
+            alert("Sync Failed. Check console for details.");
+        }
+    }
+
+    // Rebuild the Firestore index collection by scanning all profile documents
+    async rebuildCloudIndex() {
+        if (!this.useFirebase) return { success: false, error: "Firebase not enabled" };
+        console.log("🔄 Rebuilding cloud index mapping in Firestore (optimized queries)...");
+        try {
+            let createdCount = 0;
+            let updatedCount = 0;
+            let upToDateCount = 0;
+            let failedCount = 0;
+
+            const batch = writeBatch(db);
+            let hasOperations = false;
+
+            // Fetch existing indexes from Firestore to avoid unnecessary writes
+            const indexSnapshot = await getDocs(collection(db, "index"));
+            const indexMap = {};
+            indexSnapshot.forEach(docSnap => {
+                indexMap[docSnap.id] = docSnap.data().scope;
+            });
+
+            // Fetch all users across all subcollections in exactly 1 collectionGroup query
+            const q = collectionGroup(db, "users");
+            const usersSnapshot = await getDocs(q);
+            
+            usersSnapshot.forEach(userDoc => {
+                const userData = userDoc.data();
+                const userCode = userData.userCode;
+                let unescapedScope = '';
+                
+                if (userDoc.ref && userDoc.ref.parent && userDoc.ref.parent.parent) {
+                    unescapedScope = this.unescapeScope(userDoc.ref.parent.parent.id);
+                }
+                
+                if (userCode && unescapedScope) {
+                    const existingScope = indexMap[userCode];
+                    const codeRef = doc(db, "index", userCode);
+
+                    if (existingScope === undefined) {
+                        batch.set(codeRef, { scope: unescapedScope }, { merge: true });
+                        createdCount++;
+                        hasOperations = true;
+                    } else if (existingScope !== unescapedScope) {
+                        batch.set(codeRef, { scope: unescapedScope }, { merge: true });
+                        updatedCount++;
+                        hasOperations = true;
+                    } else {
+                        upToDateCount++;
+                    }
+                } else {
+                    failedCount++;
+                }
+            });
+
+            if (hasOperations) {
+                await batch.commit();
+            }
+            console.log(`✅ Cloud index rebuild complete. Created: ${createdCount}, Updated: ${updatedCount}, Up-to-date: ${upToDateCount}, Failed: ${failedCount}`);
+            return {
+                success: true,
+                created: createdCount,
+                updated: updatedCount,
+                upToDate: upToDateCount,
+                failed: failedCount
+            };
+        } catch (error) {
+            console.error("❌ Failed to rebuild cloud index:", error);
+            throw error;
+        }
+    }
+
+    // Migrate user profiles in batch from old scope to new scope (highly optimized)
+    async migrateUserProfilesInBatch(oldScope, newScope, users) {
+        if (!this.useFirebase || !oldScope || !newScope || !users || users.length === 0) {
+            return { success: false, migrated: 0 };
+        }
+        
+        try {
+            const escapedOldScope = this.escapeScope(oldScope);
+            const escapedNewScope = this.escapeScope(newScope);
+            
+            // Ensure parent category document exists for the new scope
+            await setDoc(doc(db, "profiles", escapedNewScope), {
+                type: 'category',
+                name: this.unescapeScope(newScope)
+            }, { merge: true });
+
+            const batches = [];
+            let currentBatch = writeBatch(db);
+            let opCount = 0;
+            const maxOps = 500; // Firestore limit per batch
+
+            for (const u of users) {
+                // Determine document ID (use stored docId, fall back to username_userCode, or other fields)
+                const docId = u.docId || (u.username && u.userCode ? `${u.username}_${u.userCode}` : (u.username || u.userCode || 'unknown'));
+                if (!docId || docId === 'unknown') continue;
+
+                const oldDocRef = doc(db, "profiles", escapedOldScope, "users", docId);
+                const newDocRef = doc(db, "profiles", escapedNewScope, "users", docId);
+
+                // Prepare updated user data
+                const profileData = { ...u };
+                profileData.dataFile = this.unescapeScope(newScope);
+                profileData.parentFolder = this.getParentFolderOfScope(profileData.dataFile, u.userCode);
+                
+                // Clean up transient docId property if present
+                delete profileData.docId;
+
+                // Op 1: Create user in new scope
+                currentBatch.set(newDocRef, profileData, { merge: true });
+                opCount++;
+
+                // Op 2: Delete user from old scope
+                currentBatch.delete(oldDocRef);
+                opCount++;
+
+                // Op 3: Update search index
+                if (u.userCode) {
+                    const codeRef = doc(db, "index", u.userCode);
+                    currentBatch.set(codeRef, { scope: profileData.dataFile }, { merge: true });
+                    opCount++;
+                }
+
+                if (opCount >= maxOps - 10) {
+                    batches.push(currentBatch);
+                    currentBatch = writeBatch(db);
+                    opCount = 0;
+                }
+            }
+
+            if (opCount > 0) {
+                batches.push(currentBatch);
+            }
+
+            // Commit all batch writes
+            for (const batch of batches) {
+                await batch.commit();
+            }
+            console.log(`✅ Batch Migration: Moved ${users.length} profiles to scope: ${newScope}`);
+
+            // Clean up the empty old category document if there are no users left under it
+            try {
+                const countSnapshot = await getCountFromServer(collection(db, "profiles", escapedOldScope, "users"));
+                if (countSnapshot.data().count === 0) {
+                    await deleteDoc(doc(db, "profiles", escapedOldScope));
+                    console.log(`🗑️ Deleted empty category document: profiles/${escapedOldScope}`);
+                }
+            } catch (cleanErr) {
+                console.warn(`⚠️ Warning: Failed to check/delete empty category document profiles/${escapedOldScope}:`, cleanErr);
+            }
+
+            return { success: true, migrated: users.length };
+        } catch (error) {
+            console.error("❌ Batch Migration failed:", error);
+            throw error;
+        }
+    }
+
+    // Migrate old nested scope profiles (e.g. personal/RA2024X9K) to parent folder scope (e.g. personal)
+    async migrateOldScopes(onProgress) {
+        if (!this.useFirebase) return { success: false, error: "Firebase not enabled" };
+        console.log("🔄 Starting database migration for old scope paths...");
+        if (onProgress) onProgress("Scanning database for old profile scopes...");
+
+        try {
+            // 1. Fetch all index mappings at once to avoid repeated getDoc lookups inside the loop (Optimization)
+            const indexSnapshot = await getDocs(collection(db, "index"));
+            const indexMap = {};
+            indexSnapshot.forEach(docSnap => {
+                indexMap[docSnap.id] = docSnap.data().scope;
+            });
+
+            // 2. Fetch all users from all collections
+            const q = collectionGroup(db, "users");
+            const usersSnapshot = await getDocs(q);
+            console.log(`🔍 Found total ${usersSnapshot.size} user document(s) in collectionGroup.`);
+
+            // 3. Fast pre-scan: Check if any user document path or index mapping contains a slash '/'
+            let needsMigration = false;
+            
+            // Check index mapping
+            for (const userCode in indexMap) {
+                if (indexMap[userCode] && indexMap[userCode].includes('/')) {
+                    needsMigration = true;
+                    break;
+                }
+            }
+
+            // Check user document paths
+            if (!needsMigration) {
+                for (const userDoc of usersSnapshot.docs) {
+                    if (userDoc.ref && userDoc.ref.parent && userDoc.ref.parent.parent) {
+                        const scope = this.unescapeScope(userDoc.ref.parent.parent.id);
+                        if (scope.includes('/')) {
+                            needsMigration = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // If nothing contains a slash, everything is already migrated! Exit early (Skip)
+            if (!needsMigration) {
+                console.log("⚡ Database is already fully migrated. Skipping migration step.");
+                return {
+                    success: true,
+                    migrated: 0,
+                    deletedScopes: 0,
+                    indexUpdated: 0
+                };
+            }
+
+            // 4. Run migration loop if changes are needed
+            let migratedCount = 0;
+            let deletedCount = 0;
+            let indexUpdatedCount = 0;
+            const scopesToDelete = new Set();
+
+            for (const userDoc of usersSnapshot.docs) {
+                const userData = userDoc.data();
+                const userCode = userData.userCode;
+                const username = userData.username;
+
+                // Retrieve the raw unescaped scope name from the document ref parent parent id
+                let currentEscapedScope = '';
+                if (userDoc.ref && userDoc.ref.parent && userDoc.ref.parent.parent) {
+                    currentEscapedScope = userDoc.ref.parent.parent.id;
+                }
+                
+                if (!currentEscapedScope) continue;
+                const currentScope = this.unescapeScope(currentEscapedScope);
+
+                // Check if the current scope has a slash and matches the old format (last part is username/userCode)
+                if (currentScope.includes('/')) {
+                    const parts = currentScope.split('/');
+                    const lastPart = parts[parts.length - 1];
+
+                    if (lastPart === userCode || lastPart === username) {
+                        const parentFolder = parts.slice(0, -1).join('/'); // e.g. "personal"
+                        const newEscapedScope = this.escapeScope(parentFolder);
+
+                        if (onProgress) onProgress(`Migrating user: ${username || userCode} to ${parentFolder}...`);
+
+                        // 1. Determine new document ID
+                        const newDocId = username && userCode ? `${username}_${userCode}` : (userCode || userDoc.id);
+
+                        // 2. Prepare user updates
+                        const updatedUser = {
+                            ...userData,
+                            dataFile: parentFolder,
+                            parentFolder: parentFolder
+                        };
+
+                        // 3. Write to the new path: profiles/{newEscapedScope}/users/{newDocId}
+                        const newDocRef = doc(db, "profiles", newEscapedScope, "users", newDocId);
+                        await setDoc(newDocRef, updatedUser, { merge: true });
+                        console.log(`✅ Migrated profile written to profiles/${newEscapedScope}/users/${newDocId}`);
+
+                        // 4. Delete the old document at the old path
+                        await deleteDoc(userDoc.ref);
+                        console.log(`🗑️ Old profile deleted: ${userDoc.ref.path}`);
+
+                        // 5. Track the old scope category to delete it later if it becomes empty
+                        scopesToDelete.add(currentEscapedScope);
+
+                        migratedCount++;
+                    }
+                }
+
+                // Ensure the index maps to the new parent scope if it maps to the old scope
+                if (userCode) {
+                    const codeRef = doc(db, "index", userCode);
+                    const existingScope = indexMap[userCode];
+                    if (existingScope !== undefined) {
+                        if (existingScope && existingScope.includes('/')) {
+                            const parts = existingScope.split('/');
+                            const lastPart = parts[parts.length - 1];
+                            if (lastPart === userCode || lastPart === username) {
+                                const parentFolder = parts.slice(0, -1).join('/');
+                                await setDoc(codeRef, { scope: parentFolder }, { merge: true });
+                                console.log(`✅ Index repaired: index/${userCode} -> scope: ${parentFolder}`);
+                                indexUpdatedCount++;
+                            }
+                        }
+                    } else {
+                        // Recreate missing index
+                        let parentFolder = currentScope;
+                        if (currentScope.includes('/')) {
+                            const parts = currentScope.split('/');
+                            const lastPart = parts[parts.length - 1];
+                            if (lastPart === userCode || lastPart === username) {
+                                parentFolder = parts.slice(0, -1).join('/');
+                            }
+                        }
+                        await setDoc(codeRef, { scope: parentFolder }, { merge: true });
+                        console.log(`✅ Index recreated: index/${userCode} -> scope: ${parentFolder}`);
+                        indexUpdatedCount++;
+                    }
+                }
+            }
+
+            // Clean up empty category documents
+            for (const oldEscapedScope of scopesToDelete) {
+                if (onProgress) onProgress(`Cleaning empty folder: ${this.unescapeScope(oldEscapedScope)}...`);
+                // Verify if any users still exist in the old subcollection
+                const usersCol = collection(db, "profiles", oldEscapedScope, "users");
+                const snapshot = await getDocs(usersCol);
+                if (snapshot.empty) {
+                    await deleteDoc(doc(db, "profiles", oldEscapedScope));
+                    console.log(`🗑️ Deleted empty category document: profiles/${oldEscapedScope}`);
+                    deletedCount++;
+                } else {
+                    console.log(`ℹ️ Category profiles/${oldEscapedScope} not deleted because it is not empty.`);
+                }
+            }
+
+            console.log(`✅ Migration complete. Migrated: ${migratedCount}, Deleted Scopes: ${deletedCount}, Indexes Updated: ${indexUpdatedCount}`);
+            return {
+                success: true,
+                migrated: migratedCount,
+                deletedScopes: deletedCount,
+                indexUpdated: indexUpdatedCount
+            };
+
+        } catch (error) {
+            console.error("❌ Database migration failed:", error);
+            throw error;
+        }
+    }
+}
+
+// Export and Attach to Window
+const dataService = new DataService();
+window.DataService = dataService;
+export { dataService };
