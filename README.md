@@ -1,4 +1,4 @@
-# 🔗 Multi QR Manager
+# 🔗 MultiLynk QR
 
 Create digital business cards with QR codes supporting **175+ platforms**. Perfect for business card services!
 
@@ -46,6 +46,11 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 4. **Save and get JSON** to add to database
 5. **Generate QR codes** from dashboard
 
+### **Option C: Build & Protect (Production)**
+1. **Build & Obfuscate**: Run `npm run build` to compile the app.
+2. **Secure Output**: All files are generated in the `dist/` directory, with core scripts (`config.js`, `firebase-config.js`, `data-service.js`, `script.js`) fully scrambled.
+3. **Deploy**: Upload only the contents of the `dist/` folder to your live hosting server.
+
 ## 🌟 **Key Features**
 
 ### Platform Support
@@ -88,11 +93,12 @@ Create digital business cards with QR codes supporting **175+ platforms**. Perfe
 - **Input Protection:** XSS prevention and input sanitization
 - **Multi-User Login:** Multiple admin accounts with role-based access
 - **Unique User Codes:** Each profile secured with auto-generated code
+- **JavaScript Obfuscation**: Scrambles production files using `javascript-obfuscator` to protect Firebase API credentials and logic in Inspect Mode.
 
 ## 📁 **File Structure**
 
 ```
-MultiLynkQRgenerator/
+MultiLynkQR/
 ├── index.html              # Landing homepage
 ├── login.html              # Admin login page
 ├── dashboard.html          # Dashboard (protected)
@@ -100,6 +106,8 @@ MultiLynkQRgenerator/
 ├── user.html               # Public user profiles
 ├── script.js               # Main JavaScript
 ├── style.css               # Styling
+├── build.js                # Build and Obfuscation compiler
+├── dist/                   # Production-ready folder (obfuscated)
 ├── data/
 │   ├── index.json          # System Index (Auto-generated)
 │   ├── personal/           # Folder example
@@ -116,6 +124,25 @@ MultiLynkQRgenerator/
 └── assets/
     └── icons/              # 155 platform icons
 ```
+
+## 🔒 **Build & Obfuscation (Production Setup)**
+
+To secure the database endpoints, Firebase configuration keys, and core application flow:
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+2. **Run Compilation**:
+   ```bash
+   npm run build
+   ```
+   This generates a secure compilation inside the `dist/` directory.
+3. **Verify Scrambled Output (Local)**:
+   ```bash
+   npx serve dist
+   ```
+   Open the port in your browser, open DevTools, and inspect the sources to verify that all script files are fully encrypted.
 
 ## 🗂️ **Folder-Based Data Management**
 
@@ -139,6 +166,7 @@ Organize your client data into folders for better structure. The system automati
 4. **Admin session expires** after 24 hours for security
 5. **Multi-user access** - Multiple admin accounts with different permissions
 6. **Change default passwords** before deployment
+7. **Deploy only the `dist/` folder** to hosting to keep raw source files confidential.
 
 ## 💡 Pro Tips
 

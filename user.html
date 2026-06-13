@@ -1,168 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MultiLynk QR</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="config.js"></script>
-  <link rel="modulepreload" href="./data-service.js" />
-  <link rel="modulepreload" href="./firebase-config.js" />
-  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-
-  <link rel="icon" type="image/svg+xml" href="assets/MultiLynkQR-Logo.png">
-</head>
-
-<body>
-  <!-- Fixed QR Code Button (Top Right) -->
-  <button id="showQRButton" class="show-qr-button-fixed" onclick="showUserQRCode()" title="Show QR Code">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="7" height="7"></rect>
-      <rect x="14" y="3" width="7" height="7"></rect>
-      <rect x="14" y="14" width="7" height="7"></rect>
-      <rect x="3" y="14" width="7" height="7"></rect>
-    </svg>
-  </button>
-
-  <div class="profile-card">
-    <h1 id="name">Loading...</h1>
-    <p id="username"></p>
-    <div id="links" class="links"></div>
-
-    <!-- MultiLynk QR Footer -->
-    <div class="multilynk-footer">
-      Want your own MultiLynk QR?
-      <a href="tel:+917036412617" class="footer-icon-link" title="Call us">
-        <img src="./assets/icons/phone.svg" alt="Call" onerror="this.src='./assets/icons/default.svg'">
-      </a>
-      <a href="mailto:multilynkqr@gmail.com" class="footer-icon-link" title="Email us">
-        <img src="./assets/icons/email.svg" alt="Email" onerror="this.src='./assets/icons/default.svg'">
-      </a>
-      <a href="https://wa.me/917036412617" target="_blank" rel="noopener" class="footer-icon-link" title="WhatsApp us">
-        <img src="./assets/icons/whatsapp.svg" alt="WhatsApp" onerror="this.src='./assets/icons/default.svg'">
-      </a>
-    </div>
-    <!-- MultiLynk QR Footer Part is this -->
-
-  </div>
-
-  <!-- UPI Selection Overlay -->
-  <div id="upiOverlay" class="upi-overlay">
-    <div class="upi-overlay-content">
-      <div class="upi-overlay-header">
-        <h3 id="upiOverlayTitle">Select UPI ID</h3>
-        <button class="upi-close-btn" onclick="closeUPIOverlay()">&times;</button>
-      </div>
-      <div class="upi-options" id="upiOptions">
-        <!-- UPI options will be populated here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Phone Selection Overlay -->
-  <div id="phoneOverlay" class="upi-overlay">
-    <div class="upi-overlay-content">
-      <div class="upi-overlay-header">
-        <h3 id="phoneOverlayTitle">Select Phone Number</h3>
-        <button class="upi-close-btn" onclick="closePhoneOverlay()">&times;</button>
-      </div>
-      <div class="upi-options" id="phoneOptions">
-        <!-- Phone options will be populated here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Email Selection Overlay -->
-  <div id="emailOverlay" class="upi-overlay">
-    <div class="upi-overlay-content">
-      <div class="upi-overlay-header">
-        <h3 id="emailOverlayTitle">Select Email Address</h3>
-        <button class="upi-close-btn" onclick="closeEmailOverlay()">&times;</button>
-      </div>
-      <div class="upi-options" id="emailOptions">
-        <!-- Email options will be populated here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Google Maps Selection Overlay -->
-  <div id="gmapsOverlay" class="upi-overlay">
-    <div class="upi-overlay-content">
-      <div class="upi-overlay-header">
-        <h3 id="gmapsOverlayTitle">Select Google Maps Option</h3>
-        <button class="upi-close-btn" onclick="closeGmapsOverlay()">&times;</button>
-      </div>
-      <div class="upi-options" id="gmapsOptions">
-        <!-- Google Maps options will be populated here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- WhatsApp Selection Overlay -->
-  <div id="whatsappOverlay" class="upi-overlay">
-    <div class="upi-overlay-content">
-      <div class="upi-overlay-header">
-        <h3 id="whatsappOverlayTitle">Select WhatsApp Number</h3>
-        <button class="upi-close-btn" onclick="closeWhatsAppOverlay()">&times;</button>
-      </div>
-      <div class="upi-options" id="whatsappOptions">
-        <!-- WhatsApp options will be populated here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Details & Licenses Overlay -->
-  <div id="detailsOverlay" class="upi-overlay">
-    <div class="upi-overlay-content">
-      <div class="upi-overlay-header">
-        <h3 id="detailsOverlayTitle">Details</h3>
-        <button class="upi-close-btn" onclick="closeDetailsOverlay()">&times;</button>
-      </div>
-      <div class="upi-options" id="detailsOptions">
-        <!-- Details will be populated here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- QR Code Display Overlay -->
-  <div id="qrCodeOverlay" class="upi-overlay">
-    <div class="upi-overlay-content" style="max-width: 700px;">
-      <div class="upi-overlay-header">
-        <h3 id="qrCodeTitle">Scan QR Code</h3>
-        <button class="upi-close-btn" onclick="closeQRCodeOverlay()">&times;</button>
-      </div>
-      <div style="padding: 1px; text-align: center;">
-        <div id="qrCodeContainer" style="display: flex; justify-content: center; margin-bottom: 10px;">
-          <!-- QR code will be displayed here -->
-        </div>
-        <p class="qr-scan-hint">Scan this QR code to share this profile</p>
-      </div>
-    </div>
-  </div>
-
-  <style>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>MultiLynk QR</title><link rel="stylesheet" href="style.css" /><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script src="config.js"></script><link rel="modulepreload" href="./data-service.js" /><link rel="modulepreload" href="./firebase-config.js" /><script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script><link rel="icon" type="image/svg+xml" href="assets/MultiLynkQR-Logo.png"></head><body><button id="showQRButton" class="show-qr-button-fixed" onclick="showUserQRCode()" title="Show QR Code"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button><div class="profile-card"><h1 id="name">Loading...</h1><p id="username"></p><div id="links" class="links"></div><div class="multilynk-footer"> Want your own MultiLynk QR? <a href="tel:+917036412617" class="footer-icon-link" title="Call us"><img src="./assets/icons/phone.svg" alt="Call" onerror="this.src='./assets/icons/default.svg'"></a><a href="mailto:multilynkqr@gmail.com" class="footer-icon-link" title="Email us"><img src="./assets/icons/email.svg" alt="Email" onerror="this.src='./assets/icons/default.svg'"></a><a href="https://wa.me/917036412617" target="_blank" rel="noopener" class="footer-icon-link" title="WhatsApp us"><img src="./assets/icons/whatsapp.svg" alt="WhatsApp" onerror="this.src='./assets/icons/default.svg'"></a></div></div><div id="upiOverlay" class="upi-overlay"><div class="upi-overlay-content"><div class="upi-overlay-header"><h3 id="upiOverlayTitle">Select UPI ID</h3><button class="upi-close-btn" onclick="closeUPIOverlay()">&times;</button></div><div class="upi-options" id="upiOptions"></div></div></div><div id="phoneOverlay" class="upi-overlay"><div class="upi-overlay-content"><div class="upi-overlay-header"><h3 id="phoneOverlayTitle">Select Phone Number</h3><button class="upi-close-btn" onclick="closePhoneOverlay()">&times;</button></div><div class="upi-options" id="phoneOptions"></div></div></div><div id="emailOverlay" class="upi-overlay"><div class="upi-overlay-content"><div class="upi-overlay-header"><h3 id="emailOverlayTitle">Select Email Address</h3><button class="upi-close-btn" onclick="closeEmailOverlay()">&times;</button></div><div class="upi-options" id="emailOptions"></div></div></div><div id="gmapsOverlay" class="upi-overlay"><div class="upi-overlay-content"><div class="upi-overlay-header"><h3 id="gmapsOverlayTitle">Select Google Maps Option</h3><button class="upi-close-btn" onclick="closeGmapsOverlay()">&times;</button></div><div class="upi-options" id="gmapsOptions"></div></div></div><div id="whatsappOverlay" class="upi-overlay"><div class="upi-overlay-content"><div class="upi-overlay-header"><h3 id="whatsappOverlayTitle">Select WhatsApp Number</h3><button class="upi-close-btn" onclick="closeWhatsAppOverlay()">&times;</button></div><div class="upi-options" id="whatsappOptions"></div></div></div><div id="detailsOverlay" class="upi-overlay"><div class="upi-overlay-content"><div class="upi-overlay-header"><h3 id="detailsOverlayTitle">Details</h3><button class="upi-close-btn" onclick="closeDetailsOverlay()">&times;</button></div><div class="upi-options" id="detailsOptions"></div></div></div><div id="qrCodeOverlay" class="upi-overlay"><div class="upi-overlay-content" style="max-width: 700px;"><div class="upi-overlay-header"><h3 id="qrCodeTitle">Scan QR Code</h3><button class="upi-close-btn" onclick="closeQRCodeOverlay()">&times;</button></div><div style="padding: 1px; text-align: center;"><div id="qrCodeContainer" style="display: flex; justify-content: center; margin-bottom: 10px;"></div><p class="qr-scan-hint">Scan this QR code to share this profile</p></div></div></div><style>
     .qr-scan-hint {
       color: #666;
       font-size: 14px;
       margin-top: 12px;
       margin-bottom: -8px;
-      /* Desktop default */
+      
     }
 
     @media (max-width: 480px) {
       .qr-scan-hint {
         margin-bottom: 6px;
-        /* Mobile override */
+        
       }
     }
-  </style>
-
-  <script>
+  </style><script>
     // Global utility & sanitization functions
     function escapeHtml(text) {
       if (text === null || text === undefined) return '';
@@ -607,7 +458,7 @@
                     break;
                   }
                 }
-              } catch (fileErr) { /* ignore */ }
+              } catch (fileErr) {  }
             }
           }
         }
@@ -1476,7 +1327,4 @@
     });
 
     loadUser();
-  </script>
-</body>
-
-</html>
+  </script></body></html>
