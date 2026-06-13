@@ -1,6 +1,6 @@
 # 📂 User Profiles Data Format Guide
 
-This guide details the structure and schema required for user profile files inside subdirectories within the `data/` folder (such as `data/clients/clients-1.json`).
+This guide details the structure and schema required for user profile files inside subdirectories within the `data/` folder (such as `data/clients-1/client.json` or `data/clients-2/profile.json`).
 
 These files serve as local database seeds, offline backups, or default templates for individual landing pages (QR code links).
 
