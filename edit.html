@@ -91,6 +91,11 @@
             The old profile will still exist — it is your responsibility to keep it or delete it manually from the
             dashboard. Make sure to redistribute your new QR code after saving.</div>
         </div>
+        <div id="userCodeDupWarningBox"
+          style="display:none; background: linear-gradient(135deg, #ef4444 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 10px; padding: 10px 14px; margin-top: 8px; margin-bottom: 4px; color: #991b1b;">
+          <strong>⚠️ User Code Duplicate Risk</strong>
+          <div id="userCodeDupWarningText" style="font-size: 0.88em; margin-top: 4px;">This User Code is already in use by another profile in the database. Please choose a different User Code.</div>
+        </div>
 
         <div id="autoDeleteProfileContainer"
           style="display:none; margin-top: 15px; background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 12px 14px; color: #664d03;">
@@ -791,7 +796,10 @@
     };
 
     // UI visibility for Data File input field
-    let SHOW_DATA_FILE_PROFILE_UI = false;
+    let SHOW_DATA_FILE_PROFILE_UI = true;
+    let userCodeCheckTimeout = null;
+    let isUserCodeDuplicate = false;
+    let isUserCodeChecking = false;
 
     function getParentDataFileScope() {
       const file = localStorage.getItem('adminDataFile') || '';
@@ -881,11 +889,11 @@
       // Disable form fields by default until validation checks pass
       disableFormFields();
 
-      // Observe dynamically added nodes inside userForm to auto-disable them if account is frozen or limited
+      // Observe dynamically added nodes inside userForm to auto-disable them if account is frozen, limited, or subfolder is read-only
       const userFormEl = document.getElementById('userForm');
       if (userFormEl) {
         const dynamicObserver = new MutationObserver((mutations) => {
-          const shouldDisable = window.isAccountFrozen || (window.isAtProfileLimit && !window.originalUsername);
+          const shouldDisable = window.isAccountFrozen || (window.isAtProfileLimit && !window.originalUsername) || window.isSubFolderReadonly;
           if (shouldDisable) {
             mutations.forEach(mutation => {
               mutation.addedNodes.forEach(node => {
@@ -920,15 +928,28 @@
       const username = params.get('user');
 
       // CRITICAL: Check if user is authenticated FIRST
+      const { auth } = await import('./firebase-config.js');
+      const firebaseUser = await new Promise((resolve) => {
+        if (auth.currentUser) {
+          resolve(auth.currentUser);
+        } else {
+          const unsubscribe = auth.onAuthStateChanged((u) => {
+            unsubscribe();
+            resolve(u);
+          });
+        }
+      });
+
       const adminUsername = localStorage.getItem('adminUsername');
       const adminRole = localStorage.getItem('adminRole');
       const adminAuthenticated = localStorage.getItem('adminAuthenticated');
       const saveBtn = document.getElementById('saveUserBtn');
 
       // Block unauthenticated access
-      if (!adminAuthenticated || !adminUsername || !adminRole) {
+      if (!firebaseUser || !adminAuthenticated || !adminUsername || !adminRole || firebaseUser.email !== `${adminUsername.toLowerCase().trim()}@multilynkqr.local`) {
         // No authentication - redirect to login
         alert('⚠️ Authentication Required\n\nYou must be logged in to create or edit user profiles.\n\nRedirecting to login page...');
+        localStorage.clear();
         window.location.href = 'login.html';
         return;
       }
@@ -943,6 +964,7 @@
       // Global flag to track frozen status
       window.isAccountFrozen = false;
       window.isAtProfileLimit = false;
+      window.isSubFolderReadonly = false;
 
       if (adminRole === 'user' && adminUsername) {
         try {
@@ -962,6 +984,8 @@
             myCredPromise,
             myUsersPromise || Promise.resolve(null)
           ]);
+
+          window.currentUserCredential = myCred;
 
           const expectedToken = myCred ? await dataService.hashPassword(myCred.password || '') : '';
 
@@ -1007,7 +1031,7 @@
 
                   const parentScope = getParentDataFileScope();
                   const profileDataFileInput = document.getElementById('profileDataFile');
-                  if (profileDataFileInput) profileDataFileInput.value = `${parentScope}/${uniqueCode}`;
+                  if (profileDataFileInput) profileDataFileInput.value = parentScope;
                 } catch (e) {
                   console.warn("Failed to pre-generate user code for blocked profile", e);
                 }
@@ -1139,9 +1163,9 @@
         const localISO = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
         document.getElementById('profileCreatedAt').value = localISO;
 
-        // Auto-populate Data File for new users using the unique userCode
+        // Auto-populate Data File for new users using the parent scope
         const parentScope = getParentDataFileScope();
-        document.getElementById('profileDataFile').value = `${parentScope}/${uniqueCode}`;
+        document.getElementById('profileDataFile').value = parentScope;
 
         // Initialize location counter
         locationCounter = 1;
@@ -1330,18 +1354,35 @@
     // Helper to populate form
     // Helper to populate form
     function populateForm(user) {
-      document.getElementById('formTitle').innerText = '✏️ Edit User: ' + user.fullname;
-      document.getElementById('username').value = user.username || '';
-      document.getElementById('username').disabled = window.isAccountFrozen; // Username is editable unless frozen
-
-      document.getElementById('fullname').value = user.fullname || '';
-      document.getElementById('userCode').value = user.userCode || '';
-
       // Store original values to detect changes and show separate warnings
       const origUsername = user.username || '';
       const origUserCode = user.userCode || '';
       const origProfileDataFile = user.dataFile || window.currentUserScope || getParentDataFileScope();
       window.originalProfileDataFile = origProfileDataFile;
+
+      // Check subfolder modification restriction
+      const loggedInRole = localStorage.getItem('adminRole');
+      let loggedInScope = localStorage.getItem('adminDataFile') || '';
+      if (loggedInScope) {
+        loggedInScope = loggedInScope.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+      }
+      const isSubFolder = origProfileDataFile && origProfileDataFile !== loggedInScope && origProfileDataFile.startsWith(loggedInScope + "/");
+      const canModifySubfolders = (window.currentUserCredential && window.currentUserCredential.allowSubfolderModifications !== undefined) ? window.currentUserCredential.allowSubfolderModifications === true : window.ALLOW_SUBFOLDER_MODIFICATIONS === true;
+      const isSubFolderBlocked = loggedInRole === 'user' && isSubFolder && !canModifySubfolders;
+
+      document.getElementById('formTitle').innerText = '✏️ Edit User: ' + user.fullname;
+      document.getElementById('username').value = user.username || '';
+      document.getElementById('username').disabled = window.isAccountFrozen || isSubFolderBlocked; // Username is editable unless frozen or subfolder is blocked
+
+      document.getElementById('fullname').value = user.fullname || '';
+      document.getElementById('userCode').value = user.userCode || '';
+
+      if (isSubFolderBlocked) {
+        window.isSubFolderReadonly = true;
+        alert("ℹ️ Read-Only Mode\n\nThis profile belongs to a subfolder. You cannot view or modify its details because subfolder modification is disabled for your account.");
+        window.location.href = "dashboard.html";
+        return;
+      }
 
       function checkAutoDeleteVisibility() {
         const curUsername = document.getElementById('username').value.trim();
@@ -1353,15 +1394,25 @@
         if (container) {
           if (curUsername !== origUsername || curUserCode !== origUserCode || curProfileDataFile !== origProfileDataFile) {
             container.style.display = 'block';
-            if (window.isAtProfileLimit && cb && !cb.hasAttribute('data-auto-checked-once')) {
-              cb.checked = true; // Auto-check it initially
-              cb.setAttribute('data-auto-checked-once', 'true');
+            if (cb) {
+              // If the folder path (Data File) is updated, force the delete option to be checked and disabled (cannot be unselected)
+              if (curProfileDataFile !== origProfileDataFile) {
+                cb.checked = true;
+                cb.disabled = true;
+              } else {
+                cb.disabled = false;
+                if (!cb.hasAttribute('data-auto-checked-once')) {
+                  cb.checked = true; // Auto-check it initially
+                  cb.setAttribute('data-auto-checked-once', 'true');
+                }
+              }
             }
           } else {
             container.style.display = 'none';
-            // Uncheck if it gets hidden
+            // Uncheck and enable if it gets hidden
             if (cb) {
               cb.checked = false;
+              cb.disabled = false;
               cb.removeAttribute('data-auto-checked-once');
             }
           }
@@ -1386,12 +1437,14 @@
       function checkUserCodeWarning() {
         const curUserCode = document.getElementById('userCode').value.trim();
         const box = document.getElementById('userCodeWarningBox');
+        const dupBox = document.getElementById('userCodeDupWarningBox');
+
         if (box) box.style.display = curUserCode !== origUserCode ? 'block' : 'none';
 
-        // Auto-update profileDataFile scope to match the new userCode
+        // Auto-update profileDataFile scope to match the new userCode (parent scope only)
         const curDataFileVal = document.getElementById('profileDataFile').value.trim();
         const parentScope = getParentScopeFromValue(curDataFileVal);
-        const newDataFileVal = `${parentScope}/${curUserCode}`;
+        const newDataFileVal = parentScope;
         document.getElementById('profileDataFile').value = newDataFileVal;
 
         // Trigger validation warning for Data File scope too, since it changed!
@@ -1401,6 +1454,38 @@
         }
 
         checkAutoDeleteVisibility();
+
+        if (userCodeCheckTimeout) {
+          clearTimeout(userCodeCheckTimeout);
+        }
+
+        isUserCodeDuplicate = false;
+
+        if (curUserCode && curUserCode !== origUserCode) {
+          isUserCodeChecking = true;
+          checkFormChanges(); // disable button immediately during typing/check
+
+          // Debounce the Firestore check by 400ms
+          userCodeCheckTimeout = setTimeout(async () => {
+            try {
+              const { db } = await import('./firebase-config.js');
+              const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js");
+              
+              const codeRef = doc(db, "index", curUserCode);
+              const codeSnap = await getDoc(codeRef);
+              
+              isUserCodeDuplicate = codeSnap.exists();
+            } catch (e) {
+              console.error("Uniqueness check failed:", e);
+            } finally {
+              isUserCodeChecking = false;
+            }
+            checkFormChanges(); // Update save button state
+          }, 400);
+        } else {
+          isUserCodeChecking = false;
+          checkFormChanges();
+        }
       }
 
       function checkProfileDataFileWarning() {
@@ -1513,14 +1598,65 @@
     document.getElementById('userForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      // --- USER CODE UNIQUENESS CHECK ---
+      const curUserCode = document.getElementById('userCode').value.trim();
+      const origUserCode = window.originalUserCode || '';
+      
+      const curUsername = document.getElementById('username')?.value.trim().replace(/\s+/g, '-') || '';
+      const origUsername = window.originalUsername || '';
+      const curProfileDataFile = document.getElementById('profileDataFile')?.value.trim() || '';
+      const origProfileDataFile = window.originalProfileDataFile || '';
+      const isIdentityChanged = (curUsername !== origUsername || curUserCode !== origUserCode || curProfileDataFile !== origProfileDataFile);
+      const cb = document.getElementById('autoDeleteOldProfile');
+      const isAutoDeleteChecked = cb && cb.checked;
+
+      // Block if duplicate case due to unchecked auto delete
+      if (isIdentityChanged && !isAutoDeleteChecked && curUserCode === origUserCode) {
+        alert("❌ Duplicate User Code\n\nSaving this profile without deleting the old one will result in duplicate User Codes in the database. Please change the User Code or check 'Delete old profile automatically after saving'.");
+        const saveBtnRef = document.getElementById('saveUserBtn');
+        if (saveBtnRef) {
+          saveBtnRef.disabled = true;
+          saveBtnRef.style.background = '#f44336';
+          saveBtnRef.innerHTML = '⚠️ Duplicate Code';
+        }
+        return;
+      }
+
+      if (curUserCode && curUserCode !== origUserCode) {
+        try {
+          const { db } = await import('./firebase-config.js');
+          const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js");
+          const codeRef = doc(db, "index", curUserCode);
+          const codeSnap = await getDoc(codeRef);
+          
+          if (codeSnap.exists()) {
+            alert("❌ Duplicate User Code\n\nThis User Code is already in use by another profile in the database. Please choose a different User Code before saving.");
+            
+            const saveBtnRef = document.getElementById('saveUserBtn');
+            if (saveBtnRef) {
+              saveBtnRef.disabled = true;
+              saveBtnRef.style.background = '#f44336';
+              saveBtnRef.innerHTML = '⚠️ Duplicate Code';
+            }
+            return;
+          }
+        } catch (err) {
+          console.error("Pre-submit userCode uniqueness check failed:", err);
+        }
+      }
+
       // --- AUTHENTICATION CHECK (Primary) ---
+      const { auth } = await import('./firebase-config.js');
+      const firebaseUser = auth.currentUser;
+
       const adminAuthenticated = localStorage.getItem('adminAuthenticated');
       const adminUsername = localStorage.getItem('adminUsername');
       const adminRole = localStorage.getItem('adminRole');
 
       // Block unauthenticated submissions
-      if (!adminAuthenticated || !adminUsername || !adminRole) {
+      if (!firebaseUser || !adminAuthenticated || !adminUsername || !adminRole || firebaseUser.email !== `${adminUsername.toLowerCase().trim()}@multilynkqr.local`) {
         alert('⚠️ Authentication Required\n\nYou must be logged in to save user profiles.\n\nRedirecting to login page...');
+        localStorage.clear();
         window.location.href = 'login.html';
         return;
       }
@@ -1572,8 +1708,6 @@
       const origProfileDataFileRaw = window.originalProfileDataFile || '';
 
       const isIdentityChangedSub = (normalizedUsernameRaw !== origUsernameRaw || userCodeInputRaw !== origUserCodeRaw || curProfileDataFileRaw !== origProfileDataFileRaw);
-      const autoDeleteCheckbox = document.getElementById('autoDeleteOldProfile');
-      const isAutoDeleteChecked = autoDeleteCheckbox && autoDeleteCheckbox.checked;
 
       // Only check limit if:
       // 1. We are CREATING a completely new user (not editing)
@@ -1903,15 +2037,37 @@
         const { dataService } = await import('./data-service.js');
 
         let scope = document.getElementById('profileDataFile')?.value.trim();
-        if (!scope) {
+        if (scope) {
+          scope = scope.replace(/\\/g, '/');
+        } else {
           scope = window.currentUserScope;
+          if (scope) {
+            scope = scope.replace(/\\/g, '/');
+          }
         }
         if (!scope) {
           const sessionFile = localStorage.getItem('adminDataFile');
           if (sessionFile) {
-            scope = sessionFile.replace('data/', '').replace('.json', '');
+            scope = sessionFile.replace('data/', '').replace('.json', '').replace(/\\/g, '/');
           } else {
             scope = 'clients';
+          }
+        }
+
+        // --- VALIDATION: Enforce scope boundaries for standard users ---
+        const loggedInRole = localStorage.getItem('adminRole');
+        let loggedInScope = localStorage.getItem('adminDataFile') || '';
+        if (loggedInScope) {
+          loggedInScope = loggedInScope.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+        }
+
+        if (loggedInRole === 'user' && loggedInScope) {
+          const isWithinScope = (scope === loggedInScope) || scope.startsWith(loggedInScope + "/");
+          if (!isWithinScope) {
+            alert(`❌ Permission Denied\n\nYou cannot move or save this profile outside your authorized scope hierarchy: "${loggedInScope}".`);
+            saveBtn.innerHTML = originalBtnText;
+            saveBtn.disabled = false;
+            return;
           }
         }
 
@@ -1975,6 +2131,7 @@
         console.error("Save failed:", e);
         saveBtn.innerHTML = '❌ Save Failed';
         saveBtn.style.background = '#f44336';
+        alert(`❌ Save Failed: ${e.message}`);
 
         setTimeout(() => {
           saveBtn.innerHTML = originalBtnText;
@@ -2367,11 +2524,26 @@
     }
 
     function enableFormFields() {
+      const params = new URLSearchParams(window.location.search);
+      const isEditing = params.has('user');
+
       const inputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
       inputs.forEach(input => {
+        // Keep userCode, profileDataFile, and profileCreatedAt disabled for new profiles
+        if (!isEditing && ['userCode', 'profileDataFile', 'profileCreatedAt'].includes(input.id)) {
+          input.disabled = true;
+          input.style.cursor = 'not-allowed';
+          input.style.opacity = '0.6';
+          input.classList.add('readonly-input');
+          return;
+        }
+
         input.disabled = false;
         input.style.cursor = '';
         input.style.opacity = '';
+        if (['userCode', 'profileDataFile', 'profileCreatedAt'].includes(input.id)) {
+          input.classList.remove('readonly-input');
+        }
       });
 
       const buttons = document.querySelectorAll('#userForm button:not(#backBtn)');
@@ -2603,7 +2775,57 @@
       const saveBtn = document.getElementById('saveUserBtn');
       if (!saveBtn) return;
 
+      if (typeof isUserCodeChecking !== 'undefined' && isUserCodeChecking) {
+        saveBtn.disabled = true;
+        saveBtn.style.background = '#6b7280';
+        saveBtn.style.cursor = 'wait';
+        saveBtn.style.pointerEvents = 'none';
+        saveBtn.title = "Checking User Code availability...";
+        saveBtn.innerHTML = '⏳ Checking...';
+        return;
+      }
+
       const origUsername = window.originalUsername || '';
+      const curUsername = document.getElementById('username')?.value.trim().replace(/\s+/g, '-') || '';
+      const curUserCode = document.getElementById('userCode')?.value.trim() || '';
+      const curProfileDataFile = document.getElementById('profileDataFile')?.value.trim() || '';
+      const origUserCode = window.originalUserCode || '';
+      const origProfileDataFile = window.originalProfileDataFile || '';
+
+      const isIdentityChanged = (curUsername !== origUsername || curUserCode !== origUserCode || curProfileDataFile !== origProfileDataFile);
+      const cb = document.getElementById('autoDeleteOldProfile');
+      const isAutoDeleteChecked = cb && cb.checked;
+
+      // Determine duplicate condition
+      let isDuplicate = false;
+      let dupReasonMessage = "";
+      if (typeof isUserCodeDuplicate !== 'undefined' && isUserCodeDuplicate) {
+        isDuplicate = true;
+        dupReasonMessage = "This User Code is already in use by another profile in the database. Please choose a different User Code.";
+      } else if (isIdentityChanged && !isAutoDeleteChecked && curUserCode === origUserCode) {
+        isDuplicate = true;
+        dupReasonMessage = "Saving this profile without deleting the old one will result in duplicate User Codes in the database. Please change the User Code or check 'Delete old profile automatically after saving'.";
+      }
+
+      const dupBox = document.getElementById('userCodeDupWarningBox');
+      const dupText = document.getElementById('userCodeDupWarningText');
+      if (dupBox) {
+        dupBox.style.display = isDuplicate ? 'block' : 'none';
+        if (isDuplicate && dupText) {
+          dupText.innerText = dupReasonMessage;
+        }
+      }
+
+      if (isDuplicate) {
+        saveBtn.disabled = true;
+        saveBtn.style.background = '#f44336';
+        saveBtn.style.cursor = 'not-allowed';
+        saveBtn.style.pointerEvents = 'auto';
+        saveBtn.title = "User Code duplicate risk. Please resolve the duplicate code issue.";
+        saveBtn.innerHTML = '⚠️ Duplicate Code';
+        return;
+      }
+
       if (window.isAtProfileLimit && !origUsername) {
         saveBtn.disabled = true;
         saveBtn.style.background = '#9ca3af';
@@ -2627,15 +2849,6 @@
       }
 
       // 2. Profile Limit & Identity Change Validation (replaces original validation logic)
-      const curUsername = document.getElementById('username')?.value.trim().replace(/\s+/g, '-') || '';
-      const curUserCode = document.getElementById('userCode')?.value.trim() || '';
-      const curProfileDataFile = document.getElementById('profileDataFile')?.value.trim() || '';
-      const origUserCode = window.originalUserCode || '';
-      const origProfileDataFile = window.originalProfileDataFile || '';
-
-      const isIdentityChanged = (curUsername !== origUsername || curUserCode !== origUserCode || curProfileDataFile !== origProfileDataFile);
-      const cb = document.getElementById('autoDeleteOldProfile');
-
       if (window.isAtProfileLimit && isIdentityChanged && cb && !cb.checked) {
         saveBtn.disabled = true;
         saveBtn.style.background = '#9ca3af';

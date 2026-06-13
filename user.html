@@ -163,6 +163,49 @@
   </style>
 
   <script>
+    // Global utility & sanitization functions
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function sanitizeUrl(url) {
+      if (!url) return '';
+      const trimmed = url.trim();
+      // Block javascript:, data:, vbscript:, file: protocols
+      if (/^(javascript|data|vbscript|file):/i.test(trimmed)) {
+        console.warn('Potentially malicious URL blocked:', trimmed);
+        return '#';
+      }
+      return trimmed;
+    }
+
+    function sanitizePhone(phone) {
+      if (!phone) return '';
+      // Strip any characters that are not digits, spaces, hyphens, plus, parentheses
+      return phone.replace(/[^\d+\s()-]/g, '');
+    }
+
+    function sanitizeEmail(email) {
+      if (!email) return '';
+      const trimmed = email.trim();
+      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmed)) {
+        return trimmed;
+      }
+      return trimmed.replace(/[^a-zA-Z0-9._%+-@]/g, '');
+    }
+
+    // Sanitize user input to prevent XSS
+    function sanitizeInput(input) {
+      if (typeof input !== 'string') return '';
+      return input;
+    }
+
     // Complete platform configuration with 50+ platforms
     const platformConfig = {
       // Professional & Business Networks
@@ -484,7 +527,13 @@
                 console.log(`📋 Index lookup: ${userCode} → ${dataFile}`);
                 // Try Firebase with known scope
                 try {
-                  let scope = dataFile.split('/')[0].replace('.json', '');
+                  let scope = dataFile;
+                  if (dataFile.includes('/')) {
+                    const parts = dataFile.split('/');
+                    scope = parts.slice(0, -1).join('/');
+                  } else {
+                    scope = dataFile.replace('.json', '');
+                  }
                   const { dataService } = await import('./data-service.js');
 
                   // Try combo ID first to prevent iteration fallback
@@ -596,48 +645,6 @@
             </div>
           `;
           return;
-        }
-
-        function escapeHtml(text) {
-          if (text === null || text === undefined) return '';
-          return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-        }
-
-        function sanitizeUrl(url) {
-          if (!url) return '';
-          const trimmed = url.trim();
-          // Block javascript:, data:, vbscript:, file: protocols
-          if (/^(javascript|data|vbscript|file):/i.test(trimmed)) {
-            console.warn('Potentially malicious URL blocked:', trimmed);
-            return '#';
-          }
-          return trimmed;
-        }
-
-        function sanitizePhone(phone) {
-          if (!phone) return '';
-          // Strip any characters that are not digits, spaces, hyphens, plus, parentheses
-          return phone.replace(/[^\d+\s()-]/g, '');
-        }
-
-        function sanitizeEmail(email) {
-          if (!email) return '';
-          const trimmed = email.trim();
-          if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmed)) {
-            return trimmed;
-          }
-          return trimmed.replace(/[^a-zA-Z0-9._%+-@]/g, '');
-        }
-
-        // Sanitize user input to prevent XSS
-        function sanitizeInput(input) {
-          if (typeof input !== 'string') return '';
-          return input;
         }
 
         const sanitizedName = sanitizeInput(user.fullname);
@@ -985,6 +992,7 @@
           if (customLinks && Array.isArray(customLinks) && customLinks.length > 0) {
             customLinks.forEach(link => {
               if (link.title && link.url) {
+                linkCount++;
                 categoryLinks.push(`
                   <a href="${sanitizeUrl(link.url)}" target="_blank" rel="noopener" title="${escapeHtml(link.title)}" class="social-link">
                     <img src="./assets/icons/custom.svg" alt="${escapeHtml(link.title)}" 

@@ -143,6 +143,7 @@ let passwordsVisible = false; // Default to hidden
 // Global variable to track admin accounts sort mode
 let adminSortMode = 'oldest'; // 'alphabetical', 'newest', 'oldest'
 let userSortMode = 'oldest'; // 'alphabetical', 'newest', 'oldest' — sort mode for regular user dashboard
+let userFolderFilterMode = 'all'; // 'all' or specific scope path — folder filter mode for regular user dashboard
 
 // Toggle password visibility
 function togglePasswordVisibility() {
@@ -219,11 +220,19 @@ function showAdminUI() {
     newBtn.addEventListener('click', async () => {
       // Confirmation Logic
       if (newBtn.dataset.confirming === 'true') {
+        newBtn.dataset.confirming = 'false'; // Reset confirming state immediately to cancel the 3-second reset timeout
         newBtn.disabled = true;
         newBtn.innerHTML = '<span>⏳</span> Syncing...';
         try {
           const { dataService } = await import('./data-service.js');
-          await dataService.syncToFirebase();
+          await dataService.syncToFirebase((statusText) => {
+            newBtn.innerHTML = `<span>⏳</span> ${statusText}`;
+          });
+
+          // Refresh the dashboard table to show updated counts immediately
+          if (typeof displayLoginAccountsTable === 'function') {
+            await displayLoginAccountsTable();
+          }
 
           newBtn.innerHTML = '<span>✅</span> Synced!';
           newBtn.style.backgroundColor = '#4CAF50';
@@ -324,6 +333,26 @@ async function verifySessionAndRole(requiredRoles = []) {
     throw new Error("No active session found.");
   }
   
+  // Verify with Firebase Auth state
+  const { auth } = await import('./firebase-config.js');
+  const firebaseUser = await new Promise((resolve) => {
+    if (auth.currentUser) {
+      resolve(auth.currentUser);
+    } else {
+      const unsubscribe = auth.onAuthStateChanged((u) => {
+        unsubscribe();
+        resolve(u);
+      });
+    }
+  });
+
+  if (!firebaseUser || firebaseUser.email !== `${currentUsername.toLowerCase().trim()}@multilynkqr.local`) {
+    console.warn("⚠️ Security Verification Failed: Firebase Auth user does not match session.");
+    localStorage.clear();
+    redirectToLogin();
+    throw new Error("Session invalid or expired.");
+  }
+
   const { dataService } = await import('./data-service.js');
   const myself = await dataService.getCredential(currentUsername);
   const expectedToken = myself ? await dataService.hashPassword(myself.password || '') : '';
@@ -343,6 +372,7 @@ async function verifySessionAndRole(requiredRoles = []) {
   
   return myself;
 }
+
 
 // Load users from multiple JSON files
 async function loadUsers() {
@@ -639,7 +669,8 @@ function updateUserStatistics(users) {
     scopeMap[norm] = 0;
   });
 
-  users.forEach(u => {
+  const scopeSource = allUsersGlobal && allUsersGlobal.length > 0 ? allUsersGlobal : users;
+  scopeSource.forEach(u => {
     let scope = u.dataFile || myDataFile || '(unknown)';
     scope = normalizeScopePath(scope);
     if (scopeMap[scope] === undefined) {
@@ -684,6 +715,22 @@ function updateUserStatistics(users) {
     } else if (user.location && typeof user.location === 'string' && user.location.trim()) {
       totalLinks += 1;
     }
+
+    // Count custom links for total statistics
+    const customKeys = [
+      'professionalCustom', 'designCustom', 'socialCustom', 'videoCustom', 'musicCustom', 'developerCustom',
+      'messagingCustom', 'gamingCustom', 'creatorCustom', 'ecommerceCustom', 'photographyCustom', 'bloggingCustom',
+      'miscSocialCustom', 'productivityCustom', 'paymentCustom', 'businessCustom', 'teamCustom', 'educationCustom',
+      'pricingCustom', 'appDownloadsCustom', 'bookingCustom', 'foodCustom', 'transportationCustom', 'travelCustom',
+      'healthCustom', 'ottCustom', 'booksCustom', 'contactCustom'
+    ];
+
+    customKeys.forEach(customKey => {
+      if (user[customKey] && Array.isArray(user[customKey])) {
+        const validLinks = user[customKey].filter(link => link && link.title && link.url);
+        totalLinks += validLinks.length;
+      }
+    });
   });
 
   const multipleScopes = Object.keys(window._scopeMap || {}).length > 1;
@@ -692,6 +739,7 @@ function updateUserStatistics(users) {
   const isFrozen = window.currentUser && window.currentUser.isFrozen;
   const limit = (window.currentUser && window.currentUser.role === 'user' && window.currentUser.isUnlimited === false) ? (window.currentUser.maxUsers || DEFAULT_MAX_USERS) : Infinity;
   const count = users ? users.length : 0;
+  const globalCount = allUsersGlobal && allUsersGlobal.length > 0 ? allUsersGlobal.length : count;
 
   if (window.currentUser && window.currentUser.role === 'user' && window.currentUser.isUnlimited === false) {
     document.getElementById('totalUsers').innerHTML = `${count} / ${limit}${infoIcon}`;
@@ -710,7 +758,7 @@ function updateUserStatistics(users) {
       addUserBtn.style.cursor = 'not-allowed';
       addUserBtn.disabled = true;
       addUserBtn.title = "Account is frozen (Read-Only). Contact admin to unfreeze.";
-    } else if (count >= limit) {
+    } else if (globalCount >= limit) {
       if (totalUsersLabel) totalUsersLabel.style.color = 'var(--danger)';
       addUserBtn.style.background = '#9ca3af';
       addUserBtn.style.color = '';
@@ -825,14 +873,93 @@ async function showFolderBreakdown() {
 function displayUsers(users) {
   const list = document.getElementById('userList');
 
-  if (users.length === 0) {
-    // Check if this is from a search or initial load
+  let myDataFile = localStorage.getItem('adminDataFile') || '';
+  if (myDataFile) {
+    myDataFile = myDataFile.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+  }
+
+  // 1. Get distinct scopes from all users globally to build filter dropdown options
+  const allScopes = [...new Set((allUsersGlobal || []).map(u => {
+    let scope = u.dataFile || myDataFile;
+    if (scope) {
+      scope = scope.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+    }
+    if (u.userCode && scope.toLowerCase().endsWith('/' + u.userCode.toLowerCase())) {
+      scope = scope.slice(0, -(u.userCode.length + 1));
+    }
+    return scope;
+  }).filter(Boolean))];
+
+  // Populate folder filter dropdown dynamically if multiple folders exist
+  const folderFilterGroup = document.getElementById('userFolderFilterGroup');
+  const folderFilterSelect = document.getElementById('userFolderFilterSelect');
+  if (folderFilterGroup && folderFilterSelect) {
+    if (allScopes.length > 1) {
+      folderFilterGroup.style.display = 'flex';
+      
+      const currentValue = folderFilterSelect.value || 'all';
+      
+      // Rebuild options list
+      folderFilterSelect.innerHTML = '<option value="all">All Folders</option>';
+      
+      // Sort scopes: main user dataFile first, then subfolders alphabetically
+      allScopes.sort((a, b) => {
+        if (a === myDataFile) return -1;
+        if (b === myDataFile) return 1;
+        return a.localeCompare(b);
+      });
+      
+      allScopes.forEach(scope => {
+        const option = document.createElement('option');
+        option.value = scope;
+        const isOwn = scope === myDataFile;
+        option.textContent = isOwn ? `🏠 ${scope} (My Folder)` : `📁 ${scope}`;
+        folderFilterSelect.appendChild(option);
+      });
+      
+      if ([...folderFilterSelect.options].some(opt => opt.value === currentValue)) {
+        folderFilterSelect.value = currentValue;
+      } else {
+        folderFilterSelect.value = 'all';
+        userFolderFilterMode = 'all';
+      }
+    } else {
+      folderFilterGroup.style.display = 'none';
+      userFolderFilterMode = 'all';
+    }
+  }
+
+  // 2. Filter users by the selected folder filter mode
+  let filteredUsers = [...users];
+  if (userFolderFilterMode !== 'all') {
+    filteredUsers = filteredUsers.filter(u => {
+      let scope = u.dataFile || myDataFile;
+      if (scope) {
+        scope = scope.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+      }
+      if (u.userCode && scope.toLowerCase().endsWith('/' + u.userCode.toLowerCase())) {
+        scope = scope.slice(0, -(u.userCode.length + 1));
+      }
+      return scope === userFolderFilterMode;
+    });
+  }
+
+  // Update statistics dynamically based on current folder/search filters
+  updateUserStatistics(filteredUsers);
+
+  if (filteredUsers.length === 0) {
+    // Check if this is from a search, folder filter, or initial load
     const searchInput = document.getElementById('searchInput');
     const isSearching = searchInput && searchInput.value.trim() !== '';
+    const isFolderFiltered = userFolderFilterMode !== 'all';
 
     let message = '';
-    if (isSearching) {
+    if (isSearching && isFolderFiltered) {
+      message = `No users found matching your search in folder "${userFolderFilterMode}".`;
+    } else if (isSearching) {
       message = 'No users found matching your search criteria.';
+    } else if (isFolderFiltered) {
+      message = `No users yet in folder "${userFolderFilterMode}".`;
     } else {
       message = 'No users yet. Add your first user!';
     }
@@ -848,7 +975,7 @@ function displayUsers(users) {
   list.innerHTML = "";
 
   // Apply sorting based on userSortMode
-  const sortedUsers = [...users];
+  const sortedUsers = [...filteredUsers];
   if (userSortMode === 'newest') {
     sortedUsers.sort((a, b) => {
       const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -867,9 +994,11 @@ function displayUsers(users) {
   }
 
   // Determine if multiple scopes exist — used to show folder path badges on cards
-  const myDataFile = localStorage.getItem('adminDataFile') || '';
   const distinctDisplayScopes = [...new Set(sortedUsers.map(u => {
     let scope = u.dataFile || myDataFile;
+    if (scope) {
+      scope = scope.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+    }
     if (u.userCode && scope.toLowerCase().endsWith('/' + u.userCode.toLowerCase())) {
       scope = scope.slice(0, -(u.userCode.length + 1));
     }
@@ -973,6 +1102,22 @@ function displayUsers(users) {
       linkCount += 1;
     }
 
+    // Add custom links count
+    const customKeys = [
+      'professionalCustom', 'designCustom', 'socialCustom', 'videoCustom', 'musicCustom', 'developerCustom',
+      'messagingCustom', 'gamingCustom', 'creatorCustom', 'ecommerceCustom', 'photographyCustom', 'bloggingCustom',
+      'miscSocialCustom', 'productivityCustom', 'paymentCustom', 'businessCustom', 'teamCustom', 'educationCustom',
+      'pricingCustom', 'appDownloadsCustom', 'bookingCustom', 'foodCustom', 'transportationCustom', 'travelCustom',
+      'healthCustom', 'ottCustom', 'booksCustom', 'contactCustom'
+    ];
+
+    customKeys.forEach(customKey => {
+      if (u[customKey] && Array.isArray(u[customKey])) {
+        const validLinks = u[customKey].filter(link => link && link.title && link.url);
+        linkCount += validLinks.length;
+      }
+    });
+
     // Get first few active platforms for display badges dynamically
     const platformNames = {
       linkedin: 'LinkedIn', xing: 'Xing', angellist: 'AngelList', meetup: 'Meetup', opportunity: 'Opportunity',
@@ -1025,7 +1170,7 @@ function displayUsers(users) {
     });
 
     // Then check all other keys from user document
-    const excludedKeys = ['fullname', 'username', 'userCode', 'createdAt', 'description', 'design', 'customTheme', 'profileImage', 'dataFile', 'isFrozen', 'profileCount', 'certificates', 'publicDescription', 'locations'];
+    const excludedKeys = ['fullname', 'username', 'userCode', 'createdAt', 'description', 'design', 'customTheme', 'profileImage', 'dataFile', 'isFrozen', 'profileCount', 'certificates', 'publicDescription', 'locations', 'parentFolder'];
     Object.keys(u).forEach(key => {
       if (!key.startsWith('_') && !excludedKeys.includes(key) && !popularityOrderedKeys.includes(key)) {
         if (u[key] && typeof u[key] === 'string' && u[key].trim()) {
@@ -1040,6 +1185,17 @@ function displayUsers(users) {
       activePlatforms.push('Certificates');
     }
 
+    // Add custom links platforms for display badges dynamically
+    customKeys.forEach(customKey => {
+      if (u[customKey] && Array.isArray(u[customKey]) && u[customKey].length > 0) {
+        u[customKey].forEach(link => {
+          if (link.title && link.title.trim()) {
+            activePlatforms.push(link.title.trim());
+          }
+        });
+      }
+    });
+
     const displayLimit = 6; // Show up to 6 active platforms to fill the cards beautifully
     const platformBadges = activePlatforms.slice(0, displayLimit).map(p =>
       `<span class="link-badge">${p}</span>`
@@ -1048,13 +1204,6 @@ function displayUsers(users) {
     const moreCount = activePlatforms.length - displayLimit;
     const moreBadge = moreCount > 0 ? `<span class="link-badge">+${moreCount} more</span>` : '';
 
-    // Check if account is frozen to disable Edit and Delete buttons
-    const isFrozen = window.currentUser && window.currentUser.isFrozen;
-    const editBtnStyle = isFrozen ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="Account is frozen (Read-Only)"' : '';
-    const editBtnOnclick = isFrozen ? '' : `onclick="editUser('${u.username}', '${u.userCode}')"`;
-    const deleteBtnStyle = isFrozen ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="Account is frozen (Read-Only)"' : '';
-    const deleteBtnOnclick = isFrozen ? '' : `onclick="deleteUser(this, '${escapeHtml(u.username)}', '${escapeHtml(u.userCode)}', '${escapeHtml(u.dataFile || '')}')"`;
-
     // Build optional folder path badge for the top-right corner of the card
     const cardScope = u.dataFile || myDataFile;
     let displayScope = cardScope;
@@ -1062,6 +1211,19 @@ function displayUsers(users) {
       displayScope = displayScope.slice(0, -(u.userCode.length + 1));
     }
     const isOwnScope = displayScope === myDataFile;
+
+    // Check if account is frozen or if sub-folder modifications are disabled for standard users
+    const isFrozen = window.currentUser && window.currentUser.isFrozen;
+    const isSubFolderProfile = !isOwnScope;
+    const isStandardUser = window.currentUser && window.currentUser.role === 'user';
+    const canModifySubfolders = (window.currentUser && window.currentUser.allowSubfolderModifications !== undefined) ? window.currentUser.allowSubfolderModifications === true : window.ALLOW_SUBFOLDER_MODIFICATIONS === true;
+    const isModificationBlocked = isFrozen || (isStandardUser && isSubFolderProfile && !canModifySubfolders);
+
+    const editBtnStyle = isModificationBlocked ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="' + (isFrozen ? 'Account is frozen (Read-Only)' : 'Modification of sub-folder profiles is disabled') + '"' : '' ;
+    const editBtnOnclick = isModificationBlocked ? '' : `onclick="editUser('${u.username}', '${u.userCode}')"`;
+    const deleteBtnStyle = isModificationBlocked ? 'style="background-color: #9ca3af; cursor: not-allowed;" disabled title="' + (isFrozen ? 'Account is frozen (Read-Only)' : 'Deletion of sub-folder profiles is disabled') + '"' : '';
+    const deleteBtnOnclick = isModificationBlocked ? '' : `onclick="deleteUser(this, '${escapeHtml(u.username)}', '${escapeHtml(u.userCode)}', '${escapeHtml(u.dataFile || '')}')"`;
+
     let folderBadgeHtml = '';
     if (showScopeBadge && displayScope) {
       const badgeBg = isOwnScope ? 'rgba(99,102,241,0.12)' : 'rgba(245,158,11,0.13)';
@@ -1897,8 +2059,13 @@ document.getElementById('addUserBtn').onclick = (e) => {
 };
 
 // Logout button
-document.getElementById('logoutBtn').onclick = () => {
-  localStorage.clear();
+document.getElementById('logoutBtn').onclick = async () => {
+  try {
+    const { dataService } = await import('./data-service.js');
+    await dataService.logout();
+  } catch (e) {
+    localStorage.clear();
+  }
   window.location.href = 'login.html';
 };
 
@@ -3045,15 +3212,13 @@ async function displayLoginAccountsTable(accountsToShow = null) {
         if (migration) {
           clientCountsDisplay = `<strong style="color: #6366f1;">⏳ ${migration.migrated} / ${migration.total}</strong>`;
         } else {
-          if (account.profileCount !== undefined) {
+          const stats = clientUserStats[account.dataFile];
+          if (stats) {
+            clientCountsDisplay = `${stats.users}`;
+          } else if (account.profileCount !== undefined) {
             clientCountsDisplay = `${account.profileCount}`;
           } else {
-            const stats = clientUserStats[account.dataFile];
-            if (stats) {
-              clientCountsDisplay = `${stats.users}`;
-            } else {
-              clientCountsDisplay = '0';
-            }
+            clientCountsDisplay = '0';
           }
         }
       }
@@ -3065,6 +3230,23 @@ async function displayLoginAccountsTable(accountsToShow = null) {
       const statusClass = account.isActive ? 'active' : 'inactive';
       const statusText = account.isActive ? 'Active' : 'Inactive';
       const isMainAdmin = account.role === 'main_admin' || account.role === 'super_admin';
+
+      let hasSubfolders = false;
+      let isSubfolder = false;
+      if (!isMainAdmin && account.dataFile) {
+        const cleanScope = account.dataFile.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+        isSubfolder = cleanScope.includes('/');
+        hasSubfolders = allAccounts.some(other => {
+          if (other.username === account.username || !other.dataFile) return false;
+          const otherClean = other.dataFile.replace(/^data\//, '').replace(/\.json$/, '').replace(/\\/g, '/');
+          return otherClean.startsWith(cleanScope + '/');
+        });
+      }
+      const isPartOfSubfolderLogic = hasSubfolders || isSubfolder;
+
+      const subfolderEditChecked = (account.allowSubfolderModifications !== undefined) ? 
+        account.allowSubfolderModifications === true : 
+        window.ALLOW_SUBFOLDER_MODIFICATIONS === true;
 
       const row = document.createElement('tr');
       if (isMainAdmin) {
@@ -3113,6 +3295,18 @@ async function displayLoginAccountsTable(accountsToShow = null) {
             <label class="toggle-switch" title="Activate/Deactivate Login">
               <input type="checkbox" ${account.isActive ? 'checked' : ''} 
                      onchange="toggleAccountStatus('${escapeHtml(account.username)}', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+            `
+        }
+        </td>
+        <td class="centered-cell">
+          ${(isMainAdmin || !isPartOfSubfolderLogic) ? '-' :
+          `
+            <label class="toggle-switch" style="${!hasSubfolders ? 'cursor: not-allowed;' : ''}" title="${hasSubfolders ? 'Allow/Restrict sub-folder modifications' : 'No sub-folders exist under this account scope'}">
+              <input type="checkbox" ${subfolderEditChecked ? 'checked' : ''} 
+                     ${!hasSubfolders ? 'disabled' : ''}
+                     onchange="toggleSubfolderModifications('${escapeHtml(account.username)}', this.checked)">
               <span class="toggle-slider"></span>
             </label>
             `
@@ -3290,7 +3484,7 @@ async function saveEditLoginAccount(event) {
   const username = document.getElementById('editLoginUsername').value;
   const newPassword = document.getElementById('editLoginPassword').value.trim();
   const description = document.getElementById('editLoginDescription').value.trim();
-  const dataFile = document.getElementById('editLoginDataFile').value.trim();
+  const dataFile = document.getElementById('editLoginDataFile').value.trim().replace(/\\/g, '/');
   const dataFileField = document.getElementById('editLoginDataFile');
   const submitBtn = document.querySelector('#editLoginForm button[type="submit"]');
 
@@ -3344,6 +3538,10 @@ async function saveEditLoginAccount(event) {
 
     // Migrate user profiles automatically if dataFile scope changed
     const oldDataFile = existingAccount ? existingAccount.dataFile : null;
+    const countCell = document.getElementById(`client-count-${username}`);
+    let totalCount;
+    let migratedCount = 0;
+
     if (oldDataFile && dataFile !== oldDataFile) {
       console.log(`🚚 Scope changed from "${oldDataFile}" to "${dataFile}". Migrating user profiles...`);
 
@@ -3354,63 +3552,145 @@ async function saveEditLoginAccount(event) {
       if (submitBtn) {
         submitBtn.innerHTML = '⏳ Initializing Migration...';
       }
+      if (countCell) {
+        countCell.innerHTML = `<strong style="color: #6366f1;">⏳ ...</strong>`;
+      }
 
       try {
         const oldUsers = await dataService.getUsers(oldDataFile);
         if (oldUsers && oldUsers.length > 0) {
-          const totalCount = oldUsers.length;
-          let migratedCount = 0;
+          totalCount = oldUsers.length;
+          migratedCount = 0;
+
+          // Fetch credentials and calculate initial counts for limit validation
+          let limitReached = false;
+          let limitExceededAccount = '';
+          let limitExceededMax = 0;
+
+          if (submitBtn) {
+            submitBtn.innerHTML = '⏳ Verifying limits...';
+          }
+          if (countCell) {
+            countCell.innerHTML = `<strong style="color: #6366f1;">⏳ 0 / ${totalCount}</strong>`;
+          }
+
+          const credentials = await dataService.getCredentials();
+          const allUsers = await dataService.getUsers(null) || [];
+          const currentCounts = {};
+          credentials.forEach(cred => {
+            if (cred.dataFile) {
+              const s = cred.dataFile;
+              currentCounts[s] = allUsers.filter(usr => usr.dataFile === s || usr.dataFile.startsWith(s + "/")).length;
+            }
+          });
 
           // Update active migration total count
           window.activeMigrations[username].total = totalCount;
 
-          // Target cell in "CLIENT USERS COUNT" column
-          const countCell = document.getElementById(`client-count-${username}`);
-
-          if (countCell) {
-            countCell.innerHTML = `<strong style="color: #6366f1;">⏳ ${migratedCount} / ${totalCount}</strong>`;
-          }
-          if (submitBtn) {
-            submitBtn.innerHTML = `⏳ Migrating (${migratedCount}/${totalCount})...`;
-          }
-
+          // 1. Dry-run limit check for all profiles before writing anything
+          const allowedUsers = [];
           for (const u of oldUsers) {
             const oldProfileScope = u.dataFile || oldDataFile;
-            const newProfileScope = `${dataFile}/${u.userCode}`;
+            const newProfileScope = dataFile;
 
-            // Duplicate user profile object and update the dataFile scope property
-            const profileData = { ...u };
-            profileData.dataFile = newProfileScope;
-
-            // 1. Create document under the new scope/subcollection path
-            const docId = u.username + '_' + u.userCode;
-            await dataService.updateUser(newProfileScope, docId, profileData);
-
-            // 2. Delete document from the old scope/subcollection path
-            await dataService.deleteUser(oldProfileScope, u.username, u.userCode);
-
-            migratedCount++;
-
-            // Update global active migration status
-            if (window.activeMigrations[username]) {
-              window.activeMigrations[username].migrated = migratedCount;
+            // Check limits for target and all parents/ancestor credential accounts
+            let allowed = true;
+            for (const cred of credentials) {
+              if (cred.isUnlimited === false && cred.dataFile) {
+                const s = cred.dataFile;
+                const wasUnder = (oldProfileScope === s || oldProfileScope.startsWith(s + "/"));
+                const isUnder = (newProfileScope === s || newProfileScope.startsWith(s + "/"));
+                const netChange = (isUnder && !wasUnder) ? 1 : (!isUnder && wasUnder) ? -1 : 0;
+                
+                const maxVal = cred.maxUsers || DEFAULT_MAX_USERS;
+                if ((currentCounts[s] || 0) + netChange > maxVal) {
+                  allowed = false;
+                  limitReached = true;
+                  limitExceededAccount = cred.username;
+                  limitExceededMax = maxVal;
+                  break;
+                }
+              }
             }
 
-            // Update table cell
-            if (countCell) {
-              countCell.innerHTML = `<strong style="color: #6366f1;">⏳ ${migratedCount} / ${totalCount}</strong>`;
+            if (!allowed) {
+              console.warn(`🛑 Migration limit hit for account "${limitExceededAccount}" (Limit: ${limitExceededMax}). Remaining users skipped.`);
+              break;
             }
 
-            // Update submit button text only if the modal is currently open and showing THIS user
-            const currentModalUsername = document.getElementById('editLoginUsername')?.value;
-            if (currentModalUsername === username) {
-              const currentSubmitBtn = document.querySelector('#editLoginForm button[type="submit"]');
-              if (currentSubmitBtn) {
-                currentSubmitBtn.innerHTML = `⏳ Migrating (${migratedCount}/${totalCount})...`;
+            // Update local tracker counts
+            credentials.forEach(cred => {
+              if (cred.dataFile) {
+                const s = cred.dataFile;
+                const wasUnder = (oldProfileScope === s || oldProfileScope.startsWith(s + "/"));
+                const isUnder = (newProfileScope === s || newProfileScope.startsWith(s + "/"));
+                const netChange = (isUnder && !wasUnder) ? 1 : (!isUnder && wasUnder) ? -1 : 0;
+                currentCounts[s] = (currentCounts[s] || 0) + netChange;
+              }
+            });
+
+            allowedUsers.push(u);
+          }
+
+          // 2. Perform Migration Writes (Batch Write in Firebase)
+          if (allowedUsers.length > 0) {
+            if (dataService.useFirebase) {
+              if (submitBtn) {
+                submitBtn.innerHTML = `⏳ Committing Batch Write...`;
+              }
+              if (countCell) {
+                countCell.innerHTML = `<strong style="color: #6366f1;">⏳ 0 / ${totalCount}</strong>`;
+              }
+              const batchRes = await dataService.migrateUserProfilesInBatch(oldDataFile, dataFile, allowedUsers);
+              if (batchRes && batchRes.success) {
+                migratedCount = batchRes.migrated;
+              }
+            } else {
+              // Fallback for Local Mode (Session only)
+              for (const u of allowedUsers) {
+                if (submitBtn) {
+                  submitBtn.innerHTML = `⏳ Migrating user ${migratedCount + 1}/${allowedUsers.length}...`;
+                }
+                if (countCell) {
+                  countCell.innerHTML = `<strong style="color: #6366f1;">⏳ ${migratedCount + 1} / ${allowedUsers.length}</strong>`;
+                }
+                const docId = u.username + '_' + u.userCode;
+                const profileData = { ...u };
+                profileData.dataFile = dataFile;
+                await dataService.updateUser(dataFile, docId, profileData, true);
+                await dataService.deleteUser(oldDataFile, u.username, u.userCode, true);
+                migratedCount++;
               }
             }
           }
-          console.log(`✅ Successfully migrated ${oldUsers.length} user profile(s) to the new scope structure.`);
+
+          // 3. Update UI to completion
+          if (window.activeMigrations[username]) {
+            window.activeMigrations[username].migrated = migratedCount;
+          }
+
+          if (countCell) {
+            countCell.innerHTML = `<strong style="color: #ff9800;">🔄 ${migratedCount} / ${totalCount}</strong>`;
+          }
+
+          // Update submit button text only if the modal is currently open and showing THIS user
+          const currentModalUsername = document.getElementById('editLoginUsername')?.value;
+          if (currentModalUsername === username) {
+            const currentSubmitBtn = document.querySelector('#editLoginForm button[type="submit"]');
+            if (currentSubmitBtn) {
+              currentSubmitBtn.innerHTML = `⏳ Recalculating folder counts...`;
+            }
+          }
+
+          // Recalculate profile counts for affected scopes exactly once at the end (Optimization)
+          await dataService.updateProfileCountInFirestore(oldDataFile);
+          await dataService.updateProfileCountInFirestore(dataFile);
+
+          if (limitReached) {
+            alert(`⚠️ Migration partially completed: Only ${migratedCount} of ${totalCount} profile(s) were migrated because the user limit for account "${limitExceededAccount}" (${limitExceededMax} profiles max) has been reached.`);
+          } else {
+            console.log(`✅ Successfully migrated ${oldUsers.length} user profile(s) to the new scope structure.`);
+          }
         }
       } catch (migrationErr) {
         console.error("⚠️ Migration of user profiles failed:", migrationErr);
@@ -3421,10 +3701,29 @@ async function saveEditLoginAccount(event) {
     if (submitBtn) {
       submitBtn.innerHTML = '⏳ Saving Account...';
     }
+    if (countCell) {
+      if (typeof totalCount !== 'undefined') {
+        countCell.innerHTML = `<strong style="color: #4CAF50;">💾 ${migratedCount} / ${totalCount}</strong>`;
+      } else {
+        const currentText = countCell.innerText || '';
+        countCell.innerHTML = `<strong style="color: #4CAF50;">💾 ${currentText}</strong>`;
+      }
+    }
 
     const success = await dataService.updateCredential(username, updates);
 
     if (success) {
+      if (submitBtn) {
+        submitBtn.innerHTML = '✅ Saved!';
+      }
+      if (countCell) {
+        if (typeof totalCount !== 'undefined') {
+          countCell.innerHTML = `<strong style="color: #4CAF50;">✅ ${migratedCount} / ${totalCount}</strong>`;
+        } else {
+          const currentText = countCell.innerText.replace('💾', '').trim();
+          countCell.innerHTML = `<strong style="color: #4CAF50;">✅ ${currentText}</strong>`;
+        }
+      }
       alert(`Account "${username}" updated successfully!`);
       const currentModalUsername = document.getElementById('editLoginUsername')?.value;
       if (currentModalUsername === username) {
@@ -3452,11 +3751,9 @@ async function getClientUserCounts(users = []) {
   const counts = {};
 
   try {
-    // 1. Get credentials via DataService to know which dataFiles (scopes) exist
-    // If not already imported, import it dynamically
+    const { dataService } = await import('./data-service.js');
     let credentials = [];
     try {
-      const { dataService } = await import('./data-service.js');
       credentials = await dataService.getCredentials();
     } catch (e) {
       console.warn("Using local credentials fetch fallback");
@@ -3464,7 +3761,6 @@ async function getClientUserCounts(users = []) {
       if (credRes.ok) credentials = await credRes.json();
     }
 
-    // 2. Aggregate counts from the passed 'users' array
     const userCodesSet = new Set(users.map(u => u.userCode).filter(Boolean));
     const myDataFile = localStorage.getItem('adminDataFile') || '';
 
@@ -3485,33 +3781,56 @@ async function getClientUserCounts(users = []) {
     users.forEach(u => {
       let scope = u.dataFile || myDataFile || 'unknown';
       scope = normalizeScopePath(scope);
-      if (!userGroups[scope]) userGroups[scope] = { count: 0, files: new Set() };
+      if (!userGroups[scope]) userGroups[scope] = { count: 0 };
       userGroups[scope].count++;
     });
 
-    // 3. Map back to credentials to ensure we show all configured scopes even if empty
-    // (Optional, but good for UI consistency)
+    // Map back to credentials to ensure we show all configured scopes even if empty
     const scopes = [...new Set(credentials.map(c => c.dataFile).filter(Boolean))];
 
     scopes.forEach(scope => {
       const group = userGroups[scope] || { count: 0 };
-      counts[scope] = {
-        users: group.count,
-        files: 1, // Simplify to 1 "scope" = 1 "file" concept for now
-        details: [] // We can populate this if we want, but scope-level count is main goal
-      };
-    });
-
-    // Also include scopes found in users but not in credentials (e.g. orphans or super admin views)
-    Object.keys(userGroups).forEach(scope => {
-      if (!counts[scope]) {
+      
+      // Only populate counts[scope] if we actually loaded users in memory.
+      // Otherwise, counts will remain empty and the table will fall back to showing the correct database-stored counts.
+      if (users.length > 0) {
         counts[scope] = {
-          users: userGroups[scope].count,
+          users: group.count,
           files: 1,
           details: []
         };
+
+        // Proactively update the database count in the background if Firebase is enabled
+        if (dataService.useFirebase) {
+          (async () => {
+            try {
+              const credDoc = credentials.find(c => c.dataFile === scope);
+              if (credDoc && credDoc.profileCount !== group.count) {
+                const { db } = await import('./firebase-config.js');
+                const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js");
+                const docRef = doc(db, "credentials", credDoc.username.toLowerCase());
+                await setDoc(docRef, { profileCount: group.count }, { merge: true });
+              }
+            } catch (dbErr) {
+              // Run silently
+            }
+          })();
+        }
       }
     });
+
+    // Also include scopes found in users but not in credentials
+    if (users.length > 0) {
+      Object.keys(userGroups).forEach(scope => {
+        if (!counts[scope]) {
+          counts[scope] = {
+            users: userGroups[scope].count,
+            files: 1,
+            details: []
+          };
+        }
+      });
+    }
 
   } catch (error) {
     console.error('Error calculating client counts:', error);
@@ -3610,6 +3929,52 @@ async function toggleAccountFreeze(username, isFrozen) {
   } catch (error) {
     console.error('Error toggling freeze status:', error);
     alert('Error updating freeze status');
+  }
+}
+
+// Toggle Sub-folder modifications permission
+async function toggleSubfolderModifications(username, allowed) {
+  try {
+    await verifySessionAndRole(['super_admin', 'main_admin']);
+  } catch (err) {
+    console.error("Action blocked:", err.message);
+    displayLoginAccountsTable();
+    return;
+  }
+  try {
+    const { dataService } = await import('./data-service.js');
+
+    // Attempt update via DataService (Firebase)
+    const success = await dataService.updateCredential(username, { allowSubfolderModifications: allowed });
+
+    if (success) {
+      displayLoginAccountsTable();
+      return;
+    }
+
+    // Fallback for Local Mode (Session only)
+    console.log("Using session override for toggle subfolder modifications");
+    let credentials = [];
+    const override = localStorage.getItem('adminCredentialsOverride');
+    if (override) {
+      credentials = JSON.parse(override);
+    } else {
+      const response = await fetch('./credentials/login_credentials.json');
+      if (response.ok) credentials = await response.json();
+    }
+
+    const accountIndex = credentials.findIndex(cred => cred.username === username);
+    if (accountIndex !== -1) {
+      credentials[accountIndex].allowSubfolderModifications = allowed;
+      localStorage.setItem('adminCredentialsOverride', JSON.stringify(credentials));
+      displayLoginAccountsTable();
+    } else {
+      alert('Error: Account not found in local data');
+    }
+
+  } catch (error) {
+    console.error('Error toggling subfolder modifications:', error);
+    alert('Error: Could not update subfolder modifications permission');
   }
 }
 
@@ -3991,7 +4356,7 @@ async function handleAddLoginForm(e) {
 
   const username = document.getElementById('newUsername').value.trim();
   const password = document.getElementById('newPassword').value;
-  const dataFile = document.getElementById('newDataFile').value.trim();
+  const dataFile = document.getElementById('newDataFile').value.trim().replace(/\\/g, '/');
   const description = document.getElementById('newDescription').value.trim();
 
   // Validate inputs
@@ -4246,7 +4611,7 @@ function validatePassword() {
 }
 
 async function validateDataFile() {
-  const dataFile = document.getElementById('newDataFile').value.trim();
+  const dataFile = document.getElementById('newDataFile').value.trim().replace(/\\/g, '/');
   const field = document.getElementById('newDataFile');
 
   if (dataFile.length === 0) {
@@ -4298,7 +4663,7 @@ async function validateDataFile() {
 }
 
 async function validateEditLoginDataFile() {
-  const dataFile = document.getElementById('editLoginDataFile').value.trim();
+  const dataFile = document.getElementById('editLoginDataFile').value.trim().replace(/\\/g, '/');
   const field = document.getElementById('editLoginDataFile');
   const currentUsername = document.getElementById('editLoginUsername').value;
 
@@ -4446,6 +4811,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Admin show real password toggle
+  const showRealPasswordToggle = document.getElementById('showRealPasswordToggle');
+  if (showRealPasswordToggle) {
+    showRealPasswordToggle.checked = (window.SHOW_REAL_PASSWORD !== false);
+    showRealPasswordToggle.addEventListener('change', (e) => {
+      window.SHOW_REAL_PASSWORD = e.target.checked;
+      displayLoginAccountsTable();
+    });
+  }
+
   // User sort dropdown (regular user dashboard)
   const userSortSelect = document.getElementById('userSortSelect');
   if (userSortSelect) {
@@ -4454,6 +4829,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (allUsersGlobal && allUsersGlobal.length > 0) {
         displayUsers(allUsersGlobal);
       }
+    });
+  }
+
+  // User folder filter dropdown (regular user dashboard)
+  const userFolderFilterSelect = document.getElementById('userFolderFilterSelect');
+  if (userFolderFilterSelect) {
+    userFolderFilterSelect.addEventListener('change', (e) => {
+      userFolderFilterMode = e.target.value;
+      const searchInput = document.getElementById('searchInput');
+      const searchTerm = searchInput ? searchInput.value : '';
+      searchUsers(searchTerm);
     });
   }
 
@@ -4552,6 +4938,12 @@ window.deleteUser = async function (btn, username, userCode, scope) {
 
   // If button is in confirmation state
   if (btn.dataset.confirming === 'true') {
+    // Clear the reset timeout if it exists to prevent UI reversion
+    if (btn.deleteTimeout) {
+      clearTimeout(btn.deleteTimeout);
+      btn.deleteTimeout = null;
+    }
+
     // Perform delete
     const originalText = btn.innerHTML;
     btn.innerHTML = '⏳ Deleting...';
@@ -4589,7 +4981,7 @@ window.deleteUser = async function (btn, username, userCode, scope) {
     btn.style.backgroundColor = '#ff9800'; // Orange for warning
 
     // Reset after 3 seconds if not confirmed
-    setTimeout(() => {
+    btn.deleteTimeout = setTimeout(() => {
       if (btn && btn.isConnected) resetDeleteBtn(btn);
     }, 3000);
   }

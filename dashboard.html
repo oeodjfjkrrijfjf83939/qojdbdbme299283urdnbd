@@ -68,6 +68,12 @@
           <option value="oldest" selected>Oldest First</option>
         </select>
       </div>
+      <div class="filter-group" id="userFolderFilterGroup" style="display: none;">
+        <label for="userFolderFilterSelect">📁 Filter by Folder:</label>
+        <select id="userFolderFilterSelect">
+          <option value="all">All Folders</option>
+        </select>
+      </div>
     </div>
     <!-- Admin Search Container (for admin users) -->
     <div id="adminSearchContainer" class="search-container" style="display: none;">
@@ -118,7 +124,16 @@
     <!-- Login Accounts Table (for admin users) -->
     <div id="adminTableContainer" class="admin-table-container" style="display: none;">
       <h2>👤 Login Accounts Overview</h2>
-      <div class="admin-filter-bar">
+      <div class="admin-filter-bar" style="justify-content: space-between; align-items: center;">
+        <div class="filter-group">
+          <label class="switch-container">
+            <span>Show Real Passwords 👁️ </span>
+            <span class="switch-control">
+              <input type="checkbox" id="showRealPasswordToggle">
+              <span class="switch-slider"></span>
+            </span>
+          </label>
+        </div>
         <div class="filter-group">
           <label for="adminSortSelect">🔽 Sort by:</label>
           <select id="adminSortSelect">
@@ -147,6 +162,7 @@
             <th>Unlimited</th>
             <th>Limit Cap</th>
             <th>Active</th>
+            <th>Sub-folder Edit</th>
             <th>Edit</th>
             <th>Freeze</th>
             <th>Delete</th>

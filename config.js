@@ -24,6 +24,10 @@ if (typeof module !== 'undefined' && module.exports) {
 // Set to true to show the Edit button for Admin/Main accounts, or false to hide it
 window.ALLOW_ADMIN_EDIT = true;
 
+// Set to true to allow standard user main folder accounts to edit/delete/migrate sub-folder profiles.
+// Set to false to restrict them to read-only view of sub-folder profiles.
+window.ALLOW_SUBFOLDER_MODIFICATIONS = false;
+
 // Set to true to show the real decrypted password in the admin dashboard UI.
 // Set to false to show the raw encrypted/hashed key stored in the database.
 window.SHOW_REAL_PASSWORD = true;

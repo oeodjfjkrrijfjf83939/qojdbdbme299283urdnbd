@@ -141,24 +141,14 @@
     // Authenticate admin user
     async function authenticateAdmin(username, password) {
       console.log('Authenticating user:', username);
-      const user = await dataService.getCredential(username);
-
-      if (!user || user.isActive !== true) {
-        console.log('Authentication result: FAILED (User not found or inactive)');
-        return null;
-      }
-
-      // Hash entered password and compare with either plaintext (backward compatibility) or hashed password in db
-      const enteredHash = await dataService.hashPassword(password);
-      const isMatch = (password === user.password || enteredHash === user.password);
-
-      if (isMatch) {
+      try {
+        const user = await dataService.login(username, password);
         console.log('Authentication result: SUCCESS');
         return user;
+      } catch (err) {
+        console.warn('Authentication result: FAILED', err);
+        return null;
       }
-
-      console.log('Authentication result: FAILED');
-      return null;
     }
 
     document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
