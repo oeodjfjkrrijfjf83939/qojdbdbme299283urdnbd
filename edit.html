@@ -963,7 +963,9 @@
             myUsersPromise || Promise.resolve(null)
           ]);
 
-          if (!myCred || myCred.password !== token || myCred.isActive !== true) {
+          const expectedToken = myCred ? await dataService.hashPassword(myCred.password || '') : '';
+
+          if (!myCred || expectedToken !== token || myCred.isActive !== true) {
             alert('⚠️ Session Expired or Invalid\n\nPlease log in again.');
             localStorage.clear();
             window.location.href = 'login.html';
@@ -1540,8 +1542,9 @@
           const { dataService } = await import('./data-service.js');
           const myCred = await dataService.getCredential(adminUsername);
           const token = localStorage.getItem('adminSessionToken');
+          const expectedToken = myCred ? await dataService.hashPassword(myCred.password || '') : '';
 
-          if (!myCred || myCred.password !== token || myCred.isActive !== true) {
+          if (!myCred || expectedToken !== token || myCred.isActive !== true) {
             alert('⚠️ Session Expired or Invalid\n\nPlease log in again.');
             localStorage.clear();
             window.location.href = 'login.html';

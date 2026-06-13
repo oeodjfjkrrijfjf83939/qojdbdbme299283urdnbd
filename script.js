@@ -326,8 +326,9 @@ async function verifySessionAndRole(requiredRoles = []) {
   
   const { dataService } = await import('./data-service.js');
   const myself = await dataService.getCredential(currentUsername);
+  const expectedToken = myself ? await dataService.hashPassword(myself.password || '') : '';
   
-  if (!myself || myself.password !== token || myself.isActive !== true) {
+  if (!myself || expectedToken !== token || myself.isActive !== true) {
     alert("⚠️ Session Expired or Invalid\n\nPlease log in again.");
     localStorage.clear();
     redirectToLogin();
@@ -354,8 +355,9 @@ async function loadUsers() {
     const { dataService } = await import('./data-service.js');
     const myself = await dataService.getCredential(currentUsername);
     const token = localStorage.getItem('adminSessionToken');
+    const expectedToken = myself ? await dataService.hashPassword(myself.password || '') : '';
 
-    if (!myself || myself.password !== token || myself.isActive !== true) {
+    if (!myself || expectedToken !== token || myself.isActive !== true) {
       console.warn("Session verification failed! Redirecting to login...");
       localStorage.clear();
       redirectToLogin();

@@ -184,7 +184,8 @@
           localStorage.setItem('adminUsername', user.username);
           localStorage.setItem('adminRole', user.role);
           localStorage.setItem('adminDataFile', user.dataFile || '');
-          localStorage.setItem('adminSessionToken', user.password);
+          const sessionToken = await dataService.hashPassword(user.password || '');
+          localStorage.setItem('adminSessionToken', sessionToken);
           localStorage.setItem('adminLoginTime', Date.now().toString());
 
           // Redirect to dashboard
