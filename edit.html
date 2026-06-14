@@ -160,6 +160,46 @@
         dataFileGroup.style.display = SHOW_DATA_FILE_PROFILE_UI ? 'block' : 'none';
       }
 
+      // Prevent user from clearing the file path scope prefix backwards & restrict additional nested subfolders
+      const profileDataFileField = document.getElementById('profileDataFile');
+      if (profileDataFileField) {
+        profileDataFileField.addEventListener('keydown', (e) => {
+          const parentScope = getParentDataFileScope();
+          const start = e.target.selectionStart;
+          const end = e.target.selectionEnd;
+          if (e.key === 'Backspace' && start <= parentScope.length && end <= parentScope.length) {
+            e.preventDefault();
+          }
+          if (e.key === 'Delete' && start < parentScope.length) {
+            e.preventDefault();
+          }
+          // Block entering an additional slash if it would exceed 1 slash relative to the root scope
+          if (e.key === '/' || e.key === '\\') {
+            const currentSlashes = (e.target.value.match(/\//g) || []).length + (e.target.value.match(/\\/g) || []).length;
+            const parentSlashes = (parentScope.match(/\//g) || []).length + (parentScope.match(/\\/g) || []).length;
+            if (currentSlashes >= parentSlashes + 1) {
+              e.preventDefault();
+            }
+          }
+        });
+        profileDataFileField.addEventListener('input', (e) => {
+          const parentScope = getParentDataFileScope();
+          if (!e.target.value.startsWith(parentScope)) {
+            e.target.value = parentScope + e.target.value.substring(parentScope.length);
+            if (e.target.selectionStart < parentScope.length) {
+              e.target.setSelectionRange(parentScope.length, parentScope.length);
+            }
+          }
+          // Enforce slash limit on paste/input
+          const parentSlashes = (parentScope.match(/\//g) || []).length + (parentScope.match(/\\/g) || []).length;
+          const parts = e.target.value.split(/[\/\\]/);
+          if (parts.length > parentSlashes + 2) {
+            const cleanParts = parts.slice(0, parentSlashes + 2);
+            e.target.value = cleanParts.join('/');
+          }
+        });
+      }
+
       const params = new URLSearchParams(window.location.search);
       const username = params.get('user');
 
@@ -223,7 +263,7 @@
 
           window.currentUserCredential = myCred;
 
-          const expectedToken = myCred ? await dataService.hashPassword(myCred.password || '') : '';
+          const expectedToken = myCred ? await dataService.hashPassword(myCred.rawPassword || myCred.password || '') : '';
 
           if (!myCred || expectedToken !== token || myCred.isActive !== true) {
             alert('⚠️ Session Expired or Invalid\n\nPlease log in again.');
@@ -678,15 +718,18 @@
         if (box) box.style.display = curUserCode !== origUserCode ? 'block' : 'none';
 
         // Auto-update profileDataFile scope to match the new userCode (parent scope only)
-        const curDataFileVal = document.getElementById('profileDataFile').value.trim();
-        const parentScope = getParentScopeFromValue(curDataFileVal);
-        const newDataFileVal = parentScope;
-        document.getElementById('profileDataFile').value = newDataFileVal;
+        const profileDataFileEl = document.getElementById('profileDataFile');
+        if (profileDataFileEl && !profileDataFileEl.disabled) {
+          const curDataFileVal = profileDataFileEl.value.trim();
+          const parentScope = getParentScopeFromValue(curDataFileVal);
+          const newDataFileVal = parentScope;
+          profileDataFileEl.value = newDataFileVal;
 
-        // Trigger validation warning for Data File scope too, since it changed!
-        const dataFileWarningBox = document.getElementById('profileDataFileWarningBox');
-        if (dataFileWarningBox) {
-          dataFileWarningBox.style.display = newDataFileVal !== origProfileDataFile ? 'block' : 'none';
+          // Trigger validation warning for Data File scope too, since it changed!
+          const dataFileWarningBox = document.getElementById('profileDataFileWarningBox');
+          if (dataFileWarningBox) {
+            dataFileWarningBox.style.display = newDataFileVal !== origProfileDataFile ? 'block' : 'none';
+          }
         }
 
         checkAutoDeleteVisibility();
@@ -750,9 +793,19 @@
       // Enable/Populate Data File (editable for existing users)
       const profileDataFileField = document.getElementById('profileDataFile');
       profileDataFileField.value = origProfileDataFile;
-      profileDataFileField.disabled = window.isAccountFrozen;
-      if (!window.isAccountFrozen) {
+      
+      const parentScope = getParentDataFileScope();
+      const isParentScopeSubfolder = parentScope.includes('/');
+      const isDataFileDisabled = window.isAccountFrozen || !canModifySubfolders || isParentScopeSubfolder;
+      profileDataFileField.disabled = isDataFileDisabled;
+      if (isDataFileDisabled) {
+        profileDataFileField.classList.add('readonly-input');
+        profileDataFileField.style.cursor = 'not-allowed';
+        profileDataFileField.style.opacity = '0.6';
+      } else {
         profileDataFileField.classList.remove('readonly-input');
+        profileDataFileField.style.cursor = '';
+        profileDataFileField.style.opacity = '';
       }
 
       // Populate Created At (editable for existing users)
@@ -914,7 +967,7 @@
           const { dataService } = await import('./data-service.js');
           const myCred = await dataService.getCredential(adminUsername);
           const token = localStorage.getItem('adminSessionToken');
-          const expectedToken = myCred ? await dataService.hashPassword(myCred.password || '') : '';
+          const expectedToken = myCred ? await dataService.hashPassword(myCred.rawPassword || myCred.password || '') : '';
 
           if (!myCred || expectedToken !== token || myCred.isActive !== true) {
             alert('⚠️ Session Expired or Invalid\n\nPlease log in again.');
@@ -1762,11 +1815,23 @@
     function enableFormFields() {
       const params = new URLSearchParams(window.location.search);
       const isEditing = params.has('user');
+      const canModifySubfolders = (window.currentUserCredential && window.currentUserCredential.allowSubfolderModifications !== undefined) ? window.currentUserCredential.allowSubfolderModifications === true : window.ALLOW_SUBFOLDER_MODIFICATIONS === true;
 
       const inputs = document.querySelectorAll('#userForm input, #userForm textarea, #userForm select');
       inputs.forEach(input => {
         // Keep userCode, profileDataFile, and profileCreatedAt disabled for new profiles
         if (!isEditing && ['userCode', 'profileDataFile', 'profileCreatedAt'].includes(input.id)) {
+          input.disabled = true;
+          input.style.cursor = 'not-allowed';
+          input.style.opacity = '0.6';
+          input.classList.add('readonly-input');
+          return;
+        }
+
+        // Disable profileDataFile if subfolder modifications are not allowed, or if parent scope is already a subfolder (both for editing and new profiles)
+        const parentScope = getParentDataFileScope();
+        const isParentScopeSubfolder = parentScope.includes('/');
+        if (input.id === 'profileDataFile' && (!canModifySubfolders || isParentScopeSubfolder)) {
           input.disabled = true;
           input.style.cursor = 'not-allowed';
           input.style.opacity = '0.6';
