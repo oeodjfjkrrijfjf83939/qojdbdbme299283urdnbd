@@ -160,7 +160,7 @@
         dataFileGroup.style.display = SHOW_DATA_FILE_PROFILE_UI ? 'block' : 'none';
       }
 
-      // Prevent user from clearing the file path scope prefix backwards & restrict additional nested subfolders
+      // Prevent user from clearing the file path scope prefix backwards
       const profileDataFileField = document.getElementById('profileDataFile');
       if (profileDataFileField) {
         profileDataFileField.addEventListener('keydown', (e) => {
@@ -173,14 +173,6 @@
           if (e.key === 'Delete' && start < parentScope.length) {
             e.preventDefault();
           }
-          // Block entering an additional slash if it would exceed 1 slash relative to the root scope
-          if (e.key === '/' || e.key === '\\') {
-            const currentSlashes = (e.target.value.match(/\//g) || []).length + (e.target.value.match(/\\/g) || []).length;
-            const parentSlashes = (parentScope.match(/\//g) || []).length + (parentScope.match(/\\/g) || []).length;
-            if (currentSlashes >= parentSlashes + 1) {
-              e.preventDefault();
-            }
-          }
         });
         profileDataFileField.addEventListener('input', (e) => {
           const parentScope = getParentDataFileScope();
@@ -189,13 +181,6 @@
             if (e.target.selectionStart < parentScope.length) {
               e.target.setSelectionRange(parentScope.length, parentScope.length);
             }
-          }
-          // Enforce slash limit on paste/input
-          const parentSlashes = (parentScope.match(/\//g) || []).length + (parentScope.match(/\\/g) || []).length;
-          const parts = e.target.value.split(/[\/\\]/);
-          if (parts.length > parentSlashes + 2) {
-            const cleanParts = parts.slice(0, parentSlashes + 2);
-            e.target.value = cleanParts.join('/');
           }
         });
       }
@@ -241,6 +226,7 @@
       window.isAccountFrozen = false;
       window.isAtProfileLimit = false;
       window.isSubFolderReadonly = false;
+      window.isParentScopeSubfolder = false;
 
       if (adminRole === 'user' && adminUsername) {
         try {
@@ -280,6 +266,16 @@
             window.location.reload();
             return;
           }
+
+          // Determine if parent scope has subfolders (cached in localStorage to save Firestore read costs)
+          let cachedSubfolderStatus = localStorage.getItem('adminIsParentScopeSubfolder');
+          if (cachedSubfolderStatus === null) {
+            const parentScopeForSubCheck = getParentDataFileScope();
+            const hasSubs = await dataService.hasSubfolders(parentScopeForSubCheck);
+            cachedSubfolderStatus = (!hasSubs).toString();
+            localStorage.setItem('adminIsParentScopeSubfolder', cachedSubfolderStatus);
+          }
+          window.isParentScopeSubfolder = (cachedSubfolderStatus === 'true');
 
           // Calculate profile limit status early
           if (myCred && myCred.isUnlimited === false) {
@@ -794,8 +790,7 @@
       const profileDataFileField = document.getElementById('profileDataFile');
       profileDataFileField.value = origProfileDataFile;
       
-      const parentScope = getParentDataFileScope();
-      const isParentScopeSubfolder = parentScope.includes('/');
+      const isParentScopeSubfolder = window.isParentScopeSubfolder;
       const isDataFileDisabled = window.isAccountFrozen || !canModifySubfolders || isParentScopeSubfolder;
       profileDataFileField.disabled = isDataFileDisabled;
       if (isDataFileDisabled) {
@@ -1828,9 +1823,7 @@
           return;
         }
 
-        // Disable profileDataFile if subfolder modifications are not allowed, or if parent scope is already a subfolder (both for editing and new profiles)
-        const parentScope = getParentDataFileScope();
-        const isParentScopeSubfolder = parentScope.includes('/');
+        const isParentScopeSubfolder = window.isParentScopeSubfolder;
         if (input.id === 'profileDataFile' && (!canModifySubfolders || isParentScopeSubfolder)) {
           input.disabled = true;
           input.style.cursor = 'not-allowed';
